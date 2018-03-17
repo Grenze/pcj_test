@@ -65,6 +65,10 @@ class Employee extends PersistentObject implements people, shakaijin{
         super(p);
     }
 
+    public long getId(){
+        return getLongField(ID);
+    }
+
     public void setName(String name){
         setObjectField(NAME, persistent(name));
     }
@@ -107,6 +111,10 @@ class Engineer extends  Employee{
 
     public String getProject(){
         return getObjectField(PROJECT).toString();
+    }
+
+    public void changeProject(String project){
+        setObjectField(PROJECT, persistent(project));
     }
 
 
@@ -162,11 +170,14 @@ public class Main {
         //System.out.println(stuff.getId()+stuff.getName());
 
 
-        //Engineer eng0 = new Engineer(0,"ghost","clear","umbrella");
+        //Engineer eng0 = new Engineer(0,"ghost","umbrella","clear");
         //ObjectDirectory.put("eng0",eng0);
 
         Engineer eng = ObjectDirectory.get("eng0",Engineer.class);
-        System.out.println(eng.getName()+eng.getProject());
+        System.out.println(eng.getId()+" "+eng.getName()+" "+eng.getCompany()+" "+eng.getProject());
+        //eng.changeProject("makeup");
+
+
 
 
 
