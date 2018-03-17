@@ -6,6 +6,8 @@ import lib.util.persistent.types.ObjectType;
 import lib.util.persistent.types.StringField;
 
 import static lib.util.persistent.Util.persistent;
+
+
 /*
 final class Employee extends PersistentObject{
     private static final LongField ID = new LongField();
@@ -175,6 +177,8 @@ public class Main {
 
         Engineer eng = ObjectDirectory.get("eng0",Engineer.class);
         System.out.println(eng.getId()+" "+eng.getName()+" "+eng.getCompany()+" "+eng.getProject());
+        System.out.println();
+
         //eng.changeProject("makeup");
 
 
