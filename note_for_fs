@@ -1,0 +1,32 @@
+
+
+
+
+./community/kernel/src/main/java/org/neo4j/kernel/impl/util/BufferedFileChannel.java 
+:import org.neo4j.io.fs.AbstractStoreChannel;
+
+
+--don't forget
+
+
+./community/io/src/main/java/org/neo4j/io/pagecache/impl/SingleFilePageSwapper.java
+
+:import org.neo4j.io.fs.StoreFileChannelUnwrapper;
+
+:import org.neo4j.io.fs.StoreFileChannel;
+
+
+--skip these
+
+
+./community/security/src/test/java/org/neo4j/server/security/auth/FileUserRepositoryTest.java
+
+:import org.neo4j.io.fs.DelegatingFileSystemProvider;
+
+:import org.neo4j.io.fs.DelegatingFileSystem;
+
+----------------------
+no DelegatingPath
+
+DelegateFileSystemAbstraction for tests
+
