@@ -33,33 +33,46 @@ public class StoreFileChannel implements StoreChannel
         this.channel = channel;
     }
 
+    /*duplicate?*/
     public StoreFileChannel( StoreFileChannel channel )
     {
         this.channel = channel.channel;
     }
 
+    /*write the content of ByteBuffer to the position of channel, position init 0*/
+    @Override
+    public int write( ByteBuffer src ) throws IOException
+    {
+        return channel.write( src );
+    }
+
+    /*write the content of every ByteBuffer to the position of channel in order*/
     @Override
     public long write( ByteBuffer[] srcs ) throws IOException
     {
         return channel.write( srcs );
     }
 
+    /*write the content of ByteBuffer to the position of channel, position required*/
     @Override
     public int write( ByteBuffer src, long position ) throws IOException
     {
         return channel.write( src, position );
     }
 
+    /*write the content of ByteBuffer[offset:offset+length(<=ByteBuffer.length)] to the position of channel, params>=0, nothing will be written if length == 0*/
     @Override
     public long write( ByteBuffer[] srcs, int offset, int length ) throws IOException
     {
         return channel.write( srcs, offset, length );
     }
 
+    /*guarantee all bytes will be written*/
     @Override
     public void writeAll( ByteBuffer src, long position ) throws IOException
     {
         long filePosition = position;
+        //be sure ByteBuffer.flip() executed
         long expectedEndPosition = filePosition + src.limit() - src.position();
         int bytesWritten;
         while((filePosition += (bytesWritten = write( src, filePosition ))) < expectedEndPosition)
@@ -85,30 +98,12 @@ public class StoreFileChannel implements StoreChannel
         }
     }
 
+    /*truncate from the position*/
     @Override
     public StoreFileChannel truncate( long size ) throws IOException
     {
         channel.truncate( size );
         return this;
-    }
-
-    @Override
-    public StoreFileChannel position( long newPosition ) throws IOException
-    {
-        channel.position( newPosition );
-        return this;
-    }
-
-    @Override
-    public int read( ByteBuffer dst, long position ) throws IOException
-    {
-        return channel.read( dst, position );
-    }
-
-    @Override
-    public void force( boolean metaData ) throws IOException
-    {
-        channel.force( metaData );
     }
 
     @Override
@@ -118,9 +113,32 @@ public class StoreFileChannel implements StoreChannel
     }
 
     @Override
+    public long read( ByteBuffer[] dsts ) throws IOException
+    {
+        return channel.read( dsts );
+    }
+
+    @Override
+    public int read( ByteBuffer dst, long position ) throws IOException
+    {
+        return channel.read( dst, position );
+    }
+
+    @Override
     public long read( ByteBuffer[] dsts, int offset, int length ) throws IOException
     {
         return channel.read( dsts, offset, length );
+    }
+
+    /*position init at 0 when open the channel
+     *and move to the newPosition using position method may cause hole in file
+     * support method chain
+     */
+    @Override
+    public StoreFileChannel position( long newPosition ) throws IOException
+    {
+        channel.position( newPosition );
+        return this;
     }
 
     @Override
@@ -142,18 +160,6 @@ public class StoreFileChannel implements StoreChannel
     }
 
     @Override
-    public long read( ByteBuffer[] dsts ) throws IOException
-    {
-        return channel.read( dsts );
-    }
-
-    @Override
-    public int write( ByteBuffer src ) throws IOException
-    {
-        return channel.write( src );
-    }
-
-    @Override
     public void close() throws IOException
     {
         channel.close();
@@ -163,6 +169,12 @@ public class StoreFileChannel implements StoreChannel
     public long size() throws IOException
     {
         return channel.size();
+    }
+
+    @Override
+    public void force( boolean metaData ) throws IOException
+    {
+        channel.force( metaData );
     }
 
     @Override

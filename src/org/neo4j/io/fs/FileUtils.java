@@ -518,6 +518,7 @@ public class FileUtils
         return options;
     }
 
+    /*only used in DelegateFileSystemAbstraction.java*/
     public static FileChannel open( Path path, String mode ) throws IOException
     {
         return FileChannel.open( path, convertOpenMode( mode ) );

@@ -1,15 +1,17 @@
-import lib.util.persistent.ObjectDirectory;
 import lib.util.persistent.ObjectPointer;
 import lib.util.persistent.PersistentObject;
 import lib.util.persistent.types.LongField;
 import lib.util.persistent.types.ObjectType;
 import lib.util.persistent.types.StringField;
+import org.neo4j.io.fs.StoreFileChannel;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 
 import static lib.util.persistent.Util.persistent;
-
-
 /*
 final class Employee extends PersistentObject{
     private static final LongField ID = new LongField();
@@ -152,7 +154,7 @@ public class Main {
         //ObjectDirectory.remove("data",PersistentArray.class);
         //PersistentArray<PersistentString> strings1 = ObjectDirectory.get("data", PersistentArray.class);
 
-        //assert(strings1.get(1).equals(persistent("world")));
+        //assert(strings1.get(1).equals(persistent("wByteBufferorld")));
 
         //System.out.println(strings1.get(1));
 
@@ -184,15 +186,62 @@ public class Main {
         //Engineer eng0 = new Engineer(0,"ghost","umbrella","clear");
         //ObjectDirectory.put("eng0",eng0);
 
-        Engineer eng = ObjectDirectory.get("eng0",Engineer.class);
-        System.out.println(eng.getId()+" "+eng.getName()+" "+eng.getCompany()+" "+eng.getProject());
-        System.out.println();
+        //Engineer eng = ObjectDirectory.get("eng0",Engineer.class);
+        //System.out.println(eng.getId()+" "+eng.getName()+" "+eng.getCompany()+" "+eng.getProject());
+        //System.out.println();
 
         //eng.changeProject("makeup");
+        ByteBuffer buf0 = ByteBuffer.allocate(100);
+        ByteBuffer buf1 = ByteBuffer.allocate(100);
+        ByteBuffer[] bufs = new ByteBuffer[2];
+        bufs[0] = buf0;
+        bufs[1] = buf1;
+        String newData0 = "New String to write to file..."+System.currentTimeMillis();
+        String newData1 = "Franxx String to write to file..."+System.currentTimeMillis();
+        //bufs[0].put(newData0.getBytes());
+        //buf0.flip();
+        //buf1.put(newData1.getBytes());
+        //bufs[1].flip();
+        //System.out.println(bufs.length);
+
+        try {
+            FileChannel testchannel = new RandomAccessFile("text","rw").getChannel();
+            StoreFileChannel neo4jchannel = new StoreFileChannel(testchannel);
+            /*while(buf.hasRemaining()){
+                try {
+                    testchannel.write(buf);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }*/
+            System.out.println(neo4jchannel.size());
+            //System.out.println(neo4jchannel.isOpen());
+            //System.out.println(neo4jchannel.position());
+            neo4jchannel.position(30);
+            //System.out.println(neo4jchannel.position());
+            neo4jchannel.read(bufs);
+            buf0.flip();
+            buf1.flip();
+            printBuffer(buf0);
+            printBuffer(buf1);
+
+            //neo4jchannel.truncate(15);
+            System.out.println(neo4jchannel.position());
+            //System.out.println(neo4jchannel.size());
+            neo4jchannel.flush();
+            neo4jchannel.close();
+            //System.out.println(neo4jchannel.isOpen());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
+    }
 
-
-
+    public static void printBuffer(ByteBuffer buf){
+        while (buf.hasRemaining()){
+            System.out.print((char)buf.get());
+        }
+        System.out.println();
     }
 }
