@@ -236,6 +236,9 @@ public class FileUtils
         System.gc();
     }
 
+    /*
+     * fixSeparatorsInPath for Settings.java --remained
+     */
     public static String fixSeparatorsInPath( String path )
     {
         String fileSeparator = System.getProperty( "file.separator" );

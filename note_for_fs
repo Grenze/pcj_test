@@ -9,6 +9,8 @@ FileUtils.java  DefaultFileSystemAbstraction.java  FileSystemAbstraction.java  S
 --outlink
 
 
+UnsafeUtil is using ByteBuffer and ByteOrder
+
 ./community/kernel/src/main/java/org/neo4j/kernel/impl/util/BufferedFileChannel.java 
 :import org.neo4j.io.fs.AbstractStoreChannel;
 

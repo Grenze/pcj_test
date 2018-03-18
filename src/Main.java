@@ -5,6 +5,8 @@ import lib.util.persistent.types.LongField;
 import lib.util.persistent.types.ObjectType;
 import lib.util.persistent.types.StringField;
 
+import java.io.File;
+
 import static lib.util.persistent.Util.persistent;
 
 
@@ -44,6 +46,13 @@ interface people{
 interface shakaijin{
     void setCompany(String company);
 }
+
+class myfile extends File{
+    myfile(String var1){
+        super(var1);
+    }
+}
+
 
 class Employee extends PersistentObject implements people, shakaijin{
     private static final LongField ID = new LongField();
