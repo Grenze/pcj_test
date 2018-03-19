@@ -268,7 +268,7 @@ public class FileUtils
         }
         return path;
     }
-    /*copy srcFile to the path of dstFile.getParentFile()*/
+    /*copy srcFile to the path of dstFile.getParentFile(), name changed*/
     public static void copyFile( File srcFile, File dstFile ) throws IOException
     {
         //noinspection ResultOfMethodCallIgnored
@@ -290,12 +290,12 @@ public class FileUtils
             throw new IOException( "Could not copy '" + srcFile + "' to '" + dstFile + "'", e );
         }
     }
-
+    /*keep its origin name, so there should not be the same name file(Dir) under the toDirectory, or throw IOException*/
     public static void copyRecursively( File fromDirectory, File toDirectory ) throws IOException
     {
         copyRecursively( fromDirectory, toDirectory, null );
     }
-
+    /*design a filter for nvm FileFilter, read the listFiles source code*/
     public static void copyRecursively( File fromDirectory, File toDirectory, FileFilter filter) throws IOException
     {
         for ( File fromFile : fromDirectory.listFiles( filter ) )
@@ -303,6 +303,7 @@ public class FileUtils
             File toFile = new File( toDirectory, fromFile.getName() );
             if ( fromFile.isDirectory() )
             {
+                System.out.print("CopyRecursively");
                 Files.createDirectories( toFile.toPath() );
                 copyRecursively( fromFile, toFile, filter );
             }
@@ -312,7 +313,7 @@ public class FileUtils
             }
         }
     }
-
+    /*override or append, create if not exist*/
     public static void writeToFile( File target, String text, boolean append ) throws IOException
     {
         if ( !target.exists() )
@@ -327,7 +328,9 @@ public class FileUtils
             out.write( text );
         }
     }
-
+    /*only used in StartClient to call readLine() to read command from file,
+    * so change this method means change executeCommandStream() in StartClient
+    **/
     public static BufferedReader newBufferedFileReader( File file, Charset charset ) throws FileNotFoundException
     {
         return new BufferedReader( new InputStreamReader( new FileInputStream( file ), charset) );

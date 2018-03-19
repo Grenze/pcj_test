@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 
 import static lib.util.persistent.Util.persistent;
 /*
@@ -187,7 +188,11 @@ public class Main {
             //FileChannel testchannel = new RandomAccessFile("Dir_test/File/File1","rw").getChannel();
             //FileUtils.renameFile(new File("Dir_test/File/File1"),new File("Dir_test/F"));
             //testchannel.truncate(10L);
-            FileUtils.copyFile(new File("Dir_test/File/File1"),new File("Dir_test/copy/F"));
+            //FileUtils.copyFile(new File("Dir_test/File/File1"),new File("Dir_test/copy/F"));
+            //FileUtils.copyRecursively(new File("Dir_test/File/"),new File("Dir_test/copy/"));
+            //FileUtils.writeToFile(new File("Dir_test/File/File1"),"Franxx",false);
+            FileUtils.newBufferedFileReader(new File("Dir_test/File/File1"), StandardCharsets.UTF_8);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
