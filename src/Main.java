@@ -1,3 +1,4 @@
+import lib.util.persistent.ObjectDirectory;
 import lib.util.persistent.ObjectPointer;
 import lib.util.persistent.PersistentHashMap;
 import lib.util.persistent.PersistentObject;
@@ -116,6 +117,7 @@ class Engineer extends  Employee{
         super(type, id, name, company);
         setProject(project);
         setGroupname("root");
+        ObjectDirectory.put(name,this);
     }
 
     protected  Engineer(ObjectPointer<? extends Engineer> p){
@@ -147,6 +149,9 @@ class Engineer extends  Employee{
         PersistentHashMap group = new PersistentHashMap();
         Engineer var1 = new Engineer(1,"lin",getCompany(),getProject());
         group.put(persistent("lin"),var1);
+        ObjectDirectory.put(getGroupname(),group);
+        var1 = (Engineer) ObjectDirectory.get(getGroupname(),PersistentHashMap.class).get(persistent("lin"));
+        System.out.println(var1.getGroupname());
         return var1;
     }
 
@@ -160,7 +165,7 @@ public class Main {
     public static void main(String[] agrs)
     {
         //testStoreFileChannel();
-        testpcj();
+        testpcj();//chain create directories or files
         testFileUtils();
 
 
@@ -218,8 +223,29 @@ public class Main {
 
         //System.out.println(stuff.getId()+stuff.getName());
 
+        /*attention!
+        * the current directory should know direct name of files and directories in current directory
+        * (these information should be included in it)
+        * also it can find indirect name with path prefix of files and directories of all the
+        * directories and files including the current layer
+        *(these information should be got in ObjectDirectory)
+        *
+        *
+        *
+        *
+        *
+        * */
+        Engineer eng0 = new Engineer(0,"ghost","umbrella","clear");
+        ObjectDirectory.put("1",eng0);
+        ObjectDirectory.put("2",eng0);
+        Engineer eng1 = ObjectDirectory.get("2",Engineer.class);
+        eng1.setGroupname("not root");
+        Engineer eng2 = ObjectDirectory.get("1",Engineer.class);
+        System.out.println(eng1.getGroupname()+eng2.getGroupname());
+        //eng0.createGroup("littlebuster").createGroup("tinybuster");
+        //Engineer eng1 = (Engineer) ObjectDirectory.get("tinybuster",PersistentHashMap.class).get(persistent("lin"));
+        //System.out.println(eng1.getGroupname());
 
-        //Engineer eng0 = new Engineer(0,"ghost","umbrella","clear");
         //ObjectDirectory.put("eng0",eng0);
         //System.out.println(ObjectDirectory.get("root",PersistentHashMap.class).get(persistent(0)));
 
