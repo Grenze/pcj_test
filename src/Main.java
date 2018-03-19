@@ -191,6 +191,16 @@ public class Main {
         //System.out.println();
 
         //eng.changeProject("makeup");
+
+
+
+
+
+
+
+    }
+
+    public static void testStoreFileChannel (){
         ByteBuffer buf0 = ByteBuffer.allocate(100);
         ByteBuffer buf1 = ByteBuffer.allocate(100);
         ByteBuffer[] bufs = new ByteBuffer[2];
@@ -234,10 +244,7 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
-
     public static void printBuffer(ByteBuffer buf){
         while (buf.hasRemaining()){
             System.out.print((char)buf.get());

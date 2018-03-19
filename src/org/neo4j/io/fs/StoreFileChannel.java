@@ -147,6 +147,7 @@ public class StoreFileChannel implements StoreChannel
         return channel.position();
     }
 
+    /*pcj lock pcj file*/
     @Override
     public FileLock tryLock() throws IOException
     {
@@ -183,6 +184,7 @@ public class StoreFileChannel implements StoreChannel
         force( false );
     }
 
+    /*only used in StoreFileChannelUnwrapper.java*/
     static FileChannel unwrap( StoreChannel channel )
     {
         StoreFileChannel sfc = (StoreFileChannel) channel;
