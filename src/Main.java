@@ -178,15 +178,20 @@ public class Main {
     }
 
     public static void testFileUtils(){
-        File dir = new File("Dir_test/File_test");
+        //File dir = new File("Dir_test/File_test");
         try {
             //FileUtils.deleteRecursively(dir);
             //FileUtils.deletePathRecursively(dir.toPath());
-            FileUtils.moveFile(new File("Dir_test/test/File1"), new File("Dir_test/File5/1"));
+            //FileUtils.moveFileToDirectory(new File("Dir_test/test/File1"), new File("Dir_test/File"));
+            //FileUtils.truncateFile(new File("Dir_test/File/File1"), 20L);
+            //FileChannel testchannel = new RandomAccessFile("Dir_test/File/File1","rw").getChannel();
+            //FileUtils.renameFile(new File("Dir_test/File/File1"),new File("Dir_test/F"));
+            //testchannel.truncate(10L);
+            FileUtils.copyFile(new File("Dir_test/File/File1"),new File("Dir_test/copy/F"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //System.out.println(FileUtils.deleteFile(dir));
+        //System.out.println(FileUtils.deleteFile(new File("Dir_test/File5")));
 
 
 

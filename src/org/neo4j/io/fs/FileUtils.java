@@ -156,6 +156,7 @@ public class FileUtils
      * @return the new file, null iff the move was unsuccessful
      * @throws IOException
      */
+    /*specified moveFile, targetDirectory must exist, so renameTo only, keep its origin name*/
     public static File moveFileToDirectory( File toMove, File targetDirectory ) throws IOException
     {
         if ( !targetDirectory.isDirectory() )
@@ -168,7 +169,7 @@ public class FileUtils
         moveFile( toMove, target );
         return target;
     }
-
+    /*bound to call renameTo, but possible locked file, return true when succeeded*/
     public static boolean renameFile( File srcFile, File renameToFile ) throws IOException
     {
         if ( !srcFile.exists() )
@@ -197,7 +198,7 @@ public class FileUtils
         while ( !renamed && count <= WINDOWS_RETRY_COUNT );
         return renamed;
     }
-
+    /*realised by nvm file channel*/
     public static void truncateFile( SeekableByteChannel fileChannel, long position )
             throws IOException
     {
@@ -224,7 +225,7 @@ public class FileUtils
             throw cause;
         }
     }
-
+    /*realised by nvm file channel*/
     public static void truncateFile( File file, long position ) throws IOException
     {
         try ( RandomAccessFile access = new RandomAccessFile( file, "rw" ) )
@@ -235,6 +236,8 @@ public class FileUtils
 
     /*
      * See http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4715154.
+     * JDK-4715154 : (fs) Cannot delete file if memory mapped with FileChannel.map (windows)
+     * Ubuntu has no such a problem, a mapped file can change its name concurrently
      */
     private static void waitAndThenTriggerGC()
     {
@@ -265,7 +268,7 @@ public class FileUtils
         }
         return path;
     }
-
+    /*copy srcFile to the path of dstFile.getParentFile()*/
     public static void copyFile( File srcFile, File dstFile ) throws IOException
     {
         //noinspection ResultOfMethodCallIgnored
