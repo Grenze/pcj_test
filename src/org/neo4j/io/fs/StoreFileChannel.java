@@ -28,12 +28,13 @@ public class StoreFileChannel implements StoreChannel
 {
     private final FileChannel channel;
 
+    /*constructor, param:FileChannel*/
     public StoreFileChannel( FileChannel channel )
     {
         this.channel = channel;
     }
 
-    /*duplicate?*/
+    /*duplicate a new StoreFileChannel to the same file*/
     public StoreFileChannel( StoreFileChannel channel )
     {
         this.channel = channel.channel;
@@ -141,6 +142,7 @@ public class StoreFileChannel implements StoreChannel
         return this;
     }
 
+    /*return the current position*/
     @Override
     public long position() throws IOException
     {
@@ -166,12 +168,14 @@ public class StoreFileChannel implements StoreChannel
         channel.close();
     }
 
+    /*size of file*/
     @Override
     public long size() throws IOException
     {
         return channel.size();
     }
 
+    /*sync memory to disk*/
     @Override
     public void force( boolean metaData ) throws IOException
     {

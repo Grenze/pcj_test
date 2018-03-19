@@ -1,4 +1,5 @@
 import lib.util.persistent.ObjectPointer;
+import lib.util.persistent.PersistentHashMap;
 import lib.util.persistent.PersistentObject;
 import lib.util.persistent.types.LongField;
 import lib.util.persistent.types.ObjectType;
@@ -103,7 +104,9 @@ class Employee extends PersistentObject implements people, shakaijin{
 
 class Engineer extends  Employee{
     private static final StringField PROJECT = new StringField();   //new field
-    public static final ObjectType<Engineer> TYPE = Employee.TYPE.extendWith(Engineer.class, PROJECT);  //extend type
+    public static final StringField GROUPNAME = new StringField();
+    //don't forget extendWith or will out of index
+    public static final ObjectType<Engineer> TYPE = Employee.TYPE.extendWith(Engineer.class, PROJECT, GROUPNAME);  //extend type
 
     public Engineer(int id, String name, String company, String project){
         this (TYPE, id, name, company, project);
@@ -112,11 +115,13 @@ class Engineer extends  Employee{
     protected  Engineer(ObjectType<? extends Engineer> type, int id, String name, String company, String project){
         super(type, id, name, company);
         setProject(project);
+        setGroupname("root");
     }
 
     protected  Engineer(ObjectPointer<? extends Engineer> p){
         super(p);
     }
+
 
     public void setProject(String project){
         setObjectField(PROJECT, persistent(project));
@@ -131,6 +136,20 @@ class Engineer extends  Employee{
     }
 
 
+    public void setGroupname(String groupname){setObjectField(GROUPNAME, persistent(groupname));}
+
+    public String getGroupname(){return getObjectField(GROUPNAME).toString();}
+
+    public void changGroupname(String groupname){setObjectField(GROUPNAME, persistent(groupname));}
+
+    public Engineer createGroup(String groupname){
+        setGroupname(groupname);
+        PersistentHashMap group = new PersistentHashMap();
+        Engineer var1 = new Engineer(1,"lin",getCompany(),getProject());
+        group.put(persistent("lin"),var1);
+        return var1;
+    }
+
 }
 
 
@@ -140,6 +159,23 @@ class Engineer extends  Employee{
 public class Main {
     public static void main(String[] agrs)
     {
+        //testStoreFileChannel();
+        testpcj();
+        testFileUtils();
+
+
+
+
+
+
+
+    }
+
+    public static void testFileUtils(){
+
+    }
+
+    public static void testpcj(){
         /*System.out.println(System.getProperty("Java.library.path"));
         System.out.println("HelloWorld!");
         PersistentIntArray a = new PersistentIntArray(1024);
@@ -185,19 +221,17 @@ public class Main {
 
         //Engineer eng0 = new Engineer(0,"ghost","umbrella","clear");
         //ObjectDirectory.put("eng0",eng0);
+        //System.out.println(ObjectDirectory.get("root",PersistentHashMap.class).get(persistent(0)));
 
         //Engineer eng = ObjectDirectory.get("eng0",Engineer.class);
         //System.out.println(eng.getId()+" "+eng.getName()+" "+eng.getCompany()+" "+eng.getProject());
-        //System.out.println();
 
-        //eng.changeProject("makeup");
-
-
-
-
-
-
-
+        //PersistentUUID a = PersistentUUID.randomUUID();
+        //PersistentHashMap a =new PersistentHashMap();
+        //a.put(persistent(0),persistent("bingo"));
+        //ObjectDirectory.put("S",a);
+        //PersistentHashMap<PersistentObject,PersistentString> a = ObjectDirectory.get("S",PersistentHashMap.class);
+        //System.out.print(a.get(persistent(0)));
     }
 
     public static void testStoreFileChannel (){
@@ -217,6 +251,7 @@ public class Main {
         try {
             FileChannel testchannel = new RandomAccessFile("text","rw").getChannel();
             StoreFileChannel neo4jchannel = new StoreFileChannel(testchannel);
+            System.out.println(neo4jchannel.equals(new StoreFileChannel(neo4jchannel)));
             /*while(buf.hasRemaining()){
                 try {
                     testchannel.write(buf);
@@ -245,6 +280,7 @@ public class Main {
             e.printStackTrace();
         }
     }
+
     public static void printBuffer(ByteBuffer buf){
         while (buf.hasRemaining()){
             System.out.print((char)buf.get());
