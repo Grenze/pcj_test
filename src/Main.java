@@ -191,8 +191,8 @@ public class Main {
             //FileUtils.copyFile(new File("Dir_test/File/File1"),new File("Dir_test/copy/F"));
             //FileUtils.copyRecursively(new File("Dir_test/File/"),new File("Dir_test/copy/"));
             //FileUtils.writeToFile(new File("Dir_test/File/File1"),"Franxx",false);
-            FileUtils.newBufferedFileReader(new File("Dir_test/File/File1"), StandardCharsets.UTF_8);
-
+            //System.out.println(FileUtils.newBufferedFileReader(new File("Dir_test/File/File1"), StandardCharsets.UTF_8).readLine());
+            FileUtils.newFilePrintWriter(new File("Dir_test/File/File1"),StandardCharsets.UTF_8).append(" Franxx");
         } catch (IOException e) {
             e.printStackTrace();
         }
