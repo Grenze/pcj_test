@@ -36,8 +36,10 @@ public class FileUtils
 {
     private static final int WINDOWS_RETRY_COUNT = 5;
 
+    //delete the directory(file)'s content including itself
     public static void deleteRecursively( File directory ) throws IOException
     {
+        //exist check
         if ( ! directory.exists() )
         {
             return;
@@ -46,8 +48,10 @@ public class FileUtils
         deletePathRecursively( path );
     }
 
+    //delete the path(file)'s content including itself
     public static void deletePathRecursively( Path path ) throws IOException
     {
+        //the path should be valid or will throw IOException
         Files.walkFileTree( path, new SimpleFileVisitor<Path>()
         {
             @Override
@@ -70,6 +74,7 @@ public class FileUtils
         } );
     }
 
+    //can delete a single file or an empty directory(return true)
     public static boolean deleteFile( File file )
     {
         if ( !file.exists() )
@@ -103,30 +108,35 @@ public class FileUtils
      */
     public static void moveFile( File toMove, File target ) throws IOException
     {
+        /*Source file or directory should exist*/
         if ( !toMove.exists() )
         {
             throw new FileNotFoundException( "Source file[" + toMove.getAbsolutePath()
                     + "] not found" );
         }
+        /*Target file or directory should not exist*/
         if ( target.exists() )
         {
             throw new IOException( "Target file[" + target.getAbsolutePath()
                     + "] already exists" );
         }
-
+        /*if Target */
         if ( toMove.renameTo( target ) )
         {
+            System.out.println("renameTo");
             return;
         }
-
+        /*if Source is a directory, keep its content and chang its path*/
         if ( toMove.isDirectory() )
         {
+            System.out.println("isDirectory");
             Files.createDirectories( target.toPath() );
             copyRecursively( toMove, target );
             deleteRecursively( toMove );
         }
         else
         {
+            System.out.println("copy delete");
             copyFile( toMove, target );
             deleteFile( toMove );
         }

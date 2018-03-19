@@ -5,6 +5,7 @@ import lib.util.persistent.PersistentObject;
 import lib.util.persistent.types.LongField;
 import lib.util.persistent.types.ObjectType;
 import lib.util.persistent.types.StringField;
+import org.neo4j.io.fs.FileUtils;
 import org.neo4j.io.fs.StoreFileChannel;
 
 import java.io.File;
@@ -165,7 +166,7 @@ public class Main {
     public static void main(String[] agrs)
     {
         //testStoreFileChannel();
-        testpcj();//chain create directories or files
+        //testpcj();//chain create directories or files
         testFileUtils();
 
 
@@ -177,6 +178,18 @@ public class Main {
     }
 
     public static void testFileUtils(){
+        File dir = new File("Dir_test/File_test");
+        try {
+            //FileUtils.deleteRecursively(dir);
+            //FileUtils.deletePathRecursively(dir.toPath());
+            FileUtils.moveFile(new File("Dir_test/test/File1"), new File("Dir_test/File5"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //System.out.println(FileUtils.deleteFile(dir));
+
+
+
 
     }
 
