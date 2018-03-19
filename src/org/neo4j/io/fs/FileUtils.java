@@ -313,7 +313,7 @@ public class FileUtils
             }
         }
     }
-    /*override or append, create if not exist*/
+    /*override or append, create if not exist, createNewFile need its ParentFile exist*/
     public static void writeToFile( File target, String text, boolean append ) throws IOException
     {
         if ( !target.exists() )
@@ -328,24 +328,26 @@ public class FileUtils
             out.write( text );
         }
     }
-    /*only used in StartClient to call readLine() to read command from file,
+    /*only used in StartClient.java to call readLine() to read command from file,
     * so change this method means change executeCommandStream() in StartClient
     **/
     public static BufferedReader newBufferedFileReader( File file, Charset charset ) throws FileNotFoundException
     {
         return new BufferedReader( new InputStreamReader( new FileInputStream( file ), charset) );
     }
-
+    /*only used in AnnotationProcessor.java to call append() to write Strings,
+    * do not forget flush it to the disk
+    **/
     public static PrintWriter newFilePrintWriter( File file, Charset charset ) throws FileNotFoundException
     {
         return new PrintWriter( new OutputStreamWriter( new FileOutputStream( file, true ), charset) );
     }
-
+    /*to make dirs or createNewFile*/
     public static File path( String root, String... path )
     {
         return path( new File( root ), path );
     }
-
+    /*just different root type*/
     public static File path( File root, String... path )
     {
         for ( String part : path )
