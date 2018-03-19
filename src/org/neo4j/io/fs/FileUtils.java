@@ -120,13 +120,16 @@ public class FileUtils
             throw new IOException( "Target file[" + target.getAbsolutePath()
                     + "] already exists" );
         }
-        /*if Target */
+        /*rename the final file(directory) name with the existed path prefix
+        * example: file/file1 to file/file5/0 and file5 already existed
+        * if there is no file5, toMove.isDirectory if dir, copy and delete if file
+        * */
         if ( toMove.renameTo( target ) )
         {
             System.out.println("renameTo");
             return;
         }
-        /*if Source is a directory, keep its content and chang its path*/
+
         if ( toMove.isDirectory() )
         {
             System.out.println("isDirectory");
