@@ -34,7 +34,7 @@ import static java.lang.String.format;
 public class DefaultFileSystemAbstraction implements FileSystemAbstraction
 {
     static final String UNABLE_TO_CREATE_DIRECTORY_FORMAT = "Unable to create directory path [%s] for Neo4j store.";
-
+    /*StoreNvmFileChannel constructor must have this*/
     @Override
     public StoreFileChannel open( File fileName, String mode ) throws IOException
     {
@@ -42,13 +42,13 @@ public class DefaultFileSystemAbstraction implements FileSystemAbstraction
         FileChannel channel = new RandomAccessFile( fileName, mode ).getChannel();
         return getStoreFileChannel( channel );
     }
-
+    /*consider FileUtils.nvmOpenAsOutputStream(Path, boolean) to return OutputStream*/
     @Override
     public OutputStream openAsOutputStream( File fileName, boolean append ) throws IOException
     {
         return new FileOutputStream( fileName, append );
     }
-
+    /*consider FileUtils.nvmOpenAsInputStream(Path, boolean) to return OutputStream*/
     @Override
     public InputStream openAsInputStream( File fileName ) throws IOException
     {

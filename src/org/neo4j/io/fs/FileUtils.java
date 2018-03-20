@@ -575,7 +575,7 @@ public class FileUtils
         return true;
     }
 
-    /*final used in BufferedReader.readLine()*/
+    /*construct the InputStream for nvm, let its method to be used by other class*/
     public static InputStream openAsInputStream( Path path ) throws IOException
     {
         return Files.newInputStream( path, READ );
