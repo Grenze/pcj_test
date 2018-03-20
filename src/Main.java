@@ -274,8 +274,8 @@ public class Main {
     public static void main(String[] agrs)
     {
         //testStoreFileChannel();
-        //testpcj();//chain create directories or files
-        testFileUtils();
+        testpcj();//chain create directories or files
+        //testFileUtils();
         //testDefaultFileSystemAbstraction();
 
 
@@ -456,12 +456,12 @@ public class Main {
         *
         * */
         Engineer eng0 = new Engineer(0,"ghost","umbrella","clear");
+        Engineer eng1 = new Engineer(1,"heaven","sun","fill");
         ObjectDirectory.put("1",eng0);
-        ObjectDirectory.put("2",eng0);
-        Engineer eng1 = ObjectDirectory.get("2",Engineer.class);
-        eng1.setGroupname("not root");
+        ObjectDirectory.put("1",eng1);
         Engineer eng2 = ObjectDirectory.get("1",Engineer.class);
-        System.out.println(eng1.getGroupname()+eng2.getGroupname());
+        System.out.println(eng2.getName());
+
         //eng0.createGroup("littlebuster").createGroup("tinybuster");
         //Engineer eng1 = (Engineer) ObjectDirectory.get("tinybuster",PersistentHashMap.class).get(persistent("lin"));
         //System.out.println(eng1.getGroupname());
