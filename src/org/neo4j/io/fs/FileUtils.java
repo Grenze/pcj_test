@@ -225,7 +225,7 @@ public class FileUtils
             throw cause;
         }
     }
-    /*realised by nvm file channel*/
+    /*realised by nvm FileChannel*/
     public static void truncateFile( File file, long position ) throws IOException
     {
         try ( RandomAccessFile access = new RandomAccessFile( file, "rw" ) )
@@ -329,7 +329,8 @@ public class FileUtils
         }
     }
     /*only used in StartClient.java to call readLine() to read command from file,
-    * so change this method means change executeCommandStream() in StartClient
+    * so change this method means change executeCommandStream() in StartClient,
+    * readLine() return the content of a line without "\n"
     **/
     public static BufferedReader newBufferedFileReader( File file, Charset charset ) throws FileNotFoundException
     {
@@ -356,12 +357,12 @@ public class FileUtils
         }
         return root;
     }
-
+    /*let it go*/
     public interface FileOperation
     {
         void perform() throws IOException;
     }
-
+    /*let it go*/
     public static void windowsSafeIOOperation( FileOperation operation ) throws IOException
     {
         IOException storedIoe = null;
@@ -385,7 +386,7 @@ public class FileUtils
     {
         void line( String line );
     }
-
+    /*see method beneath*/
     public static LineListener echo( final PrintStream target )
     {
         return new LineListener()
@@ -397,7 +398,7 @@ public class FileUtils
             }
         };
     }
-
+    /*see method beneath*/
     public static void readTextFile( File file, LineListener listener ) throws IOException
     {
         try(BufferedReader reader = new BufferedReader( new FileReader( file ) ))
@@ -409,7 +410,7 @@ public class FileUtils
             }
         }
     }
-
+    /*used in HTTPLoggingIT.java and Fixtures.java, return with the content of file extend with a "\n"*/
     public static String readTextFile( File file, Charset charset ) throws IOException
     {
         StringBuilder out = new StringBuilder();
@@ -419,7 +420,7 @@ public class FileUtils
         }
         return out.toString();
     }
-
+    /*Private method, lock is provided by pcj and pmdk*/
     private static void deleteFileWithRetries( Path file, int tries ) throws IOException
     {
         try
@@ -443,12 +444,12 @@ public class FileUtils
             }
         }
     }
-
+    /*let it go*/
     private static boolean mayBeWindowsMemoryMappedFileReleaseProblem( IOException e )
     {
         return e.getMessage().contains( "The process cannot access the file because it is being used by another process." );
     }
-
+    /*let it go*/
     public static class MaybeWindowsMemoryMappedFileReleaseProblem extends IOException
     {
         public MaybeWindowsMemoryMappedFileReleaseProblem( IOException e )
@@ -468,6 +469,7 @@ public class FileUtils
     * <code>baseDir</code>
     * @throws IOException As per {@link File#getCanonicalPath()}
     */
+    /*example: Dir_test, Dir_test/File/F, File/F returned*/
     public static String relativePath( File baseDir, File storeFile )
             throws IOException
     {
@@ -484,7 +486,7 @@ public class FileUtils
         }
         return path;
     }
-
+    /*only used in StoreCopyServer.java, just let it go*/
     // TODO javadoc what this one does. It comes from Serverutil initially.
     public static File getMostCanonicalFile( File file )
     {
@@ -497,10 +499,11 @@ public class FileUtils
             return file.getAbsoluteFile();
         }
     }
-
+    /*reuse*/
     public static void writeAll( FileChannel channel, ByteBuffer src, long position ) throws IOException
     {
-        long filePosition = position;
+        new StoreFileChannel(channel).writeAll(src, position);
+        /*long filePosition = position;
         long expectedEndPosition = filePosition + src.limit() - src.position();
         int bytesWritten;
         while((filePosition += (bytesWritten = channel.write( src, filePosition ))) < expectedEndPosition)
@@ -509,12 +512,13 @@ public class FileUtils
             {
                 throw new IOException( "Unable to write to disk, reported bytes written was " + bytesWritten );
             }
-        }
+        }*/
     }
-
+    /*reuse*/
     public static void writeAll( FileChannel channel, ByteBuffer src ) throws IOException
     {
-        long bytesToWrite = src.limit() - src.position();
+        new StoreFileChannel(channel).writeAll(src);
+        /*long bytesToWrite = src.limit() - src.position();
         int bytesWritten;
         while((bytesToWrite -= (bytesWritten = channel.write( src ))) > 0)
         {
@@ -522,9 +526,9 @@ public class FileUtils
             {
                 throw new IOException( "Unable to write to disk, reported bytes written was " + bytesWritten );
             }
-        }
+        }*/
     }
-
+    /*let it go*/
     public static OpenOption[] convertOpenMode( String mode )
     {
         OpenOption[] options;
@@ -539,12 +543,12 @@ public class FileUtils
         return options;
     }
 
-    /*only used in DelegateFileSystemAbstraction.java*/
+    /*only used in DelegateFileSystemAbstraction.java, supported by nvm FileChannel*/
     public static FileChannel open( Path path, String mode ) throws IOException
     {
         return FileChannel.open( path, convertOpenMode( mode ) );
     }
-
+    /*final used in BufferedReader.readLine()*/
     public static InputStream openAsInputStream( Path path ) throws IOException
     {
         return Files.newInputStream( path, READ );
@@ -553,7 +557,7 @@ public class FileUtils
     /**
      * Check if directory is empty.
      * @param directory - directory to check
-     * @return false if directory exists and empty, true otherwise.
+     * @return false if directory exists and not empty, true otherwise.
      * @throws IllegalArgumentException if specified directory represent a file
      * @throws IOException if some problem encountered during reading directory content
      */

@@ -149,6 +149,7 @@ class Engineer extends  Employee{
     public Engineer createGroup(String groupname){
         setGroupname(groupname);
         PersistentHashMap group = new PersistentHashMap();
+
         Engineer var1 = new Engineer(1,"lin",getCompany(),getProject());
         group.put(persistent("lin"),var1);
         ObjectDirectory.put(getGroupname(),group);
@@ -191,11 +192,34 @@ public class Main {
             //FileUtils.copyFile(new File("Dir_test/File/File1"),new File("Dir_test/copy/F"));
             //FileUtils.copyRecursively(new File("Dir_test/File/"),new File("Dir_test/copy/"));
             //FileUtils.writeToFile(new File("Dir_test/File/File1"),"Franxx",false);
-            //System.out.println(FileUtils.newBufferedFileReader(new File("Dir_test/File/File1"), StandardCharsets.UTF_8).readLine());
-            FileUtils.path(new File("Dir_test/test/"),"0","1").mkdirs();
+            //BufferedReader bufread = FileUtils.newBufferedFileReader(new File("Dir_test/File/File1"), StandardCharsets.UTF_8);
+            //System.out.println(bufread.readLine()+bufread.readLine());
+            //FileUtils.path(new File("Dir_test/test/"),"0").mkdir();
+            //System.out.println(FileUtils.readTextFile(new File("Dir_test/File/File1"),StandardCharsets.UTF_8));
+            //System.out.println(FileUtils.relativePath(new File("Dir_test"),new File("Dir_test/File/F")));
+
+            /*
+            * getPath() and getParent() return the path when constructed
+            * getAbsolutePath() return current path + constructed path
+            * getCanonicalPath() return path unique without any . or .. or other symbol
+            * */
+            //System.out.println(new File("./Dir_test").getCanonicalPath());
+            /*"\/" at the end will be ignored by new File()*/
+            //System.out.println(new File("Dir_test/"));
 
 
-            FileUtils.newFilePrintWriter(new File("Dir_test/File/File1"),StandardCharsets.UTF_8).append(" Franxx").flush();
+            //FileChannel testchannel = new RandomAccessFile("Dir_test/File/File1","rw").getChannel();
+            //ByteBuffer testbuf = ByteBuffer.allocate(30);
+            //testbuf.put("Franx----\n".getBytes());
+            //testbuf.flip();
+            //FileUtils.writeAll(testchannel,testbuf);
+            /*between two append if there is a modify executed not by jvm,
+            * it will start at a new line
+            * */
+
+            System.out.println(FileUtils.isEmptyDirectory(new File("Dir_test")));
+            FileUtils.newFilePrintWriter(new File("Dir_test/File/File1"),StandardCharsets.UTF_8).append("Franxx ").flush();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
