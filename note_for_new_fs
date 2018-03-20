@@ -1,0 +1,15 @@
+1.for nvm, every param type of File or Path should:
+    a.first convert to File.getCanonicalPath()[unique for ObjectDirectory]
+    b.second convert to String to identify file or directory[global id]
+
+2.for every file or directory, it should keep its parent directory's global id(String)
+    and its local name(String) to form its global id(String) to be recognized
+    by ObjectDirectory
+
+3.for every directory, it should also keep its sub's local name(String) in its List<String>
+    to index them
+
+4.no idea about the actual type before you get the file or directory out of ObjectDirectory
+    so implement the same base class with boolean isFile, isDirectory
+
+5.
