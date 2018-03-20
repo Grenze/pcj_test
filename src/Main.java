@@ -109,6 +109,63 @@ class Employee extends PersistentObject implements people, shakaijin{
 
 }
 
+class Engineer extends  Employee{
+    private static final StringField PROJECT = new StringField();   //new field
+    public static final StringField GROUPNAME = new StringField();
+    //don't forget extendWith or will out of index
+    public static final ObjectType<Engineer> TYPE = Employee.TYPE.extendWith(Engineer.class, PROJECT, GROUPNAME);  //extend type
+
+    public Engineer(int id, String name, String company, String project){
+        this (TYPE, id, name, company, project);
+    }
+
+    protected  Engineer(ObjectType<? extends Engineer> type, int id, String name, String company, String project){
+        super(type, id, name, company);
+        setProject(project);
+        setGroupname("root");
+        ObjectDirectory.put(name,this);
+    }
+
+    protected  Engineer(ObjectPointer<? extends Engineer> p){
+        super(p);
+    }
+
+
+    public void setProject(String project){
+        setObjectField(PROJECT, persistent(project));
+    }
+
+    public String getProject(){
+        return getObjectField(PROJECT).toString();
+    }
+
+    public void changeProject(String project){
+        setObjectField(PROJECT, persistent(project));
+    }
+
+
+    public void setGroupname(String groupname){setObjectField(GROUPNAME, persistent(groupname));}
+
+    public String getGroupname(){return getObjectField(GROUPNAME).toString();}
+
+    public void changGroupname(String groupname){setObjectField(GROUPNAME, persistent(groupname));}
+
+    public Engineer createGroup(String groupname){
+        setGroupname(groupname);
+        PersistentHashMap group = new PersistentHashMap();
+
+        Engineer var1 = new Engineer(1,"lin",getCompany(),getProject());
+        group.put(persistent("lin"),var1);
+        ObjectDirectory.put(getGroupname(),group);
+        var1 = (Engineer) ObjectDirectory.get(getGroupname(),PersistentHashMap.class).get(persistent("lin"));
+        System.out.println(var1.getGroupname());
+        return var1;
+    }
+
+}
+
+
+
 class StoreNvmFileChannel implements StoreChannel{
 
     @Override
@@ -207,60 +264,7 @@ class StoreNvmFileChannel implements StoreChannel{
     }
 }
 
-class Engineer extends  Employee{
-    private static final StringField PROJECT = new StringField();   //new field
-    public static final StringField GROUPNAME = new StringField();
-    //don't forget extendWith or will out of index
-    public static final ObjectType<Engineer> TYPE = Employee.TYPE.extendWith(Engineer.class, PROJECT, GROUPNAME);  //extend type
 
-    public Engineer(int id, String name, String company, String project){
-        this (TYPE, id, name, company, project);
-    }
-
-    protected  Engineer(ObjectType<? extends Engineer> type, int id, String name, String company, String project){
-        super(type, id, name, company);
-        setProject(project);
-        setGroupname("root");
-        ObjectDirectory.put(name,this);
-    }
-
-    protected  Engineer(ObjectPointer<? extends Engineer> p){
-        super(p);
-    }
-
-
-    public void setProject(String project){
-        setObjectField(PROJECT, persistent(project));
-    }
-
-    public String getProject(){
-        return getObjectField(PROJECT).toString();
-    }
-
-    public void changeProject(String project){
-        setObjectField(PROJECT, persistent(project));
-    }
-
-
-    public void setGroupname(String groupname){setObjectField(GROUPNAME, persistent(groupname));}
-
-    public String getGroupname(){return getObjectField(GROUPNAME).toString();}
-
-    public void changGroupname(String groupname){setObjectField(GROUPNAME, persistent(groupname));}
-
-    public Engineer createGroup(String groupname){
-        setGroupname(groupname);
-        PersistentHashMap group = new PersistentHashMap();
-
-        Engineer var1 = new Engineer(1,"lin",getCompany(),getProject());
-        group.put(persistent("lin"),var1);
-        ObjectDirectory.put(getGroupname(),group);
-        var1 = (Engineer) ObjectDirectory.get(getGroupname(),PersistentHashMap.class).get(persistent("lin"));
-        System.out.println(var1.getGroupname());
-        return var1;
-    }
-
-}
 
 
 
@@ -271,8 +275,8 @@ public class Main {
     {
         //testStoreFileChannel();
         //testpcj();//chain create directories or files
-        //testFileUtils();
-        testDefaultFileSystemAbstraction();
+        testFileUtils();
+        //testDefaultFileSystemAbstraction();
 
 
 
@@ -317,7 +321,6 @@ public class Main {
             /*"\/" at the end will be ignored by new File()*/
             //System.out.println(new File("Dir_test/"));
 
-
             //FileChannel testchannel = new RandomAccessFile("Dir_test/File/File1","rw").getChannel();
             //ByteBuffer testbuf = ByteBuffer.allocate(30);
             //testbuf.put("Franx----\n".getBytes());
@@ -330,7 +333,7 @@ public class Main {
             //System.out.println(FileUtils.isEmptyDirectory(new File("Dir_test")));
             FileUtils.newFilePrintWriter(new File("Dir_test/File/File1"),StandardCharsets.UTF_8).append("Franxx ").flush();
             //Channels.newOutputStream()
-
+            System.out.println(new File("").getCanonicalPath());
             //FileUtils.openAsOutputStream(new File("Dir_test/File/File1").toPath(),true);
         } catch (IOException e) {
             e.printStackTrace();
