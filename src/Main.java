@@ -5,6 +5,7 @@ import lib.util.persistent.PersistentObject;
 import lib.util.persistent.types.LongField;
 import lib.util.persistent.types.ObjectType;
 import lib.util.persistent.types.StringField;
+import org.neo4j.io.fs.DefaultFileSystemAbstraction;
 import org.neo4j.io.fs.FileUtils;
 import org.neo4j.io.fs.StoreChannel;
 import org.neo4j.io.fs.StoreFileChannel;
@@ -13,6 +14,7 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
@@ -270,7 +272,7 @@ public class Main {
         //testStoreFileChannel();
         //testpcj();//chain create directories or files
         //testFileUtils();
-        Writer
+        testDefaultFileSystemAbstraction();
 
 
 
@@ -278,6 +280,13 @@ public class Main {
 
 
 
+    }
+
+    public static void testDefaultFileSystemAbstraction(){
+        DefaultFileSystemAbstraction fs = new DefaultFileSystemAbstraction();
+       for(File i : fs.listFiles(new File("Dir_test1"))){
+           System.out.println(i.toString());
+       }
     }
 
     public static void testFileUtils(){
@@ -322,7 +331,7 @@ public class Main {
             FileUtils.newFilePrintWriter(new File("Dir_test/File/File1"),StandardCharsets.UTF_8).append("Franxx ").flush();
             //Channels.newOutputStream()
 
-            FileUtils.openAsOutputStream(new File("Dir_test/File/File1").toPath(),true);
+            //FileUtils.openAsOutputStream(new File("Dir_test/File/File1").toPath(),true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -331,6 +340,23 @@ public class Main {
 
 
     }
+
+
+
+    public static Reader nvmOpenAsReader(File fileName, Charset charset) {
+        return new Reader() {
+            @Override
+            public int read(char[] chars, int i, int i1) {
+                return 0;
+            }
+
+            @Override
+            public void close() {
+
+            }
+        };
+    }
+
     /*with nvm FileChannel support I/O put stream*/
     public static InputStream nvmOpenAsInputStream(Path path) {
         return new InputStream() {

@@ -48,19 +48,25 @@ public class DefaultFileSystemAbstraction implements FileSystemAbstraction
     {
         return new FileOutputStream( fileName, append );
     }
-    /*consider FileUtils.nvmOpenAsInputStream(Path, boolean) to return OutputStream*/
+    /*consider FileUtils.nvmOpenAsInputStream(Path) to return OutputStream*/
     @Override
     public InputStream openAsInputStream( File fileName ) throws IOException
     {
         return new FileInputStream( fileName );
     }
-
+    /*keep its name as openAsReader but change return type from Reader to InputStream
+    * with methods(readLine()) needed by other class, change those class as well
+    * MigrationStatus.java, StoreMigrator.java
+    * */
     @Override
     public Reader openAsReader( File fileName, Charset charset ) throws IOException
     {
         return new InputStreamReader( new FileInputStream( fileName ), charset );
     }
-
+    /*keep its name as openAsWriter but change return type from Writer to OutputStream
+     * with methods(write(String)) needed by other class, change those class as well
+     * MigrationStatus.java, StoreMigrator.java
+     * */
     @Override
     public Writer openAsWriter( File fileName, Charset charset, boolean append ) throws IOException
     {
@@ -72,7 +78,7 @@ public class DefaultFileSystemAbstraction implements FileSystemAbstraction
     {
         return open( fileName, "rw" );
     }
-
+    /*one layer*/
     @Override
     public boolean mkdir( File fileName )
     {
@@ -126,13 +132,13 @@ public class DefaultFileSystemAbstraction implements FileSystemAbstraction
     {
         return FileUtils.renameFile( from, to );
     }
-
+    /*if nothing null will return*/
     @Override
     public File[] listFiles( File directory )
     {
         return directory.listFiles();
     }
-
+    /*in nvm file id is string type, so use a string filter*/
     @Override
     public File[] listFiles( File directory, FilenameFilter filter )
     {
@@ -183,7 +189,7 @@ public class DefaultFileSystemAbstraction implements FileSystemAbstraction
     {
         FileUtils.truncateFile( path, size );
     }
-
+    /*used not only here*/
     protected StoreFileChannel getStoreFileChannel( FileChannel channel )
     {
         return new StoreFileChannel( channel );
