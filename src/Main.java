@@ -9,10 +9,7 @@ import org.neo4j.io.fs.FileUtils;
 import org.neo4j.io.fs.StoreChannel;
 import org.neo4j.io.fs.StoreFileChannel;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
@@ -334,7 +331,16 @@ public class Main {
 
     }
     /*with nvm FileChannel support I/O put stream*/
-    public static OutputStream nvmOutputStream(Path path, boolean append) {
+    public static InputStream nvmOpenAsInputStream(Path path) {
+        return new InputStream() {
+            @Override
+            public int read() {
+                return 0;
+            }
+        };
+    }
+
+    public static OutputStream nvmOpenAsOutputStream(Path path, boolean append) {
         OpenOption[] options;
         if ( append )
         {
