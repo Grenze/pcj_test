@@ -6,15 +6,21 @@ import lib.util.persistent.types.LongField;
 import lib.util.persistent.types.ObjectType;
 import lib.util.persistent.types.StringField;
 import org.neo4j.io.fs.FileUtils;
+import org.neo4j.io.fs.StoreChannel;
 import org.neo4j.io.fs.StoreFileChannel;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
 
+import static java.nio.file.StandardOpenOption.*;
 import static lib.util.persistent.Util.persistent;
 /*
 final class Employee extends PersistentObject{
@@ -104,6 +110,103 @@ class Employee extends PersistentObject implements people, shakaijin{
 
 }
 
+class StoreNvmFileChannel implements StoreChannel{
+
+    @Override
+    public FileLock tryLock() {
+        return null;
+    }
+
+    @Override
+    public int write(ByteBuffer src, long position) {
+        return 0;
+    }
+
+    @Override
+    public void writeAll(ByteBuffer src, long position) {
+
+    }
+
+    @Override
+    public void writeAll(ByteBuffer src) {
+
+    }
+
+    @Override
+    public int read(ByteBuffer dst, long position) {
+        return 0;
+    }
+
+    @Override
+    public void force(boolean metaData) {
+
+    }
+
+    @Override
+    public int read(ByteBuffer byteBuffer) {
+        return 0;
+    }
+
+    @Override
+    public int write(ByteBuffer byteBuffer) {
+        return 0;
+    }
+
+    @Override
+    public long position() {
+        return 0;
+    }
+
+    @Override
+    public StoreChannel position(long newPosition) {
+        return null;
+    }
+
+    @Override
+    public long size() {
+        return 0;
+    }
+
+    @Override
+    public StoreChannel truncate(long size) {
+        return null;
+    }
+
+    @Override
+    public void flush() {
+
+    }
+
+    @Override
+    public long write(ByteBuffer[] byteBuffers, int i, int i1) {
+        return 0;
+    }
+
+    @Override
+    public long write(ByteBuffer[] byteBuffers) {
+        return 0;
+    }
+
+    @Override
+    public long read(ByteBuffer[] byteBuffers, int i, int i1) {
+        return 0;
+    }
+
+    @Override
+    public long read(ByteBuffer[] byteBuffers) {
+        return 0;
+    }
+
+    @Override
+    public boolean isOpen() {
+        return false;
+    }
+
+    @Override
+    public void close() {
+
+    }
+}
 
 class Engineer extends  Employee{
     private static final StringField PROJECT = new StringField();   //new field
@@ -217,9 +320,11 @@ public class Main {
             * it will start at a new line
             * */
 
-            System.out.println(FileUtils.isEmptyDirectory(new File("Dir_test")));
+            //System.out.println(FileUtils.isEmptyDirectory(new File("Dir_test")));
             FileUtils.newFilePrintWriter(new File("Dir_test/File/File1"),StandardCharsets.UTF_8).append("Franxx ").flush();
+            //Channels.newOutputStream()
 
+            FileUtils.openAsOutputStream(new File("Dir_test/File/File1").toPath(),true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -228,7 +333,36 @@ public class Main {
 
 
     }
+    /*with nvm FileChannel support I/O put stream*/
+    public static OutputStream nvmOutputStream(Path path, boolean append) {
+        OpenOption[] options;
+        if ( append )
+        {
+            options = new OpenOption[] {CREATE, WRITE, APPEND};
+        }
+        else
+        {
+            options = new OpenOption[] {CREATE, WRITE};
+        }
+        return new OutputStream() {
 
+            @Override
+            public void write(int intToWrite) {
+                //this.write(intToWrite);
+                //file.write or nvmchannel.write
+            }
+            @Override
+            public void write(byte[] bytesToWrite, int offset, int length) {
+                if(bytesToWrite == null){
+                    throw new NullPointerException();
+                }else if(offset >= 0 && offset <= bytesToWrite.length && length >= 0 && offset+length <= bytesToWrite.length){
+                    //file.write or nvmchannel.write
+                }else{
+                    throw new IndexOutOfBoundsException();
+                }
+            }
+        };
+    }
     public static void testpcj(){
         /*System.out.println(System.getProperty("Java.library.path"));
         System.out.println("HelloWorld!");
@@ -363,3 +497,4 @@ public class Main {
         System.out.println();
     }
 }
+

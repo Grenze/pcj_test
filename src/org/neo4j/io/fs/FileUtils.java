@@ -548,11 +548,6 @@ public class FileUtils
     {
         return FileChannel.open( path, convertOpenMode( mode ) );
     }
-    /*final used in BufferedReader.readLine()*/
-    public static InputStream openAsInputStream( Path path ) throws IOException
-    {
-        return Files.newInputStream( path, READ );
-    }
 
     /**
      * Check if directory is empty.
@@ -580,6 +575,12 @@ public class FileUtils
         return true;
     }
 
+    /*final used in BufferedReader.readLine()*/
+    public static InputStream openAsInputStream( Path path ) throws IOException
+    {
+        return Files.newInputStream( path, READ );
+    }
+    /*construct the OutputStream for nvm, let its method to be used by other class*/
     public static OutputStream openAsOutputStream( Path path, boolean append ) throws IOException
     {
         OpenOption[] options;
