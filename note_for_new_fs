@@ -10,7 +10,7 @@
     to index them
 
 4.no idea about the actual type before you get the file or directory out of ObjectDirectory
-    so implement the same base class with boolean isFile, isDirectory
+    so File and Directory the same class with boolean isFile and isDirectory
 
 5.ObjectDirectory.put(id1, class) and put(id2, class) then id1 and id2 refer to the same class
 
