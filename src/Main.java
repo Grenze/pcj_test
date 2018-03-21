@@ -1,4 +1,5 @@
 import org.neo4j.io.fs.StoreChannel;
+import test.origin_fs.Utiltest;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.FileLock;
@@ -115,7 +116,7 @@ public class Main {
     public static void main(String[] agrs)
     {
 
-
+        Utiltest.testAll();
 
 
 

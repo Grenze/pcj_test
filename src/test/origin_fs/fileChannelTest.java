@@ -1,5 +1,7 @@
 package test.origin_fs;
 
+import org.neo4j.io.fs.StoreFileChannel;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -24,7 +26,11 @@ public class fileChannelTest {
 
         try {
             FileChannel testchannel = new RandomAccessFile("text","rw").getChannel();
-            System.out.println(testchannel.tryLock());
+            System.out.println(testchannel.tryLock().isValid());
+            StoreFileChannel testchannel1 = new StoreFileChannel(testchannel);
+            System.out.println(testchannel1.tryLock());
+
+
             //StoreFileChannel neo4jchannel = new StoreFileChannel(testchannel);
             //System.out.println(neo4jchannel.equals(new StoreFileChannel(neo4jchannel)));
             /*while(buf.hasRemaining()){

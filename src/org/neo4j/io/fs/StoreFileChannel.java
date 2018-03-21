@@ -149,7 +149,16 @@ public class StoreFileChannel implements StoreChannel
         return channel.position();
     }
 
-    /*pcj lock pcj file*/
+    /*pcj Transaction provide lock in lower layer, delete the tryLock()
+    *    public void addMovie(PersistentString movie) {
+         Transaction.run(() -> {
+             movies.add(movie);
+             movieIndex.add(movie);
+         });
+        }
+    *
+    *
+    * */
     @Override
     public FileLock tryLock() throws IOException
     {
