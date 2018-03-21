@@ -18,6 +18,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.util.HashSet;
 
 import static java.nio.file.StandardOpenOption.*;
 import static lib.util.persistent.Util.persistent;
@@ -274,10 +275,10 @@ public class Main {
     public static void main(String[] agrs)
     {
         //testStoreFileChannel();
-        testpcj();//chain create directories or files
+        //testpcj();//chain create directories or files
         //testFileUtils();
         //testDefaultFileSystemAbstraction();
-        //testJavaNormal();
+        testJavaNormal();
 
 
 
@@ -287,7 +288,15 @@ public class Main {
     }
 
     public static void testJavaNormal(){
-
+        HashSet<String> hashSet = new HashSet<>();
+        hashSet.add("F1");
+        hashSet.add("A1");
+        hashSet.add("B2");
+        hashSet.add("C3");
+        hashSet.remove("B2");
+        for(String i: hashSet){
+            System.out.println(i);
+        }
     }
 
     public static void testDefaultFileSystemAbstraction(){

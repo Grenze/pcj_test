@@ -6,7 +6,7 @@
     and its local name(String) to form its global id(String) to be recognized
     by ObjectDirectory
 
-3.for every directory, it should also keep its sub's local name(String) in its List<String>
+3.for every directory, it should also keep its sub's local name(String) in its HashSet<String>
     to index them
 
 4.no idea about the actual type before you get the file or directory out of ObjectDirectory
@@ -19,10 +19,15 @@
 
 7.ObjectDirectory.get(id, class)==null
 
-8.rename/delete operation of a directory can be done like this:
+8.rename/delete operation of a directory(existed) can be done like this(its parent/ itself/ its child):
+    String parentDirectory = ObjectDirectory.get(oldName).getParentDirectory();
+    ObjectDirectory.get(parentDirectory).childHashSet.remove(oldName.substring(parentDirectory.length()+1));//path separator
+    ObjectDirectory.get(parentDirectory).childHashSet.add(newName.substring(parentDirectory.length()+1);
+
     ObjectDirectory.put(newName, ObjectDirectory.remove(oldName));
     //ObjectDirectory.remove(oldName);
-    for (String key: globalID.KetSet()){
+
+    for (String key: globalID.keySet()){
         if(key.startWith(oldName)){
             ObjectDirectory.get(key).changeParentDirectory(newName);
             ObjectDirectory.put(newName+key.substring(oldName.length()), ObjectDirectory.remove(key));
