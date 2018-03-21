@@ -1,7 +1,4 @@
-import lib.util.persistent.ObjectDirectory;
-import lib.util.persistent.ObjectPointer;
-import lib.util.persistent.PersistentHashMap;
-import lib.util.persistent.PersistentObject;
+import lib.util.persistent.*;
 import lib.util.persistent.types.LongField;
 import lib.util.persistent.types.ObjectType;
 import lib.util.persistent.types.StringField;
@@ -124,6 +121,7 @@ class Engineer extends  Employee{
         setProject(project);
         setGroupname("root");
         ObjectDirectory.put(name,this);
+
     }
 
     protected  Engineer(ObjectPointer<? extends Engineer> p){
@@ -153,7 +151,8 @@ class Engineer extends  Employee{
     public Engineer createGroup(String groupname){
         setGroupname(groupname);
         PersistentHashMap group = new PersistentHashMap();
-
+        //PersistentHashMap group1 = new PersistentHashMap();
+        //group.put(persistent("1"),group1);
         Engineer var1 = new Engineer(1,"lin",getCompany(),getProject());
         group.put(persistent("lin"),var1);
         ObjectDirectory.put(getGroupname(),group);
@@ -274,8 +273,8 @@ public class Main {
     public static void main(String[] agrs)
     {
         //testStoreFileChannel();
-        //testpcj();//chain create directories or files
-        testFileUtils();
+        testpcj();//chain create directories or files
+        //testFileUtils();
         //testDefaultFileSystemAbstraction();
         //testJavaNormal();
 
@@ -310,10 +309,11 @@ public class Main {
         try {
             //FileUtils.deleteRecursively(dir);
             //FileUtils.deletePathRecursively(dir.toPath());
-            //FileUtils.moveFileToDirectory(new File("Dir_test/test/File1"), new File("Dir_test/File"));
+            FileUtils.moveFile(new File("Dir_test/File/File1"), new File("Dir_test/ex/F"));
             //FileUtils.truncateFile(new File("Dir_test/File/File1"), 20L);
             //FileChannel testchannel = new RandomAccessFile("Dir_test/File/File1","rw").getChannel();
-            FileUtils.renameFile(new File("Dir_test/File/File1"),new File("Dir_test/F2"));
+            //FileUtils.renameFile(new File("Dir_test/File/File1"),new File("Dir_test/F2"));
+            //FileUtils.renameFile(new File("Dir_test/File/File1"),new File("Dir_test/F2"));
             //testchannel.truncate(10L);
             //FileUtils.copyFile(new File("Dir_test/File/File1"),new File("Dir_test/copy/F"));
             //FileUtils.copyRecursively(new File("Dir_test/File/"),new File("Dir_test/copy/"));
@@ -467,14 +467,22 @@ public class Main {
         *
         *
         * */
-        Engineer eng0 = new Engineer(0,"ghost","umbrella","clear");
+
+        /*Engineer eng0 = new Engineer(0,"ghost","umbrella","clear");
         //Engineer eng1 = new Engineer(1,"heaven","sun","fill");
         ObjectDirectory.put("1",eng0);
         ObjectDirectory.put("2",eng0);
 
         ObjectDirectory.remove("1",Engineer.class);
         Engineer eng2 = ObjectDirectory.get("2",Engineer.class);
-        System.out.println(eng2.getName());
+        System.out.println(eng2.getName());*/
+        PersistentHashMap hm = new PersistentHashMap<PersistentString, PersistentHashMap>();
+        PersistentHashMap hm1 = new PersistentHashMap<PersistentString,PersistentBoolean>();
+        hm1.put(persistent("Sub"),persistent(true));
+        hm.put(persistent("Super"),hm1);
+        ObjectDirectory.put("Hyper",hm);
+        PersistentHashMap hm2 = (PersistentHashMap) ObjectDirectory.get("Hyper",PersistentHashMap.class).get(persistent("Super"));
+        System.out.print(hm2.get(persistent("Sub")));
         //System.out.println(ObjectDirectory.get("123",Engineer.class)==null);//true
 
 
