@@ -82,7 +82,16 @@ static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
     return temp;
 }
 
-14.
+14.add this method to DefaultFileSystemAbstraction's listFiles with filter:
+static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
+    Set<String> temp = new Set<String>;
+    for (String key: globalID.keySet()){
+        if(key.startWith(fromDirectory) && filter.accept(new File(key), key)){
+            temp.add(key);
+        }
+    }
+    return temp;
+}
 
 
 
