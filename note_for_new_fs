@@ -63,7 +63,7 @@
 
     nvmMkFilDir(File f, isFile, isDirectory)
         nvmFilDir nFD = new nvmFilDir(isFile, isDirectory);
-        ObjectDirectory.put(f.toString(), nvmFilDir);
+        ObjectDirectory.put(f.toString(), nvmFilDir);//constructor to connect dir with its index
 
 11.two space:
     FilDir name space PersistentHashMap<String, FilDir>
@@ -94,6 +94,33 @@ static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
 }
 
 15.copyRecursively used not always, listFiles() often used, so keep the FilDirIndex
+
+16.public class nvmFileChannel implements StoreChannel{
+    private final nvmFileChannel nvmChannel;
+    private final File nvmFile;
+    private long position;
+    public nvmFileChannel(File file){this.nvmFile = file;}
+    public nvmFileChannel(nvmFileChannel nvmChannel){this.nvmChannel = nvmChannel;}
+
+    public int write/read/truncate/size(ByteBuffer src) throws IOException
+    {
+        operation on the nvmFile's content nvmString;
+    }
+    public position(long newPosition) throws IOException
+    {
+        this.position = newPosition;
+        return channel.position();
+    }
+    public FileLock tryLock() throws IOException
+    {
+
+    }
+    public void close()/force()/flush()/isOpen() throws IOException
+    {
+       ???
+    }
+}
+
 
 
 

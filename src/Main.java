@@ -5,7 +5,6 @@ import lib.util.persistent.types.StringField;
 import org.neo4j.io.fs.DefaultFileSystemAbstraction;
 import org.neo4j.io.fs.FileUtils;
 import org.neo4j.io.fs.StoreChannel;
-import org.neo4j.io.fs.StoreFileChannel;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -273,10 +272,10 @@ class StoreNvmFileChannel implements StoreChannel{
 public class Main {
     public static void main(String[] agrs)
     {
-        //testStoreFileChannel();
+        testStoreFileChannel();
         //testpcj();//chain create directories or files
         //testFileUtils();
-        testDefaultFileSystemAbstraction();
+        //testDefaultFileSystemAbstraction();
         //testJavaNormal();
 
 
@@ -507,6 +506,8 @@ public class Main {
     }
 
     public static void testStoreFileChannel (){
+
+        /*
         ByteBuffer buf0 = ByteBuffer.allocate(100);
         ByteBuffer buf1 = ByteBuffer.allocate(100);
         ByteBuffer[] bufs = new ByteBuffer[2];
@@ -518,12 +519,13 @@ public class Main {
         //buf0.flip();
         //buf1.put(newData1.getBytes());
         //bufs[1].flip();
-        //System.out.println(bufs.length);
+        //System.out.println(bufs.length);*/
 
         try {
             FileChannel testchannel = new RandomAccessFile("text","rw").getChannel();
-            StoreFileChannel neo4jchannel = new StoreFileChannel(testchannel);
-            System.out.println(neo4jchannel.equals(new StoreFileChannel(neo4jchannel)));
+            System.out.println(testchannel.tryLock());
+            //StoreFileChannel neo4jchannel = new StoreFileChannel(testchannel);
+            //System.out.println(neo4jchannel.equals(new StoreFileChannel(neo4jchannel)));
             /*while(buf.hasRemaining()){
                 try {
                     testchannel.write(buf);
@@ -531,7 +533,7 @@ public class Main {
                     e.printStackTrace();
                 }
             }*/
-            System.out.println(neo4jchannel.size());
+            /*System.out.println(neo4jchannel.size());
             //System.out.println(neo4jchannel.isOpen());
             //System.out.println(neo4jchannel.position());
             neo4jchannel.position(30);
@@ -547,10 +549,11 @@ public class Main {
             //System.out.println(neo4jchannel.size());
             neo4jchannel.flush();
             neo4jchannel.close();
-            //System.out.println(neo4jchannel.isOpen());
+            //System.out.println(neo4jchannel.isOpen());*/
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     public static void printBuffer(ByteBuffer buf){
