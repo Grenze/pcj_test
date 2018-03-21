@@ -302,6 +302,7 @@ public class Main {
         DefaultFileSystemAbstraction fs = new DefaultFileSystemAbstraction();
        for(File i : fs.listFiles(new File("Dir_test"))){
            System.out.println(i.toString());
+           //Dir_test/test, Dir_test/copy ......
        }
     }
 

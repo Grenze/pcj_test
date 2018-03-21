@@ -93,6 +93,8 @@ static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
     return temp;
 }
 
+15.copyRecursively used not always, listFiles() often used, so keep the FilDirIndex
+
 
 
 
