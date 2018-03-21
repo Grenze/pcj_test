@@ -15,7 +15,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.HashSet;
@@ -276,9 +275,9 @@ public class Main {
     {
         //testStoreFileChannel();
         //testpcj();//chain create directories or files
-        //testFileUtils();
+        testFileUtils();
         //testDefaultFileSystemAbstraction();
-        testJavaNormal();
+        //testJavaNormal();
 
 
 
@@ -314,7 +313,7 @@ public class Main {
             //FileUtils.moveFileToDirectory(new File("Dir_test/test/File1"), new File("Dir_test/File"));
             //FileUtils.truncateFile(new File("Dir_test/File/File1"), 20L);
             //FileChannel testchannel = new RandomAccessFile("Dir_test/File/File1","rw").getChannel();
-            //FileUtils.renameFile(new File("Dir_test/File/File1"),new File("Dir_test/F"));
+            FileUtils.renameFile(new File("Dir_test/File/File1"),new File("Dir_test/F2"));
             //testchannel.truncate(10L);
             //FileUtils.copyFile(new File("Dir_test/File/File1"),new File("Dir_test/copy/F"));
             //FileUtils.copyRecursively(new File("Dir_test/File/"),new File("Dir_test/copy/"));
@@ -344,9 +343,9 @@ public class Main {
             * */
 
             //System.out.println(FileUtils.isEmptyDirectory(new File("Dir_test")));
-            FileUtils.newFilePrintWriter(new File("Dir_test/File/File1"),StandardCharsets.UTF_8).append("Franxx ").flush();
+            //FileUtils.newFilePrintWriter(new File("Dir_test/File/File1"),StandardCharsets.UTF_8).append("Franxx ").flush();
             //Channels.newOutputStream()
-            System.out.println(new File("").getCanonicalPath());
+            //System.out.println(new File("").getCanonicalPath());
             //FileUtils.openAsOutputStream(new File("Dir_test/File/File1").toPath(),true);
         } catch (IOException e) {
             e.printStackTrace();

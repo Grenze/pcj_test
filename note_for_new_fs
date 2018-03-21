@@ -2,15 +2,15 @@
     a.first convert to File.getCanonicalPath()[unique for ObjectDirectory]
     b.second convert to String to identify file or directory[global id]
 
-2.for every file or directory, it should keep its parent directory's global id(String)
-    and its local name(String) to form its global id(String) to be recognized
-    by ObjectDirectory
+2.getName() and getParentFile() supported by java.io.File
 
 3.for every directory, it should also keep its sub's local name(String) in its HashSet<String>
     to index them
 
 4.no idea about the actual type before you get the file or directory out of ObjectDirectory
     so File and Directory the same class with boolean isFile and isDirectory
+
+
 
 5.ObjectDirectory.put(id1, class) and put(id2, class) then id1 and id2 refer to the same class
     if ObjectDirectory.remove(id1, class), then ObjectDirectory.get(id2, class) can get it
@@ -19,9 +19,11 @@
 
 7.ObjectDirectory.get(id, class)==null
 
-8.rename/delete operation of a directory(existed) can be done like this(its parent/ itself/ its child):
-    String parentDirectory = ObjectDirectory.get(oldName).getParentDirectory();
-    ObjectDirectory.get(parentDirectory).childHashSet.remove(oldName.substring(parentDirectory.length()+1));//path separator
+8.rename operation of a directory can be done like this(its parent/ itself/ its child):
+
+    String oldParentDirectory = ObjectDirectory.get(oldName).getParentDirectory();
+    ObjectDirectory.get(oldParentDirectory).childHashSet.remove(oldName.substring(parentDirectory.length()+1));//path separator
+    String newParentDirectory = ObjectDirectory.get(oldName).getParentDirectory();
     ObjectDirectory.get(parentDirectory).childHashSet.add(newName.substring(parentDirectory.length()+1);
 
     ObjectDirectory.put(newName, ObjectDirectory.remove(oldName));
