@@ -8,7 +8,7 @@
     to index them
 
 4.no idea about the actual type before you get the file or directory out of ObjectDirectory
-    so File and Directory the same class with boolean isFile and isDirectory
+    so File and Directory the same class with boolean isFile and isDirectory, isEmpty
 
 
 
@@ -23,18 +23,18 @@
 
     String oldParentDirectoryString = oldFileName.getParentFile().toString();
     ObjectDirectory.get(oldParentDirectoryString).childHashSet().remove(oldFileName.getName());
-    String newParentDirectoryString = newFileName.getParentFile().toString();//exist?
-    //not exist method: nvmMkdirs(newFileName.getParentFile(), newFileName);
-    //exist then ObjectDirectory.get(newParentDirectoryString).childHashSet().add(newFileName.getName());
+    //String newParentDirectoryString = newFileName.getParentFile().toString();//exist?
+    nvmMkdirs(newFileName.getParentFile());//whatever create it or prove it
+    String newParentDirectoryString = newFileName.getParentFile().toString();
+    ObjectDirectory.get(newParentDirectoryString).childHashSet().add(newFileName.getName());
 
     String oldFileNameString = oldFileName.toString();
     String newFileNameString = newFileName.toString();
     ObjectDirectory.put(newFileNameString, ObjectDirectory.remove(oldFileNameString));
-
+    //to travel every layer underneath
     for (String key: globalID.keySet()){
         if(key.startWith(oldFileNameString)){
-            //ObjectDirectory.put(newFileNameString+key.substring(oldFileNameString.length()), ObjectDirectory.remove(key));
-            thisMethod(new File(key),new File(newFileNameString+key.substring(oldFileNameString.length()));
+            ObjectDirectory.put(newFileNameString+key.substring(oldFileNameString.length()), ObjectDirectory.remove(key));
         }
     }
 
@@ -48,24 +48,44 @@
 
     for (String key: globalID.keySet()){
         if(key.startWith(oldFileNameString)){
-            thisMethod(new File(key));
+            ObjectDirectory.remove(key);
         }
     }
 
-10.nvmMkdirs(File parentFile, File subFile)
-        File fP = new File(parentFile).getParentFile();
-        if(ObjectDirectory.get(fP.toString())==null){
-            nvmMkdirs(fp, parentFile);
+10.nvmMkdirs(File file, isFile, is Directory)
+        file.exist,return
+        File parentFile = new File(file).getParentFile();
+        if(ObjectDirectory.get(parentFile.toString())==null){
+            nvmMkdirs(parentFile, false, true);
         }
-        else{
-            nvmMkFilDir(parentFile, false, true);
-        }
-        ObjectDirectory.get(parentFile.toString(), nvmFilDir.class()).childHashSet().add(subFile.getName());
+        nvmMkFilDir(File, isFile, isDirectory);
+        ObjectDirectory.get(parentFile.toString(), nvmFilDir.class()).childHashSet().add(file.getName());
 
     nvmMkFilDir(File f, isFile, isDirectory)
-        nvmFilDir = new nvmFilDir(isFile, isDirectory);
+        nvmFilDir nFD = new nvmFilDir(isFile, isDirectory);
         ObjectDirectory.put(f.toString(), nvmFilDir);
 
 11.two space:
     FilDir name space PersistentHashMap<String, FilDir>
     FilDirIndex name space PersistentHashMap<String, PersistentHashMap<String, boolean>>
+
+12.copy method new FilDir constructor(FilDirOut) this.param=FilDirOut.param
+
+13.add this method to copyRecursively() as set to iterate
+static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
+    Set<String> temp = new Set<String>;
+    for (String key: globalID.keySet()){
+        if(key.startWith(fromDirectory) && filter.accept(new File(key))){
+            temp.add(key);
+        }
+    }
+    return temp;
+}
+
+14.
+
+
+
+
+
+

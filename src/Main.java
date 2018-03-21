@@ -12,6 +12,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.HashSet;
@@ -273,9 +274,9 @@ public class Main {
     public static void main(String[] agrs)
     {
         //testStoreFileChannel();
-        testpcj();//chain create directories or files
+        //testpcj();//chain create directories or files
         //testFileUtils();
-        //testDefaultFileSystemAbstraction();
+        testDefaultFileSystemAbstraction();
         //testJavaNormal();
 
 
@@ -299,7 +300,7 @@ public class Main {
 
     public static void testDefaultFileSystemAbstraction(){
         DefaultFileSystemAbstraction fs = new DefaultFileSystemAbstraction();
-       for(File i : fs.listFiles(new File("Dir_test1"))){
+       for(File i : fs.listFiles(new File("Dir_test"))){
            System.out.println(i.toString());
        }
     }
@@ -309,7 +310,7 @@ public class Main {
         try {
             //FileUtils.deleteRecursively(dir);
             //FileUtils.deletePathRecursively(dir.toPath());
-            FileUtils.moveFile(new File("Dir_test/File/File1"), new File("Dir_test/ex/F"));
+            //FileUtils.moveFile(new File("Dir_test/File/File1"), new File("Dir_test/ex/F"));
             //FileUtils.truncateFile(new File("Dir_test/File/File1"), 20L);
             //FileChannel testchannel = new RandomAccessFile("Dir_test/File/File1","rw").getChannel();
             //FileUtils.renameFile(new File("Dir_test/File/File1"),new File("Dir_test/F2"));
@@ -341,9 +342,9 @@ public class Main {
             /*between two append if there is a modify executed not by jvm,
             * it will start at a new line
             * */
-
+            System.out.println(new File("Dir_test/ex").getPath().toString());
             //System.out.println(FileUtils.isEmptyDirectory(new File("Dir_test")));
-            //FileUtils.newFilePrintWriter(new File("Dir_test/File/File1"),StandardCharsets.UTF_8).append("Franxx ").flush();
+            FileUtils.newFilePrintWriter(new File("Dir_test/File/File1"), StandardCharsets.UTF_8).append("Franxx ").flush();
             //Channels.newOutputStream()
             //System.out.println(new File("").getCanonicalPath());
             //FileUtils.openAsOutputStream(new File("Dir_test/File/File1").toPath(),true);
