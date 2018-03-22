@@ -11,15 +11,17 @@ public class fileChannelTest {
     public static void testStoreFileChannel (){
 
 
-        ByteBuffer buf0 = ByteBuffer.allocate(100);
+        ByteBuffer buf0 = ByteBuffer.allocate(50);
         ByteBuffer buf1 = ByteBuffer.allocate(100);
         ByteBuffer[] bufs = new ByteBuffer[2];
         bufs[0] = buf0;
         bufs[1] = buf1;
         String newData0 = "New String to write to file..."+System.currentTimeMillis();
         String newData1 = "Franxx String to write to file..."+System.currentTimeMillis();
-        bufs[0].put(newData0.getBytes());
+        bufs[0].put("".getBytes());
         buf0.flip();
+        System.out.println(buf0.limit());
+        System.out.println(buf0.capacity());
         printBuffer(buf0);
         //buf1.put(newData1.getBytes());
         //bufs[1].flip();
@@ -74,13 +76,14 @@ public class fileChannelTest {
             s += (char)buf.get();
             //System.out.print((char)buf.get());
         }
-        System.out.println(s);
+        /*System.out.println(s);
         String t = "aa";
         //t.substring(-1);
         String t1 = String.format("%1$-"+7+"s",t);
         System.out.println(t1);
         String test = "0123456789";
         System.out.println(test.substring(0,4)+test.substring(10));
-        //System.out.println(Math.toIntExact(100000000000000L));
+        //System.out.println(Math.toIntExact(100000000000000L));*/
+
     }
 }
