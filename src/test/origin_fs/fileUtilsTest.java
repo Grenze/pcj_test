@@ -48,7 +48,8 @@ public class fileUtilsTest {
             /*between two append if there is a modify executed not by jvm,
              * it will start at a new line
              * */
-            System.out.println(new File("Dir_test/ex").getPath().toString());
+
+            System.out.println(new File("0/lll").getCanonicalPath());
             //System.out.println(FileUtils.isEmptyDirectory(new File("Dir_test")));
             FileUtils.newFilePrintWriter(new File("Dir_test/File/File1"), StandardCharsets.UTF_8).append("Franxx ").flush();
             //Channels.newOutputStream()

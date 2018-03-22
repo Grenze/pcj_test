@@ -3,42 +3,44 @@ package org.neo4j.io.nvmfs;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
-public class StoreFileChannel implements StoreChannel
+public class NvmStoreFileChannel implements NvmStoreChannel
 {
     private final File nvmFile;
+    private final FileChannel channel = null;
 
-    public StoreFileChannel(File file)
+    public NvmStoreFileChannel(File file)
     {
         this.nvmFile = file;
     }
-    public StoreFileChannel(StoreFileChannel nvmchannel)
+    public NvmStoreFileChannel(NvmStoreFileChannel nvmchannel)
     {
         this.nvmFile = nvmchannel.nvmFile;
     }
 
     /*write the content of ByteBuffer to the position of channel, position init 0*/
     @Override
-    public int write( ByteBuffer src ) {
+    public int write( ByteBuffer src ) throws IOException {
         return channel.write( src );
     }
 
     /*write the content of every ByteBuffer to the position of channel in order*/
     @Override
-    public long write( ByteBuffer[] srcs ) {
+    public long write( ByteBuffer[] srcs ) throws IOException {
         return channel.write( srcs );
     }
 
     /*write the content of ByteBuffer to the position of channel, position required*/
     @Override
-    public int write( ByteBuffer src, long position ) {
+    public int write( ByteBuffer src, long position ) throws IOException {
         return channel.write( src, position );
     }
 
     /*write the content of ByteBuffer[offset:offset+length(<=ByteBuffer.length)] to the position of channel, params>=0, nothing will be written if length == 0*/
     @Override
-    public long write( ByteBuffer[] srcs, int offset, int length ) {
+    public long write( ByteBuffer[] srcs, int offset, int length ) throws IOException {
         return channel.write( srcs, offset, length );
     }
 
@@ -75,28 +77,28 @@ public class StoreFileChannel implements StoreChannel
 
     /*truncate from the position*/
     @Override
-    public StoreFileChannel truncate( long size ) {
+    public NvmStoreFileChannel truncate( long size ) throws IOException {
         channel.truncate( size );
         return this;
     }
 
     @Override
-    public int read( ByteBuffer dst ) {
+    public int read( ByteBuffer dst ) throws IOException {
         return channel.read( dst );
     }
 
     @Override
-    public long read( ByteBuffer[] dsts ) {
+    public long read( ByteBuffer[] dsts ) throws IOException {
         return channel.read( dsts );
     }
 
     @Override
-    public int read( ByteBuffer dst, long position ) {
+    public int read( ByteBuffer dst, long position ) throws IOException {
         return channel.read( dst, position );
     }
 
     @Override
-    public long read( ByteBuffer[] dsts, int offset, int length ) {
+    public long read( ByteBuffer[] dsts, int offset, int length ) throws IOException {
         return channel.read( dsts, offset, length );
     }
 
@@ -105,14 +107,14 @@ public class StoreFileChannel implements StoreChannel
      * support method chain
      */
     @Override
-    public StoreFileChannel position( long newPosition ) {
+    public NvmStoreFileChannel position( long newPosition ) throws IOException {
         channel.position( newPosition );
         return this;
     }
 
     /*return the current position*/
     @Override
-    public long position() {
+    public long position() throws IOException {
         return channel.position();
     }
 
@@ -127,7 +129,7 @@ public class StoreFileChannel implements StoreChannel
     *
     * */
     @Override
-    public FileLock tryLock() {
+    public FileLock tryLock() throws IOException {
         return channel.tryLock();
     }
 
@@ -138,19 +140,19 @@ public class StoreFileChannel implements StoreChannel
     }
 
     @Override
-    public void close() {
+    public void close() throws IOException {
         channel.close();
     }
 
     /*size of file*/
     @Override
-    public long size() {
+    public long size() throws IOException {
         return channel.size();
     }
 
     /*sync memory to disk*/
     @Override
-    public void force( boolean metaData ) {
+    public void force( boolean metaData ) throws IOException {
         channel.force( metaData );
     }
 
@@ -161,9 +163,9 @@ public class StoreFileChannel implements StoreChannel
     }
 
     /*only used in StoreFileChannelUnwrapper.java*/
-    static FileChannel unwrap( StoreChannel channel )
+    static FileChannel unwrap( NvmStoreChannel channel )
     {
-        StoreFileChannel sfc = (StoreFileChannel) channel;
+        NvmStoreFileChannel sfc = (NvmStoreFileChannel) channel;
         return sfc.channel;
     }
 }

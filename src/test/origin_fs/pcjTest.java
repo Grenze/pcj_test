@@ -1,6 +1,9 @@
 package test.origin_fs;
 
-import lib.util.persistent.*;
+import lib.util.persistent.ObjectDirectory;
+import lib.util.persistent.ObjectPointer;
+import lib.util.persistent.PersistentHashMap;
+import lib.util.persistent.PersistentObject;
 import lib.util.persistent.types.LongField;
 import lib.util.persistent.types.ObjectType;
 import lib.util.persistent.types.StringField;
@@ -213,21 +216,23 @@ public class pcjTest {
          *
          * */
 
-        /*Engineer eng0 = new Engineer(0,"ghost","umbrella","clear");
+        Engineer eng0 = new Engineer(0,"ghost","umbrella","clear");
+        eng0.changeProject("hahaha");
+        System.out.println(eng0.getProject());
         //Engineer eng1 = new Engineer(1,"heaven","sun","fill");
-        ObjectDirectory.put("1",eng0);
-        ObjectDirectory.put("2",eng0);
+        //ObjectDirectory.put("1",eng0);
+        //ObjectDirectory.put("2",eng0);
 
-        ObjectDirectory.remove("1",Engineer.class);
-        Engineer eng2 = ObjectDirectory.get("2",Engineer.class);
-        System.out.println(eng2.getName());*/
-        PersistentHashMap hm = new PersistentHashMap<PersistentString, PersistentHashMap>();
-        PersistentHashMap hm1 = new PersistentHashMap<PersistentString,PersistentBoolean>();
-        hm1.put(persistent("Sub"),persistent(true));
-        hm.put(persistent("Super"),hm1);
-        ObjectDirectory.put("Hyper",hm);
-        PersistentHashMap hm2 = (PersistentHashMap) ObjectDirectory.get("Hyper",PersistentHashMap.class).get(persistent("Super"));
-        System.out.print(hm2.get(persistent("Sub")));
+        //ObjectDirectory.remove("1",Engineer.class);
+        //Engineer eng2 = ObjectDirectory.get("2",Engineer.class);
+        //System.out.println(eng2.getName());
+        //PersistentHashMap hm = new PersistentHashMap<PersistentString, PersistentHashMap>();
+        //PersistentHashMap hm1 = new PersistentHashMap<PersistentString,PersistentBoolean>();
+        //hm1.put(persistent("Sub"),persistent(true));
+        //hm.put(persistent("Super"),hm1);
+        //ObjectDirectory.put("Hyper",hm);
+        //PersistentHashMap hm2 = (PersistentHashMap) ObjectDirectory.get("Hyper",PersistentHashMap.class).get(persistent("Super"));
+        //System.out.print(hm2.get(persistent("Sub")));
         //System.out.println(ObjectDirectory.get("123",Engineer.class)==null);//true
 
 

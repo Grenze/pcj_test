@@ -4,7 +4,7 @@
 
 2.getName() and getParentFile() supported by java.io.File
 
-3.for every directory, it should also keep its sub's local name(String) in its HashSet<String>
+3.for every directory, it should also keep its sub's local name(String) in its String
     to index them
 
 4.no idea about the actual type before you get the file or directory out of ObjectDirectory

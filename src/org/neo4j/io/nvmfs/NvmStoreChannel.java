@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 
-public interface StoreChannel
+public interface NvmStoreChannel
         extends Flushable, SeekableByteChannel, GatheringByteChannel, ScatteringByteChannel, InterruptibleChannel {
     /**
      * Attempts to acquire an exclusive lock on this channel's file.
@@ -40,7 +40,7 @@ public interface StoreChannel
 
     void force( boolean metaData ) throws IOException;
 
-    StoreChannel position(long newPosition ) throws IOException;
+    NvmStoreChannel position(long newPosition ) throws IOException;
 
-    StoreChannel truncate(long size ) throws IOException;
+    NvmStoreChannel truncate(long size ) throws IOException;
 }

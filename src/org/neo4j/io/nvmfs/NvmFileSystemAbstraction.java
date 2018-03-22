@@ -7,7 +7,7 @@ import java.nio.charset.Charset;
 import java.util.function.Function;
 import java.util.zip.ZipOutputStream;
 
-public interface FileSystemAbstraction {
+public interface NvmFileSystemAbstraction {
     StoreChannel open(File fileName, String mode ) throws IOException;
 
     OutputStream openAsOutputStream(File fileName, boolean append ) throws IOException;
@@ -46,7 +46,7 @@ public interface FileSystemAbstraction {
 
     void copyRecursively( File fromDirectory, File toDirectory ) throws IOException;
 
-    <K extends FileSystemAbstraction.ThirdPartyFileSystem> K getOrCreateThirdPartyFileSystem(Class<K> clazz, Function<Class<K>, K> creator );
+    <K extends NvmFileSystemAbstraction.ThirdPartyFileSystem> K getOrCreateThirdPartyFileSystem(Class<K> clazz, Function<Class<K>, K> creator );
 
     void truncate( File path, long size ) throws IOException;
 
