@@ -10,7 +10,7 @@ import java.nio.channels.FileChannel;
 public class fileChannelTest {
     public static void testStoreFileChannel (){
 
-        /*
+
         ByteBuffer buf0 = ByteBuffer.allocate(100);
         ByteBuffer buf1 = ByteBuffer.allocate(100);
         ByteBuffer[] bufs = new ByteBuffer[2];
@@ -18,17 +18,22 @@ public class fileChannelTest {
         bufs[1] = buf1;
         String newData0 = "New String to write to file..."+System.currentTimeMillis();
         String newData1 = "Franxx String to write to file..."+System.currentTimeMillis();
-        //bufs[0].put(newData0.getBytes());
-        //buf0.flip();
+        bufs[0].put(newData0.getBytes());
+        buf0.flip();
+        printBuffer(buf0);
         //buf1.put(newData1.getBytes());
         //bufs[1].flip();
         //System.out.println(bufs.length);*/
 
         try {
             FileChannel testchannel = new RandomAccessFile("text","rw").getChannel();
-            System.out.println(testchannel.tryLock().isValid());
+            testchannel.position(1);
+            //testchannel.write(buf0);
+            //System.out.println(testchannel.tryLock().isValid());
             StoreFileChannel testchannel1 = new StoreFileChannel(testchannel);
-            System.out.println(testchannel1.tryLock());
+            System.out.println(testchannel1.position());
+
+            //System.out.println(testchannel1.tryLock());
 
 
             //StoreFileChannel neo4jchannel = new StoreFileChannel(testchannel);
@@ -64,9 +69,18 @@ public class fileChannelTest {
     }
 
     public static void printBuffer(ByteBuffer buf){
+        String s = "";
         while (buf.hasRemaining()){
-            System.out.print((char)buf.get());
+            s += (char)buf.get();
+            //System.out.print((char)buf.get());
         }
-        System.out.println();
+        System.out.println(s);
+        String t = "aa";
+        //t.substring(-1);
+        String t1 = String.format("%1$-"+7+"s",t);
+        System.out.println(t1);
+        String test = "0123456789";
+        System.out.println(test.substring(0,4)+test.substring(10));
+        //System.out.println(Math.toIntExact(100000000000000L));
     }
 }

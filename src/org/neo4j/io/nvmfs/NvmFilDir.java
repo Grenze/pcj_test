@@ -73,5 +73,29 @@ public class NvmFilDir  extends PersistentObject{
         return getBooleanField(ISDIRECTORY);
     }
 
+    public int write(String src, int position){
+        if(src.length() == 0 || position < 0){return 0;}
+        String originContent = getFileContent();
+        long offset = position - originContent.length();
+        if(offset > 0){
+            setFileContent(String.format("%1$-"+offset+"s", originContent) + src);
+        }
+        else{
+            if(position+src.length()<=originContent.length()){
+                setFileContent(originContent.substring(0, position) + src + originContent.substring(position + src.length()));
+            }
+            else{
+                setFileContent(originContent.substring(0, position) + src);
+            }
+        }
+        return src.length();
+    }
+
+    public void truncate(int size){
+        String originContent = getFileContent();
+        setFileContent(originContent.substring(0, size));
+    }
+
+    public
 
 }

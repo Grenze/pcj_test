@@ -5,13 +5,13 @@ import org.neo4j.io.fs.DefaultFileSystemAbstraction;
 
 import java.io.File;
 
-import static test.origin_fs.fileUtilsTest.testFileUtils;
+import static test.origin_fs.fileChannelTest.testStoreFileChannel;
 
 public class Utiltest {
     public static void testAll(){
-        //testStoreFileChannel();
+        testStoreFileChannel();
         //testpcj();
-        testFileUtils();
+        //testFileUtils();
         //testDefaultFileSystemAbstraction();
         //testJavaNormal();
     }
