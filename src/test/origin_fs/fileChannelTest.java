@@ -2,12 +2,10 @@ package test.origin_fs;
 
 import org.neo4j.io.fs.StoreFileChannel;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.file.Files;
 
 public class fileChannelTest {
     public static void testStoreFileChannel (){
@@ -30,18 +28,18 @@ public class fileChannelTest {
         //System.out.println(bufs.length);*/
 
         try {
-            FileChannel testchannel = new RandomAccessFile("text1","rw").getChannel();
+            FileChannel testchannel = new RandomAccessFile("text","rw").getChannel();
             testchannel.position(1);
             testchannel.truncate(50);
-            Files.delete(new File("text1").toPath());
-            testchannel.write(buf0);
+            //Files.delete(new File("text1").toPath());
+            //testchannel.write(buf0);
             //System.out.println(testchannel.tryLock().isValid());
             StoreFileChannel testchannel1 = new StoreFileChannel(testchannel);
             System.out.println(testchannel1.position());
-            String a = null;
-            System.out.println(a == null);
-            String f = "123/456/789";
-            System.out.println(f.replace("/456",""));
+            //String a = null;
+            //System.out.println(a == null);
+            //String f = "123/456/789";
+            //System.out.println(f.replace("/456",""));
 
             //System.out.println(testchannel1.tryLock());
 

@@ -22,7 +22,7 @@ public class NvmFilDir  extends PersistentObject{
     private static final BooleanField ISDIRECTORY = new BooleanField();
 
     private static final ObjectType<NvmFilDir> TYPE = ObjectType.withFields(NvmFilDir.class, GLOBALID, LOCALINDEX, FILECONTENT, ISFILE, ISDIRECTORY);
-
+    //only this param about File is String, convert to canonicalPath before pass in
     public NvmFilDir(String uniqueFileName, boolean isFile, boolean isDirectory){
         super(TYPE);
         setGlobalId(uniqueFileName);
@@ -135,12 +135,12 @@ public class NvmFilDir  extends PersistentObject{
     }
 
     //"/"not used in file's name
-    public void increaseLocalIndex(String newLocalSub){
-        setLocalIndex(getLocalIndex()+"/"+newLocalSub);
+    public void increaseLocalIndex(File newLocalSub){
+        setLocalIndex(getLocalIndex()+"/"+newLocalSub.getName());
     }
 
-    public void decreaseLocalIndex(String oldLocalSub){
-        setLocalIndex(getLocalIndex().replace(("/"+oldLocalSub),""));
+    public void decreaseLocalIndex(File oldLocalSub){
+        setLocalIndex(getLocalIndex().replace(("/"+oldLocalSub.getName()),""));
     }
 
 
@@ -171,11 +171,7 @@ public class NvmFilDir  extends PersistentObject{
     }
 
     public static NvmFilDir removeNvmFilDir(File file) throws IOException{
-        return removeNvmFilDir(file.getCanonicalPath());
-    }
-
-    public static NvmFilDir removeNvmFilDir(String fileString) {
-        return ObjectDirectory.remove(fileString, NvmFilDir.class);
+        return ObjectDirectory.remove(file.getCanonicalPath(), NvmFilDir.class);
     }
 
     public static NvmFilDir getNvmFilDir(File file) throws IOException{

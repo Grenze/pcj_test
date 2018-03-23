@@ -15,13 +15,13 @@ public class NvmFileUtils {
             return;
         }
         File parentDirectory = file.getParentFile();
-        NvmFilDir.getNvmFilDir(parentDirectory).decreaseLocalIndex(file.getName());
+        NvmFilDir.getNvmFilDir(parentDirectory).decreaseLocalIndex(file);
 
         NvmFilDir.removeNvmFilDir(file);
 
         for(String key: NvmFilDir.getNvmFilDirDirectory()){
             if(key.startsWith(file.getCanonicalPath())){
-                NvmFilDir.removeNvmFilDir(key);
+                NvmFilDir.removeNvmFilDir(new File(key));
             }
         }
 
@@ -65,11 +65,12 @@ public class NvmFileUtils {
         }
         renameNvmFilDir(toMove, target);
     }
+
     //parent itself child
     private static void renameNvmFilDir(File src, File dst) throws IOException {
-        NvmFilDir.getNvmFilDir(src.getParentFile()).decreaseLocalIndex(src.getName());
+        NvmFilDir.getNvmFilDir(src.getParentFile()).decreaseLocalIndex(src);
         nvmMkDirs(dst.getParentFile(), false, true);
-        NvmFilDir.getNvmFilDir(dst.getParentFile()).increaseLocalIndex(src.getName());
+        NvmFilDir.getNvmFilDir(dst.getParentFile()).increaseLocalIndex(src);
 
         NvmFilDir srcFilDir = NvmFilDir.getNvmFilDir(src);
         srcFilDir.renameNvmFilDir(src, dst);//index changed from src to dst, inner globalId changed too
@@ -79,11 +80,12 @@ public class NvmFileUtils {
         }
         for(String key: NvmFilDir.getNvmFilDirDirectory()){
             if(key.startsWith(src.getCanonicalPath())){
-                NvmFilDir subFilDir = NvmFilDir.removeNvmFilDir(key);
-                subFilDir.renameNvmFilDir(new File(key), new File(dst.toString()+key.substring(src.getCanonicalPath().length())));
+                NvmFilDir subFilDir = NvmFilDir.removeNvmFilDir(new File(key));
+                subFilDir.renameNvmFilDir(new File(key), new File(dst, key.substring(src.getCanonicalPath().length())));
             }
         }
     }
+
     //mk current layer then make or prove higher and finally connect them
     private static void nvmMkDirs(File file, boolean isFile, boolean isDirectory) throws IOException {
         if(!nvmMkFilDir(file, isFile, isDirectory)){
@@ -93,8 +95,9 @@ public class NvmFileUtils {
         if(NvmFilDir.exists(parentFile)){
             nvmMkDirs(parentFile, false, true);
         }
-        NvmFilDir.getNvmFilDir(parentFile).increaseLocalIndex(file.getName());
+        NvmFilDir.getNvmFilDir(parentFile).increaseLocalIndex(file);
     }
+
     //if already exists, MkFilDir failed
     private static boolean nvmMkFilDir(File file, boolean isFile, boolean isDirectory) throws IOException{
         if(NvmFilDir.exists(file)){
@@ -104,6 +107,63 @@ public class NvmFileUtils {
         nfd.force(true);
         return true;
     }
+
+    /*specified moveFile, targetDirectory must exist, so renameTo only, keep its origin name*/
+    public static File moveFileToDirectory( File toMove, File targetDirectory ) throws IOException {
+        if (!NvmFilDir.isDirectory(targetDirectory)) {
+            throw new IllegalArgumentException(
+                    "Move target must be a directory, not " + targetDirectory);
+        }
+        File target = new File( targetDirectory, toMove.getName() );
+        moveFile(toMove, target);
+        return target;
+    }
+
+    /*bound to call renameTo, but possible locked file, return true when succeed*/
+    public static boolean renameFile( File srcFile, File renameToFile ) throws IOException {
+        if (!NvmFilDir.exists(srcFile)) {
+            throw new FileNotFoundException("Source file[" + srcFile.getName() + "] not found");
+        }
+        if (NvmFilDir.exists(renameToFile)) {
+            throw new FileNotFoundException("Target file[" + renameToFile.getName() + "] already exists");
+        }
+        if (!NvmFilDir.isDirectory(renameToFile.getParentFile())) {
+            throw new FileNotFoundException("Target directory[" + renameToFile.getParent() + "] does not exists");
+        }
+        renameNvmFilDir(srcFile, renameToFile);
+        return true;
+    }
+
+    /*realised by NvmStoreFileChannel*/
+    public static void truncateFile( NvmStoreFileChannel fileChannel, long position ) {
+        fileChannel.truncate(position);
+    }
+    /*realised by NvmStoreFileChannel*/
+    public static void truncateFile( File file, long position ) throws IOException
+    {
+         NvmStoreFileChannel access = new NvmStoreFileChannel(NvmFilDir.getNvmFilDir(file));
+         truncateFile( access, position );
+    }
+
+    /*
+     * fixSeparatorsInPath for Settings.java --remained
+     */
+    public static String fixSeparatorsInPath( String path )
+    {
+        String fileSeparator = System.getProperty( "file.separator" );
+        if ( "\\".equals( fileSeparator ) )
+        {
+            path = path.replace( '/', '\\' );
+        }
+        else if ( "/".equals( fileSeparator ) )
+        {
+            path = path.replace( '\\', '/' );
+        }
+        return path;
+    }
+
+
+
 
 
 

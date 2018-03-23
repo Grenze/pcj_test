@@ -169,7 +169,7 @@ public class FileUtils
         moveFile( toMove, target );
         return target;
     }
-    /*bound to call renameTo, but possible locked file, return true when succeeded*/
+    /*bound to call renameTo, but possible locked file, return true when succeed*/
     public static boolean renameFile( File srcFile, File renameToFile ) throws IOException
     {
         if ( !srcFile.exists() )
