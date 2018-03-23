@@ -22,7 +22,7 @@ public class fileUtilsTest {
             //FileUtils.renameFile(new File("Dir_test/File/File1"),new File("Dir_test/F2"));
             //FileUtils.renameFile(new File("Dir_test/File/File1"),new File("Dir_test/F2"));
             //testchannel.truncate(10L);
-            FileUtils.copyFile(new File("Dir_test/File/123"),new File("Dir_test/copy1/F"));
+            //FileUtils.copyFile(new File("Dir_test/File/123"),new File("Dir_test/copy1/F"));
             //FileUtils.copyRecursively(new File("Dir_test/File/"),new File("Dir_test/copy/"));
             //FileUtils.writeToFile(new File("Dir_test/File/File1"),"Franxx",false);
             //BufferedReader bufread = FileUtils.newBufferedFileReader(new File("Dir_test/File/File1"), StandardCharsets.UTF_8);
@@ -48,6 +48,21 @@ public class fileUtilsTest {
             /*between two append if there is a modify executed not by jvm,
              * it will start at a new line
              * */
+
+            String s="1\r2\r\n3\r\n";
+            BufferedReader br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(s.getBytes(Charset.forName("utf8"))), Charset.forName("utf8")));
+            String line;
+            StringBuffer strbuf=new StringBuffer();
+            while ( (line = br.readLine()) != null ) {
+                //if(!line.trim().equals(""))
+                {
+                    line="<br>"+line;
+                    strbuf.append(line+"\r\n");
+                }
+            }
+            System.out.println(strbuf.toString());
+            System.out.println(s.length());
+
 
             System.out.println(new File("Dir_test/ex1").toPath().toFile().getName());
             System.out.println(new File("Dir_test/ex1").getParentFile().getName());
