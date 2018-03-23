@@ -132,4 +132,21 @@ public class NvmFilDir  extends PersistentObject{
         }
     }
 
+    public static boolean exists(File file) throws IOException {
+        return ObjectDirectory.get(file.getCanonicalPath().toString(), NvmFilDir.class)!=null;
+    }
+
+    //"/"not used in file's name
+    public void increaseLocalIndex(String newLocalSub){
+        setLocalIndex(getLocalIndex()+"/"+newLocalSub);
+    }
+
+    public void decreaseLocalIndex(String oldLocalSub){
+        setLocalIndex(getLocalIndex().replace(("/"+oldLocalSub),""));
+    }
+
+
+
+
+
 }

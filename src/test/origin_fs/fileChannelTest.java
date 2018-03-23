@@ -40,6 +40,8 @@ public class fileChannelTest {
             System.out.println(testchannel1.position());
             String a = null;
             System.out.println(a == null);
+            String f = "123/456/789";
+            System.out.println(f.replace("/456",""));
 
             //System.out.println(testchannel1.tryLock());
 
