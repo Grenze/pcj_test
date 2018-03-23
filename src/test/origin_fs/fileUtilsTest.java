@@ -28,7 +28,7 @@ public class fileUtilsTest {
             //BufferedReader bufread = FileUtils.newBufferedFileReader(new File("Dir_test/File/File1"), StandardCharsets.UTF_8);
             //System.out.println(bufread.readLine()+bufread.readLine());
             //FileUtils.path(new File("Dir_test/test/"),"0").mkdir();
-            //System.out.println(FileUtils.readTextFile(new File("Dir_test/File/File1"),StandardCharsets.UTF_8));
+            System.out.println(FileUtils.readTextFile(new File("Dir_test/File/File1"),StandardCharsets.UTF_8).length());
             //System.out.println(FileUtils.relativePath(new File("Dir_test"),new File("Dir_test/File/F")));
 
             /*
@@ -49,7 +49,7 @@ public class fileUtilsTest {
              * it will start at a new line
              * */
 
-            String s="1\r2\r\n3\r\n";
+            String s="1\r\n2\r\n3\r\n";
             BufferedReader br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(s.getBytes(Charset.forName("utf8"))), Charset.forName("utf8")));
             String line;
             StringBuffer strbuf=new StringBuffer();
@@ -57,7 +57,7 @@ public class fileUtilsTest {
                 //if(!line.trim().equals(""))
                 {
                     line="<br>"+line;
-                    strbuf.append(line+"\r\n");
+                    strbuf.append(line);
                 }
             }
             System.out.println(strbuf.toString());
@@ -69,7 +69,7 @@ public class fileUtilsTest {
             System.out.println(new File("Dir_test/ex").getParentFile().getCanonicalPath());
             System.out.println(new File("Dir_test/ex").getParentFile().getCanonicalPath());
             //System.out.println(FileUtils.isEmptyDirectory(new File("Dir_test")));
-            FileUtils.newFilePrintWriter(new File("Dir_test/File/File1"), StandardCharsets.UTF_8).append("Franxx ").flush();
+            FileUtils.newFilePrintWriter(new File("Dir_test/File/File1"), StandardCharsets.UTF_8).append("Franxx\r").flush();
             //Channels.newOutputStream()
             //System.out.println(new File("").getCanonicalPath());
             //FileUtils.openAsOutputStream(new File("Dir_test/File/File1").toPath(),true);

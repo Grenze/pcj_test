@@ -122,6 +122,11 @@ public class NvmFilDir  extends PersistentObject{
         }
     }
 
+    public String readAll(){
+        return getFileContent();
+    }
+
+
 
     public void truncate(int size){
         String originContent = getFileContent();

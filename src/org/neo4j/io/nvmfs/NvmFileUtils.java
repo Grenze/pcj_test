@@ -1,13 +1,15 @@
 package org.neo4j.io.nvmfs;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 
+import static java.nio.file.StandardOpenOption.*;
+
 public class NvmFileUtils {
-    private static final  int WINDOWS_RETRY_COUNT = 5;
 
     //parent itself child
     private static void deleteNvmFilDir(File file) throws IOException {
@@ -217,10 +219,191 @@ public class NvmFileUtils {
         }
     }
 
+    //backward: read all of the file's content
+    public static BufferedReader newBufferedFileReader(File file, Charset charset ) throws IOException
+    {
+        return new BufferedReader( new InputStreamReader( new ByteArrayInputStream(NvmFilDir.getNvmFilDir(file).readAll().getBytes(charset)), charset) );
+    }
 
+    /*public static PrintWriter newFilePrintWriter( File file, Charset charset ) throws FileNotFoundException{
+        return null;
+    }
 
+    * replaced by writeToFile(file, text, true)
+    */
 
+    /*below method keep origin*/
+    public static File path( String root, String... path )
+    {
+        return path( new File( root ), path );
+    }
 
+    public static File path( File root, String... path )
+    {
+        for ( String part : path )
+        {
+            root = new File( root, part );
+        }
+        return root;
+    }
+
+    public interface FileOperation
+    {
+        void perform() throws IOException;
+    }
+
+    public static void windowsSafeIOOperation( FileOperation operation ) throws IOException
+    {
+        IOException storedIoe = null;
+        for ( int i = 0; i < 10; i++ )
+        {
+            try
+            {
+                operation.perform();
+                return;
+            }
+            catch ( IOException e )
+            {
+                storedIoe = e;
+                System.gc();
+            }
+        }
+        throw storedIoe;
+    }
+
+    public interface LineListener
+    {
+        void line( String line );
+    }
+
+    public static LineListener echo(final PrintStream target )
+    {
+        return new LineListener()
+        {
+            @Override
+            public void line( String line )
+            {
+                target.println( line );
+            }
+        };
+    }
+
+    public static void readTextFile( File file, LineListener listener ) throws IOException
+    {
+        try(BufferedReader reader = new BufferedReader( new FileReader( file ) ))
+        {
+            String line;
+            while ( (line = reader.readLine()) != null )
+            {
+                listener.line( line );
+            }
+        }
+    }
+
+    private static boolean mayBeWindowsMemoryMappedFileReleaseProblem( IOException e )
+    {
+        return e.getMessage().contains( "The process cannot access the file because it is being used by another process." );
+    }
+
+    public static class MaybeWindowsMemoryMappedFileReleaseProblem extends IOException
+    {
+        public MaybeWindowsMemoryMappedFileReleaseProblem( IOException e )
+        {
+            super(e);
+        }
+    }
+
+    /*above method keep origin*/
+
+    //return with the content of file extend with a "\n"*/
+    public static String readTextFile( File file, Charset charset ) throws IOException
+    {
+        return (NvmFilDir.getNvmFilDir(file).readAll()+"\n");
+    }
+
+    /**
+     * Given a directory and a path under it, return filename of the path
+     * relative to the directory.
+     *
+     * @param baseDir The base directory, containing the storeFile
+     * @param storeFile The store file path, must be contained under
+     * <code>baseDir</code>
+     * @return The relative path of <code>storeFile</code> to
+     * <code>baseDir</code>
+     * @throws IOException As per {@link File#getCanonicalPath()}
+     */
+    /*example: Dir_test, Dir_test/File/F, File/F returned*/
+    public static String relativePath( File baseDir, File storeFile )
+            throws IOException
+    {
+        String prefix = baseDir.getCanonicalPath();
+        String path = storeFile.getCanonicalPath();
+        if ( !path.startsWith( prefix ) )
+        {
+            throw new FileNotFoundException();
+        }
+        path = path.substring( prefix.length() );
+        if ( path.startsWith( File.separator ) )
+        {
+            return path.substring( 1 );
+        }
+        return path;
+    }
+
+    // TODO javadoc what this one does. It comes from Serverutil initially.
+    public static File getMostCanonicalFile( File file )
+    {
+        try
+        {
+            return file.getCanonicalFile().getAbsoluteFile();
+        }
+        catch ( IOException e )
+        {
+            return file.getAbsoluteFile();
+        }
+    }
+
+    public static void writeAll(NvmStoreFileChannel nvmChannel, ByteBuffer src, long position ) {
+        nvmChannel.writeAll(src, position);
+    }
+
+    public static void writeAll(NvmStoreFileChannel nvmChannel, ByteBuffer src) {
+        nvmChannel.writeAll(src);
+    }
+
+    public static OpenOption[] convertOpenMode(String mode )
+    {
+        OpenOption[] options;
+        switch ( mode )
+        {
+            case "r": options = new OpenOption[]{READ}; break;
+            case "rw": options = new OpenOption[] {CREATE, READ, WRITE}; break;
+            case "rws": options = new OpenOption[] {CREATE, READ, WRITE, SYNC}; break;
+            case "rwd": options = new OpenOption[] {CREATE, READ, WRITE, DSYNC}; break;
+            default: throw new IllegalArgumentException( "Unsupported mode: " + mode );
+        }
+        return options;
+    }
+
+    /*only used in DelegateFileSystemAbstraction.java, supported by NvmStoreFileChannel
+    * mode not used yet
+    * */
+    public static NvmStoreFileChannel open( Path path, String mode ) throws IOException
+    {
+        return new NvmStoreFileChannel(NvmFilDir.getNvmFilDir(path.toFile()));
+    }
+
+    /**
+     * Check if directory is empty.
+     * @param directory - directory to check
+     * @return false if directory exists and not empty, true otherwise.
+     * @throws IllegalArgumentException if specified directory represent a file
+     * @throws IOException if some problem encountered during reading directory content
+     */
+    public static boolean isEmptyDirectory( File directory ) throws IOException
+    {
+        return NvmFilDir.isEmpty(directory);
+    }
 
 
 
