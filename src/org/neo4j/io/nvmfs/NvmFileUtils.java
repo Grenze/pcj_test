@@ -407,6 +407,29 @@ public class NvmFileUtils {
 
 
 
+    /*********not supported yet, will be designed to work when connected to the main module
+
+
+     /*construct the InputStream for nvm, let its method to be used by other class
+    public static InputStream openAsInputStream( Path path ) throws IOException
+    {
+        return Files.newInputStream( path, READ );
+    }
+    /*construct the OutputStream for nvm, let its method to be used by other class
+    public static OutputStream openAsOutputStream( Path path, boolean append ) throws IOException
+    {
+        OpenOption[] options;
+        if ( append )
+        {
+            options = new OpenOption[] {CREATE, WRITE, APPEND};
+        }
+        else
+        {
+            options = new OpenOption[] {CREATE, WRITE};
+        }
+        return Files.newOutputStream( path, options );
+    }*/
+
 
 
 
