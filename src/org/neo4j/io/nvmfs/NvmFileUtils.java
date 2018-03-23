@@ -1,6 +1,7 @@
 package org.neo4j.io.nvmfs;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -161,6 +162,52 @@ public class NvmFileUtils {
         }
         return path;
     }
+
+    private static void copyNvmFilDir(File fromDirectory, File toDirectory, FileFilter filter) throws IOException{
+        nvmMkDirs(toDirectory, false, true);
+        NvmFilDir.getNvmFilDir(toDirectory).increaseLocalIndex(fromDirectory);
+
+        NvmFilDir.copyNvmFilDir(fromDirectory, new File(toDirectory, fromDirectory.getName()));
+
+        if(NvmFilDir.isFile(fromDirectory) || NvmFilDir.isEmpty(fromDirectory)){
+            return;
+        }
+
+        for(String key: NvmFilDir.getNvmFilDirDirectory()){
+            if(key.startsWith(fromDirectory.getCanonicalPath()) && filter.accept(new File(key))){
+                NvmFilDir.copyNvmFilDir(new File(key), new File(toDirectory, key.substring(fromDirectory.getParentFile().getCanonicalPath().length())) );
+            }
+        }
+    }
+
+    /*copy srcFile to the path of dstFile.getParentFile(), name changed*/
+    public static void copyFile( File srcFile, File dstFile ) throws IOException{
+        if(NvmFilDir.exists(dstFile)){
+            return;
+        }
+        nvmMkDirs(dstFile.getParentFile(), false, true);
+        NvmFilDir.getNvmFilDir(dstFile.getParentFile()).increaseLocalIndex(dstFile);
+
+        NvmFilDir.copyNvmFilDir(srcFile, dstFile);
+    }
+
+    /*keep its origin name, so there should not be the same name file(Dir) under the toDirectory*/
+    public static void copyRecursively( File fromDirectory, File toDirectory ) throws IOException
+    {
+        copyRecursively( fromDirectory, toDirectory, null );
+    }
+
+    public static void copyRecursively( File fromDirectory, File toDirectory, FileFilter filter) throws IOException
+    {
+        if(NvmFilDir.exists(toDirectory)){
+            return;
+        }
+        copyNvmFilDir(fromDirectory, toDirectory, filter);
+    }
+
+
+
+
 
 
 

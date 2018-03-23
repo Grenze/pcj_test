@@ -182,6 +182,12 @@ public class NvmFilDir  extends PersistentObject{
         ObjectDirectory.put(file.getCanonicalPath(), nvmFilDir);
     }
 
+    public static void copyNvmFilDir(File src, File dst)throws IOException{
+        NvmFilDir dstNvmFilDir = new NvmFilDir(NvmFilDir.getNvmFilDir(src));
+        dstNvmFilDir.setGlobalId(dst.getCanonicalPath().toString());
+        NvmFilDir.putNvmFilDir(dst, dstNvmFilDir);
+    }
+
     public static boolean isEmpty(File file) throws IOException {
         return ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class).getLocalIndex().length() == 0;
     }

@@ -22,7 +22,7 @@ public class fileUtilsTest {
             //FileUtils.renameFile(new File("Dir_test/File/File1"),new File("Dir_test/F2"));
             //FileUtils.renameFile(new File("Dir_test/File/File1"),new File("Dir_test/F2"));
             //testchannel.truncate(10L);
-            //FileUtils.copyFile(new File("Dir_test/File/File1"),new File("Dir_test/copy/F"));
+            FileUtils.copyFile(new File("Dir_test/File/123"),new File("Dir_test/copy1/F"));
             //FileUtils.copyRecursively(new File("Dir_test/File/"),new File("Dir_test/copy/"));
             //FileUtils.writeToFile(new File("Dir_test/File/File1"),"Franxx",false);
             //BufferedReader bufread = FileUtils.newBufferedFileReader(new File("Dir_test/File/File1"), StandardCharsets.UTF_8);
