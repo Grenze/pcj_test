@@ -32,6 +32,7 @@
     String newFileNameString = newFileName.toString();
     ObjectDirectory.put(newFileNameString, ObjectDirectory.remove(oldFileNameString));
     //to travel every layer underneath
+    //ObjectDirectory.map need to be public
     for (String key: globalID.keySet()){
         if(key.startWith(oldFileNameString)){
             ObjectDirectory.put(newFileNameString+key.substring(oldFileNameString.length()), ObjectDirectory.remove(key));

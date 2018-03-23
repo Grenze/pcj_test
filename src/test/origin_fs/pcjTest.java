@@ -216,14 +216,18 @@ public class pcjTest {
          *
          * */
 
-        Engineer eng0 = new Engineer(0,"ghost","umbrella","clear");
+        //Engineer eng0 = new Engineer(0,"ghost","umbrella","clear");
+        Employee stuff = new Employee(0, "lin", "umbrella");
+        ObjectDirectory.put("1", stuff);
+        ObjectDirectory.remove("1",Employee.class);
+        ObjectDirectory.remove("1",Employee.class);
 
         //eng0.changeProject("hahaha");
-        System.out.println(eng0.getProject());
+        //System.out.println(eng0.getProject());
         //Engineer eng1 = new Engineer(1,"heaven","sun","fill");
-        ObjectDirectory.put("1",eng0);
+        //ObjectDirectory.put("1",eng0);
         //ObjectDirectory.put("2",eng0);
-        System.out.println(ObjectDirectory.get("1", Engineer.class));
+        //System.out.println(ObjectDirectory.get("1", Engineer.class));
 
         //ObjectDirectory.remove("1",Engineer.class);
         //Engineer eng2 = ObjectDirectory.get("2",Engineer.class);

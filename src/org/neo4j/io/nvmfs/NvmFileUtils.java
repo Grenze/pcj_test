@@ -1,8 +1,5 @@
 package org.neo4j.io.nvmfs;
 
-import lib.util.persistent.ObjectDirectory;
-import lib.util.persistent.PersistentString;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -10,33 +7,50 @@ import java.nio.file.Path;
 public class NvmFileUtils {
     private static final  int WINDOWS_RETRY_COUNT = 5;
 
-    private void deleteNvmFilDir(File file) throws IOException {
-        File uniqueFile = file.getCanonicalFile();
-        if ( !NvmFilDir.exists(uniqueFile.getCanonicalPath()) )
+    //parent itself child
+    private static void deleteNvmFilDir(File file) throws IOException {
+        if ( !NvmFilDir.exists(file) )
         {
             return;
         }
-        String parentDirectory = uniqueFile.getParentFile().getCanonicalPath();
-        ObjectDirectory.get(parentDirectory, NvmFilDir.class).decreaseLocalIndex(uniqueFile.getName());
+        File parentDirectory = file.getParentFile();
+        NvmFilDir.getNvmFilDir(parentDirectory).decreaseLocalIndex(file.getName());
 
-        ObjectDirectory.remove(uniqueFile.getCanonicalPath(), NvmFilDir.class);
+        NvmFilDir.removeNvmFilDir(file);
 
-        for(PersistentString key: ObjectDirectory.map.keySet()){
-
+        for(String key: NvmFilDir.getNvmFilDirDirectory()){
+            if(key.startsWith(file.getCanonicalPath())){
+                NvmFilDir.removeNvmFilDir(key);
+            }
         }
 
     }
 
     //delete the directory(file)'s content including itself
-    public static void deleteRecursively( File directory ) {
-
-        Path path = directory.toPath();
-        deletePathRecursively( path );
+    public static void deleteRecursively( File directory ) throws IOException{
+        deleteNvmFilDir( directory );
     }
+
     //delete the path(file)'s content including itself
-    public static void deletePathRecursively( Path path ) {
-
+    public static void deletePathRecursively( Path path ) throws IOException{
+        deleteNvmFilDir(path.toFile());
     }
+
+    //only able to delete file or empty directory
+    public static boolean deleteFile(File file) throws  IOException{
+        if ( !NvmFilDir.exists(file) )
+        {
+            return true;
+        }
+        if( NvmFilDir.isEmpty(file)){
+            deleteNvmFilDir(file);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
 
 
 

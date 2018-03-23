@@ -3,9 +3,14 @@ package org.neo4j.io.nvmfs;
 import lib.util.persistent.ObjectDirectory;
 import lib.util.persistent.ObjectPointer;
 import lib.util.persistent.PersistentObject;
+import lib.util.persistent.PersistentString;
 import lib.util.persistent.types.BooleanField;
 import lib.util.persistent.types.ObjectType;
 import lib.util.persistent.types.StringField;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Set;
 
 import static lib.util.persistent.Util.persistent;
 
@@ -129,10 +134,6 @@ public class NvmFilDir  extends PersistentObject{
         }
     }
 
-    public static boolean exists(String uniqueFileName){
-        return ObjectDirectory.get(uniqueFileName, NvmFilDir.class)!=null;
-    }
-
     //"/"not used in file's name
     public void increaseLocalIndex(String newLocalSub){
         setLocalIndex(getLocalIndex()+"/"+newLocalSub);
@@ -144,6 +145,42 @@ public class NvmFilDir  extends PersistentObject{
 
 
 
+
+    /*below are static methods*/
+
+
+    public static boolean exists(File file) throws IOException {
+        return ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class)!=null;
+    }
+
+
+    //ObjectDirectory's HashMap's key format: mark + class.getName()
+    public static Set<String> getNvmFilDirDirectory(){
+        Set<String> nvmFilDirDirectory = null;
+        String nvmClass = NvmFilDir.class.getName();
+        for(PersistentString key: ObjectDirectory.getDirectory()){
+            if(key.toString().endsWith(nvmClass)){
+                nvmFilDirDirectory.add(key.toString().replace(nvmClass,""));
+            }
+        }
+        return nvmFilDirDirectory;
+    }
+
+    public static void removeNvmFilDir(File file) throws IOException{
+        removeNvmFilDir(file.getCanonicalPath());
+    }
+
+    public static void removeNvmFilDir(String fileString) {
+        ObjectDirectory.remove(fileString, NvmFilDir.class);
+    }
+
+    public static NvmFilDir getNvmFilDir(File file) throws IOException{
+        return ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class);
+    }
+
+    public static boolean isEmpty(File file) throws IOException {
+        return ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class).getLocalIndex().length() == 0;
+    }
 
 
 }
