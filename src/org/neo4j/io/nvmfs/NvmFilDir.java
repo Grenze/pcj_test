@@ -144,6 +144,10 @@ public class NvmFilDir  extends PersistentObject{
     }
 
 
+    public void renameNvmFilDir(File src, File dst) throws IOException{
+        setGlobalId(dst.getCanonicalPath());
+        NvmFilDir.putNvmFilDir(dst,NvmFilDir.removeNvmFilDir(src));
+    }
 
 
     /*below are static methods*/
@@ -166,20 +170,32 @@ public class NvmFilDir  extends PersistentObject{
         return nvmFilDirDirectory;
     }
 
-    public static void removeNvmFilDir(File file) throws IOException{
-        removeNvmFilDir(file.getCanonicalPath());
+    public static NvmFilDir removeNvmFilDir(File file) throws IOException{
+        return removeNvmFilDir(file.getCanonicalPath());
     }
 
-    public static void removeNvmFilDir(String fileString) {
-        ObjectDirectory.remove(fileString, NvmFilDir.class);
+    public static NvmFilDir removeNvmFilDir(String fileString) {
+        return ObjectDirectory.remove(fileString, NvmFilDir.class);
     }
 
     public static NvmFilDir getNvmFilDir(File file) throws IOException{
         return ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class);
     }
 
+    public static void putNvmFilDir(File file, NvmFilDir nvmFilDir) throws IOException{
+        ObjectDirectory.put(file.getCanonicalPath(), nvmFilDir);
+    }
+
     public static boolean isEmpty(File file) throws IOException {
         return ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class).getLocalIndex().length() == 0;
+    }
+
+    public static boolean isFile(File file) throws IOException{
+        return ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class).getIsFile();
+    }
+
+    public static boolean isDirectory(File file) throws IOException{
+        return  ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class).getIsDirectory();
     }
 
 

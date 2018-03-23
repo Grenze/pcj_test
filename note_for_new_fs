@@ -32,7 +32,7 @@
     String newFileNameString = newFileName.toString();
     ObjectDirectory.put(newFileNameString, ObjectDirectory.remove(oldFileNameString));
     //to travel every layer underneath
-    //ObjectDirectory.map need to be public
+    //ObjectDirectory should support get method
     for (String key: globalID.keySet()){
         if(key.startWith(oldFileNameString)){
             ObjectDirectory.put(newFileNameString+key.substring(oldFileNameString.length()), ObjectDirectory.remove(key));
@@ -54,16 +54,18 @@
     }
 
 10.nvmMkdirs(File file, isFile, is Directory)
-        file.exist,return
-        File parentFile = new File(file).getParentFile();
+        nvmMkFilDir false,return;true forward
+        //nvmMkFilDir(File, isFile, isDirectory);
+        File parentFile = file.getParentFile();
         if(ObjectDirectory.get(parentFile.toString())==null){
             nvmMkdirs(parentFile, false, true);
         }
-        nvmMkFilDir(File, isFile, isDirectory);
         ObjectDirectory.get(parentFile.toString(), nvmFilDir.class()).childHashSet().add(file.getName());
 
+
     nvmMkFilDir(File f, isFile, isDirectory)
-        nvmFilDir nFD = new nvmFilDir(isFile, isDirectory);
+        file.exist,return true
+        nvmFilDir nFD = new nvmFilDir(file, isFile, isDirectory);
         ObjectDirectory.put(f.toString(), nvmFilDir);//constructor to connect dir with its index
 
 11.use String to store the child FilDir in class
