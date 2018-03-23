@@ -9,7 +9,7 @@ import java.nio.channels.FileLock;
 public class NvmStoreFileChannel implements NvmStoreChannel
 {
     private final NvmFilDir nvmFile;
-    private  int localPosition;
+    private int localPosition;
     private final FileChannel channel;
 
     public NvmStoreFileChannel(NvmFilDir file)
@@ -62,19 +62,23 @@ public class NvmStoreFileChannel implements NvmStoreChannel
     /*write the content of ByteBuffer to the position of channel, position required*/
     @Override
     public int write( ByteBuffer src, long position ) {
-        return nvmFile.write( byteBufferToString(src), Math.toIntExact(position) );
+        int temp = nvmFile.write( byteBufferToString(src), Math.toIntExact(position));
+        localPosition = Math.toIntExact(position) + temp;
+        return temp;
     }
 
     /*write the content of ByteBuffer[offset:offset+length(<=ByteBuffer.length)] to the position of channel, params>=0, nothing will be written if length == 0*/
     @Override
     public long write( ByteBuffer[] srcs, int offset, int length ) {
-        return nvmFile.write( byteBuffersToString(srcs, offset, length ), localPosition);
+        int temp = nvmFile.write( byteBuffersToString(srcs, offset, length ), localPosition);
+        localPosition += temp;
+        return temp;
     }
 
     /*guarantee all bytes will be written*/
     @Override
     public void writeAll( ByteBuffer src, long position ) {
-        nvmFile.write( byteBufferToString(src), Math.toIntExact(position) );
+        write( src, Math.toIntExact(position) );
         /*long filePosition = position;
         //be sure ByteBuffer.flip() executed
         long expectedEndPosition = filePosition + src.limit() - src.position();
@@ -90,7 +94,7 @@ public class NvmStoreFileChannel implements NvmStoreChannel
 
     @Override
     public void writeAll( ByteBuffer src ) {
-        nvmFile.write( byteBufferToString(src) , localPosition);
+        write(src);
         /*long bytesToWrite = src.limit() - src.position();
         int bytesWritten;
         while((bytesToWrite -= (bytesWritten = write( src ))) > 0)
@@ -109,38 +113,44 @@ public class NvmStoreFileChannel implements NvmStoreChannel
         return this;
     }
 
-    private int stringToByteBuffer(ByteBuffer dst){
-
-        return 0;
-    }
-
-
-
     @Override
     public int read( ByteBuffer dst ) {
-        dst.put(nvmFile.read(dst.capacity(),localPosition).getBytes());
-        return dst.limit();
+        String getString = nvmFile.read(dst.capacity(),localPosition);
+        localPosition += getString.length();
+        dst.put(getString.getBytes());
+        return getString.length();
     }
 
     @Override
-    public long read( ByteBuffer[] dsts )throws IOException  {
+    public long read( ByteBuffer[] dsts ) {
+        return read(dsts, 0, dsts.length);
+    }
+
+    @Override
+    public int read( ByteBuffer dst, long position ) {
+        String getString = nvmFile.read(dst.capacity(), Math.toIntExact(position));
+        localPosition = Math.toIntExact(position) + getString.length();
+        dst.put(getString.getBytes());
+        return getString.length();
+    }
+
+    @Override
+    public long read( ByteBuffer[] dsts, int offset, int length ) {
         int sumCapacity = 0;
-        for(int i=0; i<dsts.length; i++){
-            sumCapacity += dsts[i].capacity();
+        for(int i=0; i<length; i++){
+            sumCapacity += dsts[offset+i].capacity();
         }
         String getString = nvmFile.read(sumCapacity, localPosition);
-
-        return channel.read( dsts );
-    }
-
-    @Override
-    public int read( ByteBuffer dst, long position )throws IOException  {
-        return channel.read( dst, position );
-    }
-
-    @Override
-    public long read( ByteBuffer[] dsts, int offset, int length ) throws IOException {
-        return channel.read( dsts, offset, length );
+        localPosition += getString.length();
+        int bufOrder = offset;
+        while(getString.length()>dsts[bufOrder].capacity() && bufOrder<offset+length){
+            dsts[bufOrder].put(getString.substring(0, dsts[bufOrder].capacity()).getBytes());
+            //sub the current bufString then change order
+            getString = getString.substring(dsts[bufOrder].capacity());
+            bufOrder++;
+        }
+        dsts[bufOrder].put(getString.getBytes());
+        return getString.length();
     }
 
     /*position init at 0 when open the channel
@@ -148,15 +158,15 @@ public class NvmStoreFileChannel implements NvmStoreChannel
      * support method chain
      */
     @Override
-    public NvmStoreFileChannel position( long newPosition )throws IOException  {
-        channel.position( newPosition );
+    public NvmStoreFileChannel position( long newPosition ) {
+        localPosition = Math.toIntExact(newPosition);
         return this;
     }
 
     /*return the current position*/
     @Override
-    public long position()throws IOException  {
-        return channel.position();
+    public long position() {
+        return localPosition;
     }
 
     /*pcj Transaction provide lock in lower layer, delete the tryLock()
@@ -170,31 +180,31 @@ public class NvmStoreFileChannel implements NvmStoreChannel
     *
     * */
     @Override
-    public FileLock tryLock()throws IOException  {
-        return channel.tryLock();
+    public FileLock tryLock() {
+        return null;
     }
 
     @Override
     public boolean isOpen()
     {
-        return channel.isOpen();
+        return nvmFile != null;
     }
 
     @Override
-    public void close()throws IOException  {
-        channel.close();
+    public void close() {
+        return;
     }
 
     /*size of file*/
     @Override
-    public long size()throws IOException  {
-        return channel.size();
+    public long size() {
+        return nvmFile.getSize();
     }
 
     /*sync memory to disk*/
     @Override
-    public void force( boolean metaData )throws IOException  {
-        channel.force( metaData );
+    public void force( boolean metaData ) {
+        nvmFile.force( metaData );
     }
 
     @Override

@@ -217,7 +217,8 @@ public class pcjTest {
          * */
 
         Engineer eng0 = new Engineer(0,"ghost","umbrella","clear");
-        eng0.changeProject("hahaha");
+
+        //eng0.changeProject("hahaha");
         System.out.println(eng0.getProject());
         //Engineer eng1 = new Engineer(1,"heaven","sun","fill");
         //ObjectDirectory.put("1",eng0);

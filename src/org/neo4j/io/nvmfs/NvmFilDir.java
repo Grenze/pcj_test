@@ -1,5 +1,6 @@
 package org.neo4j.io.nvmfs;
 
+import lib.util.persistent.ObjectDirectory;
 import lib.util.persistent.ObjectPointer;
 import lib.util.persistent.PersistentObject;
 import lib.util.persistent.types.BooleanField;
@@ -7,19 +8,22 @@ import lib.util.persistent.types.ObjectType;
 import lib.util.persistent.types.StringField;
 
 import java.io.File;
+import java.io.IOException;
 
 import static lib.util.persistent.Util.persistent;
 
 public class NvmFilDir  extends PersistentObject{
+    private static final StringField GLOBALID = new StringField();
     private static final StringField LOCALINDEX = new StringField();
     private static final StringField FILECONTENT = new StringField();
     private static final BooleanField ISFILE = new BooleanField();
     private static final BooleanField ISDIRECTORY = new BooleanField();
 
-    private static final ObjectType<NvmFilDir> TYPE = ObjectType.withFields(NvmFilDir.class, LOCALINDEX, FILECONTENT, ISFILE, ISDIRECTORY);
+    private static final ObjectType<NvmFilDir> TYPE = ObjectType.withFields(NvmFilDir.class, GLOBALID, LOCALINDEX, FILECONTENT, ISFILE, ISDIRECTORY);
 
-    public NvmFilDir(File file, boolean isFile, boolean isDirectory) {
+    public NvmFilDir(File file, boolean isFile, boolean isDirectory) throws IOException {
         super(TYPE);
+        setGlobalId(file.getCanonicalPath().toString());
         setLocalIndex("");
         setFileContent("");
         setIsFile(isFile);
@@ -32,11 +36,21 @@ public class NvmFilDir  extends PersistentObject{
     //copy
     public NvmFilDir(NvmFilDir nvmFilDir){
         super(TYPE);
+        setGlobalId(nvmFilDir.getGlobalId());
         setLocalIndex(nvmFilDir.getLocalIndex());
         setFileContent(nvmFilDir.getFileContent());
         setIsFile(nvmFilDir.getIsFile());
         setIsDirectory(nvmFilDir.getIsDirectory());
     }
+
+    private void setGlobalId(String globalId){
+        setObjectField(GLOBALID, persistent(globalId));
+    }
+
+    private String getGlobalId(){
+        return getObjectField(GLOBALID).toString();
+    }
+
 
     private void setLocalIndex(String localIndex){
         setObjectField(LOCALINDEX, persistent(localIndex));
@@ -73,6 +87,7 @@ public class NvmFilDir  extends PersistentObject{
         return getBooleanField(ISDIRECTORY);
     }
 
+
     public int write(String src, int position){
         if(src.length() == 0 || position < 0){return 0;}
         String originContent = getFileContent();
@@ -104,6 +119,16 @@ public class NvmFilDir  extends PersistentObject{
         }
         else {
             return originContent.substring(position);
+        }
+    }
+
+    public long getSize(){
+        return getFileContent().toString().length();
+    }
+    //remained to complete
+    public void force(boolean metadata){
+        if(ObjectDirectory.get(getGlobalId(), NvmFilDir.class)==null){
+            ObjectDirectory.put(getGlobalId(), this);
         }
     }
 
