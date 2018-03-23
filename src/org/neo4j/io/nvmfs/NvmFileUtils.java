@@ -90,7 +90,7 @@ public class NvmFileUtils {
     }
 
     //mk current layer then make or prove higher and finally connect them
-    private static void nvmMkDirs(File file, boolean isFile, boolean isDirectory) throws IOException {
+    public static void nvmMkDirs(File file, boolean isFile, boolean isDirectory) throws IOException {
         if(!nvmMkFilDir(file, isFile, isDirectory)){
             return;
         }
@@ -102,7 +102,7 @@ public class NvmFileUtils {
     }
 
     //if already exists, MkFilDir failed
-    private static boolean nvmMkFilDir(File file, boolean isFile, boolean isDirectory) throws IOException{
+    public static boolean nvmMkFilDir(File file, boolean isFile, boolean isDirectory) throws IOException{
         if(NvmFilDir.exists(file)){
             return false;
         }

@@ -1,14 +1,12 @@
 package org.neo4j.io.nvmfs;
 
-import org.neo4j.io.fs.StoreChannel;
-
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.function.Function;
 import java.util.zip.ZipOutputStream;
 
 public interface NvmFileSystemAbstraction {
-    StoreChannel open(File fileName, String mode ) throws IOException;
+    NvmStoreFileChannel open(File fileName, String mode ) throws IOException;
 
     OutputStream openAsOutputStream(File fileName, boolean append ) throws IOException;
 
@@ -18,17 +16,17 @@ public interface NvmFileSystemAbstraction {
 
     Writer openAsWriter( File fileName, Charset charset, boolean append ) throws IOException;
 
-    StoreChannel create(File fileName ) throws IOException;
+    NvmStoreFileChannel create(File fileName ) throws IOException;
 
-    boolean fileExists( File fileName );
+    boolean fileExists( File fileName ) throws IOException ;
 
-    boolean mkdir( File fileName );
+    boolean mkdir( File fileName ) throws IOException;
 
     void mkdirs( File fileName ) throws IOException;
 
-    long getFileSize( File fileName );
+    long getFileSize( File fileName ) throws IOException;
 
-    boolean deleteFile( File fileName );
+    boolean deleteFile( File fileName ) throws IOException;
 
     void deleteRecursively( File directory ) throws IOException;
 
