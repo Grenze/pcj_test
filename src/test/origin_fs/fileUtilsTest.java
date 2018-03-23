@@ -48,7 +48,10 @@ public class fileUtilsTest {
             /*between two append if there is a modify executed not by jvm,
              * it will start at a new line
              * */
-
+            String[] temp = "/1".substring(1).split("/");
+            for(String key: temp){
+                System.out.println(key);
+            }
             String s="1\r\n2\r\n3\r\n";
             BufferedReader br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(s.getBytes(Charset.forName("utf8"))), Charset.forName("utf8")));
             String line;

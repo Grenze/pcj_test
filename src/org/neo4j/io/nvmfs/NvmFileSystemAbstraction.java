@@ -32,11 +32,11 @@ public interface NvmFileSystemAbstraction {
 
     boolean renameFile( File from, File to ) throws IOException;
 
-    File[] listFiles( File directory );
+    File[] listFiles( File directory ) throws IOException;
 
-    File[] listFiles( File directory, FilenameFilter filter );
+    File[] listFiles( File directory, FilenameFilter filter ) throws IOException;
 
-    boolean isDirectory( File file );
+    boolean isDirectory( File file ) throws IOException;
 
     void moveToDirectory( File file, File toDirectory ) throws IOException;
 

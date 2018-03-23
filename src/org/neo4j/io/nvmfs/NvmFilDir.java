@@ -9,7 +9,9 @@ import lib.util.persistent.types.ObjectType;
 import lib.util.persistent.types.StringField;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Set;
 
 import static lib.util.persistent.Util.persistent;
@@ -162,7 +164,13 @@ public class NvmFilDir  extends PersistentObject{
     public void decreaseLocalIndex(File oldLocalSub){
         setLocalIndex(getLocalIndex().replace(("/"+oldLocalSub.getName()),""));
     }
-
+    //remove the first "/"
+    public String[] getSubList(){
+        if(getLocalIndex().length()==0){
+            return null;
+        }
+        return getLocalIndex().substring(1).split("/");
+    }
 
     public void renameNvmFilDir(File src, File dst) throws IOException{
         setGlobalId(dst.getCanonicalPath());
@@ -218,6 +226,21 @@ public class NvmFilDir  extends PersistentObject{
 
     public static boolean isDirectory(File file) throws IOException{
         return  ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class).getIsDirectory();
+    }
+
+
+    public static File[] listLocalFiles(File directory, FilenameFilter filter ) throws IOException{
+        String[] subs = NvmFilDir.getNvmFilDir(directory).getSubList();
+        if(subs == null){
+            return null;
+        }
+        ArrayList temp = new ArrayList();
+        for(String sub: subs){
+            if(filter == null || filter.accept(directory, sub)){
+                temp.add(new File(directory, sub));
+            }
+        }
+        return (File[])temp.toArray(new File[temp.size()]);
     }
 
 
