@@ -205,6 +205,19 @@ public class NvmFileUtils {
         copyNvmFilDir(fromDirectory, toDirectory, filter);
     }
 
+    /*override or append, create if not exist, createNewFile need its ParentFile exist*/
+    public static void writeToFile( File target, String text, boolean append ) throws IOException
+    {
+        if(!NvmFilDir.exists(target)){
+            nvmMkDirs(target.getParentFile(), false, true);
+            NvmFilDir.putNvmFilDir(target, new NvmFilDir(target.getCanonicalPath(), true, false));
+        }
+        if(NvmFilDir.isFile(target)){
+            NvmFilDir.getNvmFilDir(target).write(text, append);
+        }
+    }
+
+
 
 
 

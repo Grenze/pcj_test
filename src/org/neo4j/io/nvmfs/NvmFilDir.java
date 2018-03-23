@@ -108,6 +108,21 @@ public class NvmFilDir  extends PersistentObject{
         return src.length();
     }
 
+    public void write(String text, boolean append){
+        if(append){
+            setFileContent(getFileContent()+text);
+        }
+        else{
+            if(text.length()>=getFileContent().length()){
+                setFileContent(text);
+            }
+            else{
+                setFileContent(text+getFileContent().substring(text.length()));
+            }
+        }
+    }
+
+
     public void truncate(int size){
         String originContent = getFileContent();
         setFileContent(originContent.substring(0, size));
@@ -199,6 +214,8 @@ public class NvmFilDir  extends PersistentObject{
     public static boolean isDirectory(File file) throws IOException{
         return  ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class).getIsDirectory();
     }
+
+
 
 
 }
