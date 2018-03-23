@@ -1,8 +1,6 @@
 package org.neo4j.io.nvmfs;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
 
@@ -10,21 +8,17 @@ public class NvmStoreFileChannel implements NvmStoreChannel
 {
     private final NvmFilDir nvmFile;
     private int localPosition;
-    private final FileChannel channel;
 
     public NvmStoreFileChannel(NvmFilDir file)
     {
         this.nvmFile = file;
         this.localPosition = 0;
-        this.channel = null;
     }
     //copy
     public NvmStoreFileChannel(NvmStoreFileChannel nvmchannel)
     {
         this.nvmFile = nvmchannel.nvmFile;
         this.localPosition = nvmchannel.localPosition;
-        this.channel = null;
-
     }
     //convert ByteBuffer to String
     private String byteBufferToString( ByteBuffer buf ){
@@ -208,8 +202,7 @@ public class NvmStoreFileChannel implements NvmStoreChannel
     }
 
     @Override
-    public void flush() throws IOException
-    {
+    public void flush() {
         force( false );
     }
 

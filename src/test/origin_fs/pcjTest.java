@@ -221,8 +221,9 @@ public class pcjTest {
         //eng0.changeProject("hahaha");
         System.out.println(eng0.getProject());
         //Engineer eng1 = new Engineer(1,"heaven","sun","fill");
-        //ObjectDirectory.put("1",eng0);
+        ObjectDirectory.put("1",eng0);
         //ObjectDirectory.put("2",eng0);
+        System.out.println(ObjectDirectory.get("1", Engineer.class));
 
         //ObjectDirectory.remove("1",Engineer.class);
         //Engineer eng2 = ObjectDirectory.get("2",Engineer.class);

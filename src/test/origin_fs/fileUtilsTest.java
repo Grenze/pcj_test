@@ -49,7 +49,9 @@ public class fileUtilsTest {
              * it will start at a new line
              * */
 
-            System.out.println(new File("0/lll").getCanonicalPath());
+            System.out.println(new File("Dir_test/ex").getCanonicalFile().getName());
+            System.out.println(new File("Dir_test/ex").getParentFile().getCanonicalPath());
+            System.out.println(new File("Dir_test/ex").getCanonicalFile().getParent());
             //System.out.println(FileUtils.isEmptyDirectory(new File("Dir_test")));
             FileUtils.newFilePrintWriter(new File("Dir_test/File/File1"), StandardCharsets.UTF_8).append("Franxx ").flush();
             //Channels.newOutputStream()

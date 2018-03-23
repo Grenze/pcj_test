@@ -7,9 +7,6 @@ import lib.util.persistent.types.BooleanField;
 import lib.util.persistent.types.ObjectType;
 import lib.util.persistent.types.StringField;
 
-import java.io.File;
-import java.io.IOException;
-
 import static lib.util.persistent.Util.persistent;
 
 public class NvmFilDir  extends PersistentObject{
@@ -21,9 +18,9 @@ public class NvmFilDir  extends PersistentObject{
 
     private static final ObjectType<NvmFilDir> TYPE = ObjectType.withFields(NvmFilDir.class, GLOBALID, LOCALINDEX, FILECONTENT, ISFILE, ISDIRECTORY);
 
-    public NvmFilDir(File file, boolean isFile, boolean isDirectory) throws IOException {
+    public NvmFilDir(String uniqueFileName, boolean isFile, boolean isDirectory){
         super(TYPE);
-        setGlobalId(file.getCanonicalPath().toString());
+        setGlobalId(uniqueFileName);
         setLocalIndex("");
         setFileContent("");
         setIsFile(isFile);
@@ -132,8 +129,8 @@ public class NvmFilDir  extends PersistentObject{
         }
     }
 
-    public static boolean exists(File file) throws IOException {
-        return ObjectDirectory.get(file.getCanonicalPath().toString(), NvmFilDir.class)!=null;
+    public static boolean exists(String uniqueFileName){
+        return ObjectDirectory.get(uniqueFileName, NvmFilDir.class)!=null;
     }
 
     //"/"not used in file's name
