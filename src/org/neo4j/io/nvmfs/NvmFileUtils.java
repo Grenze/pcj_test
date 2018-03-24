@@ -76,15 +76,15 @@ public class NvmFileUtils {
         NvmFilDir.getNvmFilDir(getCanonicalParentSafely(dst)).increaseLocalIndex(src);
 
         NvmFilDir srcFilDir = NvmFilDir.getNvmFilDir(src);
-        srcFilDir.renameNvmFilDir(src, dst);//index changed from src to dst, inner globalId changed too
+        srcFilDir.renameSelf(src, dst);//index changed from src to dst, inner globalId changed too
 
         if(NvmFilDir.isFile(dst) || NvmFilDir.isEmpty(dst)){
             return;
         }
         for(String key: NvmFilDir.getNvmFilDirDirectory()){
             if(key.startsWith(src.getCanonicalPath())){
-                NvmFilDir subFilDir = NvmFilDir.removeNvmFilDir(new File(key));
-                subFilDir.renameNvmFilDir(new File(key), new File(dst, key.substring(src.getCanonicalPath().length())));
+                NvmFilDir subFilDir = NvmFilDir.getNvmFilDir(new File(key));
+                subFilDir.renameSelf(new File(key), new File(dst, key.substring(src.getCanonicalPath().length())));
             }
         }
     }

@@ -174,9 +174,8 @@ public class NvmFilDir  extends PersistentObject{
         return getLocalIndex().substring(1).split("/");
     }
 
-    public void renameNvmFilDir(File src, File dst) throws IOException{
+    public void renameSelf(File src, File dst) throws IOException{
         setGlobalId(dst.getCanonicalPath());
-        System.out.println(src.getCanonicalPath()+" "+dst.getCanonicalPath());
         NvmFilDir.putNvmFilDir(dst,NvmFilDir.removeNvmFilDir(src));
     }
 
