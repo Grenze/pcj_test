@@ -11,8 +11,7 @@ import lib.util.persistent.types.StringField;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.*;
 
 import static lib.util.persistent.Util.persistent;
 
@@ -182,21 +181,9 @@ public class NvmFilDir  extends PersistentObject{
 
 
     public static boolean exists(File file) throws IOException {
-        return ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class)!=null;
+        return (ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class)!=null);
     }
 
-
-    //ObjectDirectory's HashMap's key format: mark + class.getName()
-    public static Set<String> getNvmFilDirDirectory(){
-        Set<String> nvmFilDirDirectory = null;
-        String nvmClass = NvmFilDir.class.getName();
-        for(PersistentString key: ObjectDirectory.getDirectory()){
-            if(key.toString().endsWith(nvmClass)){
-                nvmFilDirDirectory.add(key.toString().replace(nvmClass,""));
-            }
-        }
-        return nvmFilDirDirectory;
-    }
 
     public static NvmFilDir removeNvmFilDir(File file) throws IOException{
         return ObjectDirectory.remove(file.getCanonicalPath(), NvmFilDir.class);
@@ -225,6 +212,9 @@ public class NvmFilDir  extends PersistentObject{
     }
 
     public static boolean isDirectory(File file) throws IOException{
+        if(ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class)==null){
+            return true;
+        }
         return  ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class).getIsDirectory();
     }
 
@@ -241,6 +231,37 @@ public class NvmFilDir  extends PersistentObject{
             }
         }
         return (File[])temp.toArray(new File[temp.size()]);
+    }
+
+
+    //ObjectDirectory's HashMap's key format: mark + class.getName()
+    public static Set<String> getNvmFilDirDirectory(){
+        Set<String> nvmFilDirDirectory = null;
+        String nvmClass = NvmFilDir.class.getName();
+        for(PersistentString key: ObjectDirectory.getDirectory()){
+            if(key.toString().endsWith(nvmClass)){
+                nvmFilDirDirectory.add(key.toString().replace(nvmClass,""));
+            }
+        }
+        return nvmFilDirDirectory;
+    }
+
+    //Print ObjectDirectory's HashMap's key Set
+    public static void PrintDirectory(Class cls){
+        List<PersistentString> setList = new ArrayList<>(ObjectDirectory.getDirectory());
+        Collections.sort(setList, new Comparator<PersistentString>() {
+            @Override
+            public int compare(PersistentString s1, PersistentString s2) {
+                //if(s1.toString().split("/").length == s2.toString().split("/").length){
+                    return s1.toString().replace(cls.getName(),"").compareTo(s2.toString().replace(cls.getName(),""));
+                //}
+                //return s1.toString().split("/").length - s2.toString().split("/").length;
+            }
+        });
+        System.out.println("----"+cls.getName()+"----");
+        for(PersistentString key: setList){
+            System.out.println(key.toString().replace(cls.getName(),""));
+        }
     }
 
 

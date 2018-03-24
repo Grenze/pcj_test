@@ -17,7 +17,7 @@ public class NvmFileUtils {
         {
             return;
         }
-        File parentDirectory = file.getParentFile();
+        File parentDirectory = file.getCanonicalFile().getParentFile();
         NvmFilDir.getNvmFilDir(parentDirectory).decreaseLocalIndex(file);
 
         NvmFilDir.removeNvmFilDir(file);
@@ -71,9 +71,9 @@ public class NvmFileUtils {
 
     //parent itself child
     private static void renameNvmFilDir(File src, File dst) throws IOException {
-        NvmFilDir.getNvmFilDir(src.getParentFile()).decreaseLocalIndex(src);
-        nvmMkDirs(dst.getParentFile(), false, true);
-        NvmFilDir.getNvmFilDir(dst.getParentFile()).increaseLocalIndex(src);
+        NvmFilDir.getNvmFilDir(src.getCanonicalFile().getParentFile()).decreaseLocalIndex(src);
+        nvmMkDirs(dst.getCanonicalFile().getParentFile(), false, true);
+        NvmFilDir.getNvmFilDir(dst.getCanonicalFile().getParentFile()).increaseLocalIndex(src);
 
         NvmFilDir srcFilDir = NvmFilDir.getNvmFilDir(src);
         srcFilDir.renameNvmFilDir(src, dst);//index changed from src to dst, inner globalId changed too
@@ -94,8 +94,8 @@ public class NvmFileUtils {
         if(!nvmMkFilDir(file, isFile, isDirectory)){
             return;
         }
-        File parentFile = file.getParentFile();
-        if(NvmFilDir.exists(parentFile)){
+        File parentFile = file.getCanonicalFile().getParentFile();
+        if(!NvmFilDir.exists(parentFile)){
             nvmMkDirs(parentFile, false, true);
         }
         NvmFilDir.getNvmFilDir(parentFile).increaseLocalIndex(file);
@@ -130,8 +130,8 @@ public class NvmFileUtils {
         if (NvmFilDir.exists(renameToFile)) {
             throw new FileNotFoundException("Target file[" + renameToFile.getName() + "] already exists");
         }
-        if (!NvmFilDir.isDirectory(renameToFile.getParentFile())) {
-            throw new FileNotFoundException("Target directory[" + renameToFile.getParent() + "] does not exists");
+        if (!NvmFilDir.isDirectory(renameToFile.getCanonicalFile().getParentFile())) {
+            throw new FileNotFoundException("Target directory[" + renameToFile.getCanonicalFile().getParent() + "] does not exists");
         }
         renameNvmFilDir(srcFile, renameToFile);
         return true;
@@ -177,18 +177,18 @@ public class NvmFileUtils {
 
         for(String key: NvmFilDir.getNvmFilDirDirectory()){
             if(key.startsWith(fromDirectory.getCanonicalPath()) && filter.accept(new File(key))){
-                NvmFilDir.copyNvmFilDir(new File(key), new File(toDirectory, key.substring(fromDirectory.getParentFile().getCanonicalPath().length())) );
+                NvmFilDir.copyNvmFilDir(new File(key), new File(toDirectory, key.substring(fromDirectory.getCanonicalFile().getParentFile().getCanonicalPath().length())) );
             }
         }
     }
 
-    /*copy srcFile to the path of dstFile.getParentFile(), name changed*/
+    /*copy srcFile to the path of dstFile's ParentFile, name changed*/
     public static void copyFile( File srcFile, File dstFile ) throws IOException{
         if(NvmFilDir.exists(dstFile)){
             return;
         }
-        nvmMkDirs(dstFile.getParentFile(), false, true);
-        NvmFilDir.getNvmFilDir(dstFile.getParentFile()).increaseLocalIndex(dstFile);
+        nvmMkDirs(dstFile.getCanonicalFile().getParentFile(), false, true);
+        NvmFilDir.getNvmFilDir(dstFile.getCanonicalFile().getParentFile()).increaseLocalIndex(dstFile);
 
         NvmFilDir.copyNvmFilDir(srcFile, dstFile);
     }
@@ -211,8 +211,9 @@ public class NvmFileUtils {
     public static void writeToFile( File target, String text, boolean append ) throws IOException
     {
         if(!NvmFilDir.exists(target)){
-            nvmMkDirs(target.getParentFile(), false, true);
+            nvmMkDirs(target.getCanonicalFile().getParentFile(), false, true);
             NvmFilDir.putNvmFilDir(target, new NvmFilDir(target.getCanonicalPath(), true, false));
+            NvmFilDir.getNvmFilDir(target.getCanonicalFile().getParentFile()).increaseLocalIndex(target);
         }
         if(NvmFilDir.isFile(target)){
             NvmFilDir.getNvmFilDir(target).write(text, append);
@@ -318,6 +319,10 @@ public class NvmFileUtils {
     //return with the content of file extend with a "\n"*/
     public static String readTextFile( File file, Charset charset ) throws IOException
     {
+        if (NvmFilDir.isDirectory(file)) {
+            throw new IllegalArgumentException(
+                    "Source must be a file, not " + file);
+        }
         return (NvmFilDir.getNvmFilDir(file).readAll()+"\n");
     }
 
@@ -429,6 +434,10 @@ public class NvmFileUtils {
         }
         return Files.newOutputStream( path, options );
     }*/
+
+    public static void printDirectory(){
+        NvmFilDir.PrintDirectory(NvmFilDir.class);
+    }
 
 
 

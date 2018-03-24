@@ -217,8 +217,9 @@ public class pcjTest {
          * */
 
         //Engineer eng0 = new Engineer(0,"ghost","umbrella","clear");
-        Employee stuff = new Employee(0, "lin", "umbrella");
-        ObjectDirectory.put("1", stuff);
+        System.out.println(persistent("hello"));
+        //Employee stuff = new Employee(0, "lin", "umbrella");
+        System.out.println(ObjectDirectory.get("1", Employee.class)!=null);
         ObjectDirectory.remove("1",Employee.class);
         ObjectDirectory.remove("1",Employee.class);
 

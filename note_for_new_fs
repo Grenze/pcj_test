@@ -144,6 +144,6 @@ static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
    }
 
 
-
+18.getCanonicalFile().getParentFile() in order or you will get nullPoint
 
 
