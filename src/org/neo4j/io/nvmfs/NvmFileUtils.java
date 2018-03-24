@@ -202,6 +202,7 @@ public class NvmFileUtils {
 
     public static void copyRecursively( File fromDirectory, File toDirectory, FileFilter filter) throws IOException
     {
+        //already exist
         if(NvmFilDir.exists(toDirectory)){
             return;
         }
