@@ -1,19 +1,41 @@
 import org.neo4j.io.nvmfs.NvmFileUtils;
+import org.neo4j.io.nvmfs.NvmStoreFileChannel;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 
 
 public class Main {
     public static void main(String[] agrs) throws IOException {
 
         //Utiltest.testAll();
-        //NvmFileUtils.writeToFile(new File("dir1/file1"), "Violate 123456789", false);
+        NvmFileUtils.writeToFile(new File("dir1/file1"), "Violate 123456789", false);
+        NvmStoreFileChannel nvmsfc = NvmFileUtils.open(new File("dir1/file1").toPath(), "");
+        System.out.println(nvmsfc.position());
+        nvmsfc.position(1);
+        ByteBuffer buf0 = ByteBuffer.allocate(6);
+        ByteBuffer buf1 = ByteBuffer.allocate(6);
+        ByteBuffer[] bufs = new ByteBuffer[2];
+        bufs[0] = buf0;
+        bufs[1] = buf1;
+        buf0.put("Hello!".getBytes());
+        buf0.flip();
+        buf1.put("World!".getBytes());
+        buf1.flip();
+        nvmsfc.write(bufs, 1, 1);
+        buf0.clear();
+        buf1.clear();
+        nvmsfc.position(0);
+        nvmsfc.read(bufs);
+        buf0.flip();
+        printBuffer(buf0);
         //NvmFileUtils.truncateFile(new File("file1"), 15);
         //NvmFileUtils.moveFile(new File("dir1/file1"), new File("dir1/dir2/file1"));
         //NvmFileUtils.copyFile(new File("file1"), new File("MFile/X1/file1"));
         //NvmFileUtils.moveFileToDirectory(new File("file1"), new File("MFile/M1"));
-        NvmFileUtils.copyRecursively(new File("dir1"), new File("dir1/dir2"));
+        //NvmFileUtils.copyRecursively(new File("dir1"), new File("dir1/dir2"));
 
         //System.out.println(NvmFilDir.removeNvmFilDir(new File("MFile/M1/file2")).getSize());
 
@@ -28,7 +50,7 @@ public class Main {
 
         //System.out.println(new File("../../../../..").getCanonicalFile().getParentFile());
         //System.out.println(NvmFilDir.exists(new File("../../../../")));
-        //System.out.println(NvmFileUtils.readTextFile(new File("MFile/F1/file1"), Charset.forName("utf8")));
+        System.out.println(NvmFileUtils.readTextFile(new File("dir1/file1"), Charset.forName("utf8")));
         System.out.print("----bottom line----");
 
 
@@ -40,5 +62,10 @@ public class Main {
         }
     }
 
+    public static void printBuffer(ByteBuffer buf) {
+        while (buf.hasRemaining()) {
+            System.out.print((char)buf.get());
+        }
+    }
 }
 
