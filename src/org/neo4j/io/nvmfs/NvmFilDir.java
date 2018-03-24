@@ -11,7 +11,10 @@ import lib.util.persistent.types.StringField;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import static lib.util.persistent.Util.persistent;
 
@@ -173,6 +176,7 @@ public class NvmFilDir  extends PersistentObject{
 
     public void renameNvmFilDir(File src, File dst) throws IOException{
         setGlobalId(dst.getCanonicalPath());
+        System.out.println(src.getCanonicalPath()+" "+dst.getCanonicalPath());
         NvmFilDir.putNvmFilDir(dst,NvmFilDir.removeNvmFilDir(src));
     }
 
@@ -235,21 +239,21 @@ public class NvmFilDir  extends PersistentObject{
 
 
     //ObjectDirectory's HashMap's key format: mark + class.getName()
-    public static Set<String> getNvmFilDirDirectory(){
-        Set<String> nvmFilDirDirectory = null;
+    public static List<String> getNvmFilDirDirectory(){
+        List<String> keyList = new ArrayList<>();
         String nvmClass = NvmFilDir.class.getName();
         for(PersistentString key: ObjectDirectory.getDirectory()){
             if(key.toString().endsWith(nvmClass)){
-                nvmFilDirDirectory.add(key.toString().replace(nvmClass,""));
+                keyList.add(key.toString().replace(nvmClass,""));
             }
         }
-        return nvmFilDirDirectory;
+        return keyList;
     }
 
     //Print ObjectDirectory's HashMap's key Set
     public static void PrintDirectory(Class cls){
-        List<PersistentString> setList = new ArrayList<>(ObjectDirectory.getDirectory());
-        Collections.sort(setList, new Comparator<PersistentString>() {
+        List<PersistentString> keyList = new ArrayList<>(ObjectDirectory.getDirectory());
+        Collections.sort(keyList, new Comparator<PersistentString>() {
             @Override
             public int compare(PersistentString s1, PersistentString s2) {
                 //if(s1.toString().split("/").length == s2.toString().split("/").length){
@@ -259,7 +263,7 @@ public class NvmFilDir  extends PersistentObject{
             }
         });
         System.out.println("----"+cls.getName()+"----");
-        for(PersistentString key: setList){
+        for(PersistentString key: keyList){
             System.out.println(key.toString().replace(cls.getName(),""));
         }
     }
