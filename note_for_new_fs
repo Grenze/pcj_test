@@ -1,6 +1,5 @@
 1.for nvm, every param type of File or Path should:
-    a.first convert to File.getCanonicalPath()[unique for ObjectDirectory]
-    b.second convert to String to identify file or directory[global id]
+    convert to File.getCanonicalPath()[unique for ObjectDirectory]
 
 2.getName() and getParentFile() supported by java.io.File
 

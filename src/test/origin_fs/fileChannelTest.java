@@ -1,11 +1,11 @@
 package test.origin_fs;
 
-import org.neo4j.io.fs.StoreFileChannel;
-
+import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 
 public class fileChannelTest {
     public static void testStoreFileChannel (){
@@ -28,16 +28,20 @@ public class fileChannelTest {
         //System.out.println(bufs.length);*/
 
         try {
-            FileChannel fchannel = new RandomAccessFile("text","rw").getChannel();
+            RandomAccessFile raf = new RandomAccessFile("text","rw");
+            FileChannel fchannel = raf.getChannel();
+            //raf.close();
+            //fchannel.close();
+
             //FileUtils.moveFileToDirectory(new File("text"), new File("Dir_test"));
             //fchannel.truncate(50);
-            //Files.delete(new File("text1").toPath());
+            Files.delete(new File("text").toPath());
             //fchannel.write(buf0);
             //System.out.println(testchannel.tryLock().isValid());
-            StoreFileChannel Schannel1 = new StoreFileChannel(fchannel);
+            /*StoreFileChannel Schannel1 = new StoreFileChannel(fchannel);
             StoreFileChannel Schannel2 = new StoreFileChannel(Schannel1);
             //Files.delete(new File("text1").toPath());
-            fchannel.write(buf0);
+            Schannel1.write(buf0);
             System.out.println(Schannel1.position());
             System.out.println(Schannel2.position());
 
@@ -53,7 +57,7 @@ public class fileChannelTest {
 
             System.out.println(Schannel1.position());
             System.out.println(Schannel2.position());
-            System.out.println(Schannel3.position());
+            System.out.println(Schannel3.position());*/
 
 
 
@@ -97,6 +101,7 @@ public class fileChannelTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
     }
 

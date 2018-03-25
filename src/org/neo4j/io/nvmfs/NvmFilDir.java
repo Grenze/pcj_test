@@ -94,6 +94,10 @@ public class NvmFilDir  extends PersistentObject{
     }
 
 
+
+    /*above set/get method*/
+
+
     public int write(String src, int position){
         if(src.length() == 0 || position < 0){return 0;}
         String originContent = getFileContent();
@@ -181,6 +185,7 @@ public class NvmFilDir  extends PersistentObject{
 
 
     /*below are static methods*/
+
 
 
     public static boolean exists(File file) throws IOException {

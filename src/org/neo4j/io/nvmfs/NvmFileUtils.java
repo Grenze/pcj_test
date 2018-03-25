@@ -147,8 +147,13 @@ public class NvmFileUtils {
     /*realised by NvmStoreFileChannel*/
     public static void truncateFile( File file, long position ) throws IOException
     {
-         NvmStoreFileChannel access = new NvmStoreFileChannel(NvmFilDir.getNvmFilDir(file));
-         truncateFile( access, position );
+        if(NvmFilDir.isFile(file)){
+            NvmStoreFileChannel access = new NvmStoreFileChannel(NvmFilDir.getNvmFilDir(file));
+            truncateFile( access, position );
+        }
+        else{
+            throw new IllegalArgumentException("Parameter first must be a file exist");
+        }
     }
 
     /*

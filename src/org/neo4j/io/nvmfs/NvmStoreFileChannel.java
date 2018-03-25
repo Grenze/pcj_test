@@ -6,8 +6,8 @@ import java.nio.channels.FileLock;
 
 public class NvmStoreFileChannel implements NvmStoreChannel
 {
-    private final NvmFilDir nvmFile;
-    private final sharePosition locate;
+    private NvmFilDir nvmFile;
+    private sharePosition locate;
 
     private class sharePosition{
         public int position;
@@ -16,17 +16,21 @@ public class NvmStoreFileChannel implements NvmStoreChannel
         }
     }
 
+    //new channel connect to nvmFilDir with position 0
     public NvmStoreFileChannel(NvmFilDir file)
     {
         this.nvmFile = file;
         this.locate = new sharePosition();
+
     }
-    //copy
+
+    //copy and new channel connect to nvmFilDir with copied's position
     public NvmStoreFileChannel(NvmStoreFileChannel nvmchannel)
     {
         this.nvmFile = nvmchannel.nvmFile;
         this.locate = nvmchannel.locate;
     }
+
     //convert ByteBuffer to String
     private String byteBufferToString( ByteBuffer buf ){
         String bufStr = "";
@@ -35,6 +39,7 @@ public class NvmStoreFileChannel implements NvmStoreChannel
         }
         return bufStr;
     }
+
     //convert ByteBuffers to String
     private String  byteBuffersToString( ByteBuffer[] bufs, int offset, int length ){
         String bufsStr = "";
@@ -192,9 +197,7 @@ public class NvmStoreFileChannel implements NvmStoreChannel
     }
 
     @Override
-    public void close() {
-        return;
-    }
+    public void close() {return;}
 
     /*size of file*/
     @Override
