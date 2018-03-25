@@ -65,9 +65,6 @@ public class Main {
         NvmFileUtils.moveFile(new File("dir1/file1"), new File("dir3/fileMoveFromDir1_To_Dir3"));
         NvmFileUtils.printDirectory();
 
-        NvmFileUtils.moveFile(new File("dir1"), new File("dir1/dir11"));
-        NvmFileUtils.printDirectory();
-
         NvmFileUtils.moveFileToDirectory(new File("dir3/file3"), new File("dir1/dir11"));
         NvmFileUtils.printDirectory();
 

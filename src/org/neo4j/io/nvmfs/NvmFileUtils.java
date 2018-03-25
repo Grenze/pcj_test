@@ -71,22 +71,19 @@ public class NvmFileUtils {
         if (NvmFilDir.exists(dst)) {
             throw new FileNotFoundException("Target file[" + dst.getCanonicalPath() + "] already exists");
         }
+        NvmFilDir.getNvmFilDir(getCanonicalParentSafely(src)).decreaseLocalIndex(src);
         nvmMkDirs(getCanonicalParentSafely(dst), false, true);
         NvmFilDir.getNvmFilDir(getCanonicalParentSafely(dst)).increaseLocalIndex(dst);
 
         //NvmFilDir srcFilDir = NvmFilDir.getNvmFilDir(src);//is included in the loop underneath
         //srcFilDir.renameSelf(src, dst);//index changed from src to dst, inner globalId changed too
 
+        if(!dst.getCanonicalPath().startsWith(src.getCanonicalPath())){
+            throw new IOException("Don't move a directory to a sub directory!");
+        }
         if(NvmFilDir.isFile(src) || NvmFilDir.isEmpty(src)){
-            if(!dst.getCanonicalPath().startsWith(src.getCanonicalPath())){
-                NvmFilDir.getNvmFilDir(getCanonicalParentSafely(src)).decreaseLocalIndex(src);
-                NvmFilDir srcFilDir = NvmFilDir.getNvmFilDir(src);//is included in the loop underneath
-                srcFilDir.renameSelf(src, dst);//index changed from src to dst, inner globalId changed too
-            }
-            //srcDirectory's sub directory, so keep and copy it, also keep srcDirectory's parent's localIndex
-            else{
-                NvmFilDir.copyNvmFilDir(src, dst);
-            }
+            NvmFilDir srcFilDir = NvmFilDir.getNvmFilDir(src);//is included in the loop underneath
+            srcFilDir.renameSelf(src, dst);//index changed from src to dst, inner globalId changed too
             return;
         }
         for(String key: NvmFilDir.getNvmFilDirDirectory()){
