@@ -231,18 +231,6 @@ public class NvmFileUtils {
         }
     }
 
-    //backward: read all of the file's content
-    public static BufferedReader newBufferedFileReader(File file, Charset charset ) throws IOException
-    {
-        return new BufferedReader( new InputStreamReader( new ByteArrayInputStream(NvmFilDir.getNvmFilDir(file).readAll().getBytes(charset)), charset) );
-    }
-
-    /*public static PrintWriter newFilePrintWriter( File file, Charset charset ) throws FileNotFoundException{
-        return null;
-    }
-
-    * replaced by writeToFile(file, text, true)
-    */
 
     /*below method keep origin*/
     public static File path( String root, String... path )
@@ -283,34 +271,6 @@ public class NvmFileUtils {
         throw storedIoe;
     }
 
-    public interface LineListener
-    {
-        void line( String line );
-    }
-
-    public static LineListener echo(final PrintStream target )
-    {
-        return new LineListener()
-        {
-            @Override
-            public void line( String line )
-            {
-                target.println( line );
-            }
-        };
-    }
-
-    public static void readTextFile( File file, LineListener listener ) throws IOException
-    {
-        try(BufferedReader reader = new BufferedReader( new FileReader( file ) ))
-        {
-            String line;
-            while ( (line = reader.readLine()) != null )
-            {
-                listener.line( line );
-            }
-        }
-    }
 
     private static boolean mayBeWindowsMemoryMappedFileReleaseProblem( IOException e )
     {
@@ -456,6 +416,49 @@ public class NvmFileUtils {
         }
         return Files.newOutputStream( path, options );
     }
+
+    //backward: read all of the file's content
+    public static BufferedReader newBufferedFileReader(File file, Charset charset ) throws IOException
+    {
+        return new BufferedReader( new InputStreamReader( new ByteArrayInputStream(NvmFilDir.getNvmFilDir(file).readAll().getBytes(charset)), charset) );
+    }
+
+    public static PrintWriter newFilePrintWriter( File file, Charset charset ) {
+        return null;
+    }
+
+    /* replaced by writeToFile(file, text, true)*/
+
+    public interface LineListener
+    {
+        void line( String line );
+    }
+
+
+    public static LineListener echo(final PrintStream target )
+    {
+        return new LineListener()
+        {
+            @Override
+            public void line( String line )
+            {
+                target.println( line );
+            }
+        };
+    }
+
+    public static void readTextFile( File file, LineListener listener ) throws IOException
+    {
+        try(BufferedReader reader = new BufferedReader( new FileReader( file ) ))
+        {
+            String line;
+            while ( (line = reader.readLine()) != null )
+            {
+                listener.line( line );
+            }
+        }
+    }
+
 
 
 
