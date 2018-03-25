@@ -20,22 +20,43 @@ public class fileChannelTest {
         String newData1 = "Franxx String to write to file..."+System.currentTimeMillis();
         bufs[0].put("".getBytes());
         buf0.flip();
-        System.out.println(buf0.limit());
-        System.out.println(buf0.capacity());
+        //System.out.println(buf0.limit());
+        //System.out.println(buf0.capacity());
         printBuffer(buf0);
         //buf1.put(newData1.getBytes());
         //bufs[1].flip();
         //System.out.println(bufs.length);*/
 
         try {
-            FileChannel testchannel = new RandomAccessFile("text","rw").getChannel();
-            testchannel.position(1);
-            testchannel.truncate(50);
+            FileChannel fchannel = new RandomAccessFile("text","rw").getChannel();
+            //testchannel.truncate(50);
             //Files.delete(new File("text1").toPath());
             //testchannel.write(buf0);
             //System.out.println(testchannel.tryLock().isValid());
-            StoreFileChannel testchannel1 = new StoreFileChannel(testchannel);
-            System.out.println(testchannel1.position());
+            StoreFileChannel Schannel1 = new StoreFileChannel(fchannel);
+            StoreFileChannel Schannel2 = new StoreFileChannel(Schannel1);
+            System.out.println(Schannel1.position());
+            System.out.println(Schannel2.position());
+
+            fchannel.position(1);
+
+            System.out.println(Schannel1.position());
+            System.out.println(Schannel2.position());
+
+            FileChannel fchannel1 = new RandomAccessFile("text","rw").getChannel();
+            fchannel1.position(100);
+            StoreFileChannel Schannel3 = new StoreFileChannel(fchannel1);
+
+
+            System.out.println(Schannel1.position());
+            System.out.println(Schannel2.position());
+            System.out.println(Schannel3.position());
+
+
+
+
+
+
             //String a = null;
             //System.out.println(a == null);
             //String f = "123/456/789";
