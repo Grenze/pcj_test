@@ -78,7 +78,7 @@ public class NvmFileUtils {
         //NvmFilDir srcFilDir = NvmFilDir.getNvmFilDir(src);//is included in the loop underneath
         //srcFilDir.renameSelf(src, dst);//index changed from src to dst, inner globalId changed too
 
-        if(!dst.getCanonicalPath().startsWith(src.getCanonicalPath())){
+        if(dst.getCanonicalPath().startsWith(src.getCanonicalPath())){
             throw new IOException("Don't move a directory to a sub directory!");
         }
         if(NvmFilDir.isFile(src) || NvmFilDir.isEmpty(src)){
