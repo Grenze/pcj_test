@@ -1,17 +1,15 @@
-import org.neo4j.io.nvmfs.NvmFileUtils;
 import test.origin_fs.Utiltest;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 
 
 public class Main {
-    public static void main(String[] agrs) throws IOException {
+    public static void main(String[] agrs) {
 
         Utiltest.testAll();
 
-        NvmFileUtils.writeToFile(new File("dir1/file1"), "Violate 123456789", false);
+        /*NvmFileUtils.writeToFile(new File("dir1/file1"), "Violate 123456789", false);
         NvmFileUtils.writeToFile(new File("dir2/file2"), "Violate 123456789", false);
         NvmFileUtils.writeToFile(new File("dir3/file3"), "Violate 123456789", false);
         NvmFileUtils.printDirectory();
@@ -23,7 +21,7 @@ public class Main {
         NvmFileUtils.printDirectory();
 
         NvmFileUtils.copyRecursively(new File("dir3"), new File("dir3/dir2"));
-        NvmFileUtils.printDirectory();
+        NvmFileUtils.printDirectory();*/
 
         /*NvmFileUtils.deleteFile(new File("dir1"));
         NvmFileUtils.printDirectory();

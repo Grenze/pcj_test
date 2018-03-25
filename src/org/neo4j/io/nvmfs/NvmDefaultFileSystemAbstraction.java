@@ -12,6 +12,7 @@ public class NvmDefaultFileSystemAbstraction implements NvmFileSystemAbstraction
     //mode not used yet
     @Override
     public NvmStoreFileChannel open(File fileName, String mode) throws IOException {
+        NvmFileUtils.nvmMkDirs(fileName, true, false);//ensure there is NvmFilDir with fileName
         return new NvmStoreFileChannel(NvmFilDir.getNvmFilDir(fileName));
     }
 
@@ -38,16 +39,14 @@ public class NvmDefaultFileSystemAbstraction implements NvmFileSystemAbstraction
 
     @Override
     public NvmStoreFileChannel create(File fileName) throws IOException {
-        return new NvmStoreFileChannel(NvmFilDir.getNvmFilDir(fileName));
-    }
-
-    @Override
-    public boolean fileExists(File fileName) throws IOException {
-        return NvmFilDir.exists(fileName);
+        return open(fileName, "rw");
     }
 
     @Override
     public boolean mkdir(File fileName) throws IOException {
+        if(fileName.toString().split("/").length>1){
+            return false;
+        }
         NvmFileUtils.nvmMkDirs(fileName, false, true);
         return true;
     }
@@ -55,6 +54,11 @@ public class NvmDefaultFileSystemAbstraction implements NvmFileSystemAbstraction
     @Override
     public void mkdirs(File fileName) throws IOException {
         NvmFileUtils.nvmMkDirs(fileName, false, true);
+    }
+
+    @Override
+    public boolean fileExists(File fileName) throws IOException {
+        return NvmFilDir.exists(fileName);
     }
 
     @Override

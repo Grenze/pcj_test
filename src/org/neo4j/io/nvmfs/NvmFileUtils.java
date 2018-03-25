@@ -93,7 +93,7 @@ public class NvmFileUtils {
 
     //mk current layer then make or prove higher and finally connect them
     public static void nvmMkDirs(File file, boolean isFile, boolean isDirectory) throws IOException {
-        if(!nvmMkFilDir(file, isFile, isDirectory)){
+        if(nvmMkFilDir(file, isFile, isDirectory)){
             return;
         }
         File parentFile = getCanonicalParentSafely(file);
@@ -107,8 +107,9 @@ public class NvmFileUtils {
     //if already exists, MkFilDir failed
     public static boolean nvmMkFilDir(File file, boolean isFile, boolean isDirectory) throws IOException{
         if(NvmFilDir.exists(file)){
-            return false;
+            return true;
         }
+
         NvmFilDir nfd = new NvmFilDir(file.getCanonicalPath(), isFile, isDirectory);
         nfd.force(true);
         return true;
