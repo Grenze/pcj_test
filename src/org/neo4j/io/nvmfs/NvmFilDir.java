@@ -211,6 +211,9 @@ public class NvmFilDir  extends PersistentObject{
     }
 
     public static boolean isFile(File file) throws IOException{
+        if(ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class)==null){
+            return false;
+        }
         return ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class).getIsFile();
     }
 
@@ -261,10 +264,11 @@ public class NvmFilDir  extends PersistentObject{
                 //return s1.toString().split("/").length - s2.toString().split("/").length;
             }
         });
-        System.out.println("----"+cls.getName()+"----");
+        System.out.println("Begin Print----"+cls.getName()+"----");
         for(PersistentString key: keyList){
             System.out.println(key.toString().replace(cls.getName(),""));
         }
+        System.out.println("End Print----"+cls.getName()+"----");
     }
 
 

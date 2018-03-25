@@ -72,7 +72,7 @@ public class Main {
         //NvmFileUtils.renameFile(new File("MFile/M1/"), new File("MFile/F1"));
         //NvmDefaultFileSystemAbstraction ndfs = new NvmDefaultFileSystemAbstraction();
         //printFiles(ndfs.listFiles(new File("dir1")));
-        NvmFileUtils.printDirectory();
+        //NvmFileUtils.printDirectory();
         //NvmFileUtils.copyRecursively(new File("MFile"),new File("MFile/X1"));
 
         //NvmFileUtils.deleteRecursively(new File("MFile"));

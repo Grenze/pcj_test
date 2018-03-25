@@ -21,6 +21,10 @@ public class NvmFileUtils {
         NvmFilDir.getNvmFilDir(parentDirectory).decreaseLocalIndex(file);
 
         //NvmFilDir.removeNvmFilDir(file); //is included in the loop underneath
+        if(NvmFilDir.isFile(file) || NvmFilDir.isEmpty(file)){
+            NvmFilDir.removeNvmFilDir(file); //is included in the loop underneath
+            return;
+        }
 
         for(String key: NvmFilDir.getNvmFilDirDirectory()){
             if(key.startsWith(file.getCanonicalPath())){
@@ -56,21 +60,17 @@ public class NvmFileUtils {
     }
 
     public static void moveFile( File toMove, File target ) throws IOException {
-        /*Source file or directory should exist*/
-        if (!NvmFilDir.exists(toMove)) {
-            throw new FileNotFoundException("Source file[" + toMove.getAbsolutePath()
-                    + "] not found");
-        }
-        /*Target file or directory should not exist*/
-        if (NvmFilDir.exists(target)) {
-            throw new IOException("Target file[" + target.getAbsolutePath()
-                    + "] already exists");
-        }
         renameNvmFilDir(toMove, target);
     }
 
     //parent itself child
     private static void renameNvmFilDir(File src, File dst) throws IOException {
+        if (!NvmFilDir.exists(src)) {
+            throw new FileNotFoundException("Source file[" + src.getCanonicalPath() + "] not found");
+        }
+        if (NvmFilDir.exists(dst)) {
+            throw new FileNotFoundException("Target file[" + dst.getCanonicalPath() + "] already exists");
+        }
         NvmFilDir.getNvmFilDir(getCanonicalParentSafely(src)).decreaseLocalIndex(src);
         nvmMkDirs(getCanonicalParentSafely(dst), false, true);
         NvmFilDir.getNvmFilDir(getCanonicalParentSafely(dst)).increaseLocalIndex(src);
@@ -79,6 +79,8 @@ public class NvmFileUtils {
         //srcFilDir.renameSelf(src, dst);//index changed from src to dst, inner globalId changed too
 
         if(NvmFilDir.isFile(dst) || NvmFilDir.isEmpty(dst)){
+            NvmFilDir srcFilDir = NvmFilDir.getNvmFilDir(src);//is included in the loop underneath
+            srcFilDir.renameSelf(src, dst);//index changed from src to dst, inner globalId changed too
             return;
         }
         for(String key: NvmFilDir.getNvmFilDirDirectory()){
@@ -116,8 +118,9 @@ public class NvmFileUtils {
     public static File moveFileToDirectory( File toMove, File targetDirectory ) throws IOException {
         if (!NvmFilDir.isDirectory(targetDirectory)) {
             throw new IllegalArgumentException(
-                    "Move target must be a directory, not " + targetDirectory);
+                    "Move target must be a directory, not " + targetDirectory.getCanonicalPath());
         }
+
         File target = new File( targetDirectory, toMove.getName() );
         moveFile(toMove, target);
         return target;
@@ -125,12 +128,6 @@ public class NvmFileUtils {
 
     /*bound to call renameTo, but possible locked file, return true when succeed*/
     public static boolean renameFile( File srcFile, File renameToFile ) throws IOException {
-        if (!NvmFilDir.exists(srcFile)) {
-            throw new FileNotFoundException("Source file[" + srcFile.getName() + "] not found");
-        }
-        if (NvmFilDir.exists(renameToFile)) {
-            throw new FileNotFoundException("Target file[" + renameToFile.getName() + "] already exists");
-        }
         if (!NvmFilDir.isDirectory(getCanonicalParentSafely(renameToFile))) {
             throw new FileNotFoundException("Target directory[" + getCanonicalParentSafely(renameToFile) + "] does not exists");
         }
@@ -167,29 +164,36 @@ public class NvmFileUtils {
     }
 
     /*copy fromDirectory to the toDirectory, name changed*/
-    private static void copyNvmFilDir(File fromDirectory, File toDirectory, FileFilter filter) throws IOException{
-        nvmMkDirs(getCanonicalParentSafely(toDirectory), false, true);
-        NvmFilDir.getNvmFilDir(getCanonicalParentSafely(toDirectory)).increaseLocalIndex(toDirectory);
+    private static void copyNvmFilDir(File srcFile, File dstFile, FileFilter filter) throws IOException{
+        if (!NvmFilDir.exists(srcFile)) {
+            throw new FileNotFoundException("Source file[" + srcFile.getCanonicalPath() + "] not found");
+        }
+        if (NvmFilDir.exists(dstFile)) {
+            throw new FileNotFoundException("Target file[" + dstFile.getCanonicalPath() + "] already exists");
+        }
+        nvmMkDirs(getCanonicalParentSafely(dstFile), false, true);
+        NvmFilDir.getNvmFilDir(getCanonicalParentSafely(dstFile)).increaseLocalIndex(dstFile);
 
-        //NvmFilDir.copyNvmFilDir(fromDirectory, toDirectory); //is included in the loop underneath
+        //NvmFilDir.copyNvmFilDir(srcFile, dstFile); //is included in the loop underneath
 
-        if(NvmFilDir.isFile(fromDirectory) || NvmFilDir.isEmpty(fromDirectory)){
+        if(NvmFilDir.isFile(srcFile) || NvmFilDir.isEmpty(srcFile)){
+            NvmFilDir.copyNvmFilDir(srcFile, dstFile); //is included in the loop underneath
             return;
         }
 
         for(String key: NvmFilDir.getNvmFilDirDirectory()){
-            if(key.startsWith(fromDirectory.getCanonicalPath()) && (filter==null || filter.accept(new File(key)))){
-                NvmFilDir.copyNvmFilDir(new File(key), new File(toDirectory, key.substring(fromDirectory.getCanonicalPath().length())) );
+            if(key.startsWith(srcFile.getCanonicalPath()) && (filter==null || filter.accept(new File(key)))){
+                NvmFilDir.copyNvmFilDir(new File(key), new File(dstFile, key.substring(srcFile.getCanonicalPath().length())) );
             }
         }
     }
 
     /*copy srcFile to the path of dstFile's ParentFile, name changed*/
     public static void copyFile( File srcFile, File dstFile ) throws IOException{
-        if(NvmFilDir.exists(dstFile) || !NvmFilDir.exists(srcFile)){
-            return;
+        if( !NvmFilDir.isFile(srcFile )){
+            throw new IllegalArgumentException(
+                    "Source file must be a file, not " + srcFile.getCanonicalPath());
         }
-
         NvmFilDir.copyNvmFilDir(srcFile, dstFile);
     }
 
@@ -201,11 +205,7 @@ public class NvmFileUtils {
     /*keep its origin name, so there should not be the same name file(Dir) under the toDirectory*/
     public static void copyRecursively( File fromDirectory, File toDirectory, FileFilter filter) throws IOException
     {
-        //already exist
-        if(NvmFilDir.exists(toDirectory)|| !NvmFilDir.exists(fromDirectory)){
-            return;
-        }
-        copyNvmFilDir(fromDirectory, new File(toDirectory, fromDirectory.toString()), filter);
+        copyNvmFilDir(fromDirectory, new File(toDirectory, fromDirectory.getName()), filter);
     }
 
     /*override or append, create if not exist, createNewFile need its ParentFile exist*/
@@ -322,7 +322,7 @@ public class NvmFileUtils {
     {
         if (NvmFilDir.isDirectory(file)) {
             throw new IllegalArgumentException(
-                    "Source must be a file, not " + file);
+                    "Source must be a file, not " + file.getCanonicalPath());
         }
         return (NvmFilDir.getNvmFilDir(file).readAll()+"\n");
     }
