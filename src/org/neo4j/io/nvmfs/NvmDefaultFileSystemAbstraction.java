@@ -36,6 +36,8 @@ public class NvmDefaultFileSystemAbstraction implements NvmFileSystemAbstraction
     public Writer openAsWriter(File fileName, Charset charset, boolean append) {
         return null;
     }
+    /*method above not supported yet, supported by NvmFileUtils*/
+
 
     @Override
     public NvmStoreFileChannel create(File fileName) throws IOException {
