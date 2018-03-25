@@ -264,11 +264,11 @@ public class NvmFilDir  extends PersistentObject{
                 //return s1.toString().split("/").length - s2.toString().split("/").length;
             }
         });
-        System.out.println("Begin Print----"+cls.getName()+"----");
+        System.out.println("\n------"+cls.getName()+"------\n");
         for(PersistentString key: keyList){
             System.out.println(key.toString().replace(cls.getName(),""));
         }
-        System.out.println("End Print----"+cls.getName()+"----");
+        System.out.println("\n------"+cls.getName()+"------\n");
     }
 
 

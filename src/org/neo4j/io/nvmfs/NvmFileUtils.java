@@ -71,16 +71,22 @@ public class NvmFileUtils {
         if (NvmFilDir.exists(dst)) {
             throw new FileNotFoundException("Target file[" + dst.getCanonicalPath() + "] already exists");
         }
-        NvmFilDir.getNvmFilDir(getCanonicalParentSafely(src)).decreaseLocalIndex(src);
         nvmMkDirs(getCanonicalParentSafely(dst), false, true);
-        NvmFilDir.getNvmFilDir(getCanonicalParentSafely(dst)).increaseLocalIndex(src);
+        NvmFilDir.getNvmFilDir(getCanonicalParentSafely(dst)).increaseLocalIndex(dst);
 
         //NvmFilDir srcFilDir = NvmFilDir.getNvmFilDir(src);//is included in the loop underneath
         //srcFilDir.renameSelf(src, dst);//index changed from src to dst, inner globalId changed too
 
-        if(NvmFilDir.isFile(dst) || NvmFilDir.isEmpty(dst)){
-            NvmFilDir srcFilDir = NvmFilDir.getNvmFilDir(src);//is included in the loop underneath
-            srcFilDir.renameSelf(src, dst);//index changed from src to dst, inner globalId changed too
+        if(NvmFilDir.isFile(src) || NvmFilDir.isEmpty(src)){
+            if(!dst.getCanonicalPath().startsWith(src.getCanonicalPath())){
+                NvmFilDir.getNvmFilDir(getCanonicalParentSafely(src)).decreaseLocalIndex(src);
+                NvmFilDir srcFilDir = NvmFilDir.getNvmFilDir(src);//is included in the loop underneath
+                srcFilDir.renameSelf(src, dst);//index changed from src to dst, inner globalId changed too
+            }
+            //srcDirectory's sub directory, so keep and copy it, also keep srcDirectory's parent's localIndex
+            else{
+                NvmFilDir.copyNvmFilDir(src, dst);
+            }
             return;
         }
         for(String key: NvmFilDir.getNvmFilDirDirectory()){
@@ -93,7 +99,7 @@ public class NvmFileUtils {
 
     //mk current layer then make or prove higher and finally connect them
     public static void nvmMkDirs(File file, boolean isFile, boolean isDirectory) throws IOException {
-        if(nvmMkFilDir(file, isFile, isDirectory)){
+        if(!nvmMkFilDir(file, isFile, isDirectory)){
             return;
         }
         File parentFile = getCanonicalParentSafely(file);
@@ -107,7 +113,7 @@ public class NvmFileUtils {
     //if already exists, MkFilDir failed
     public static boolean nvmMkFilDir(File file, boolean isFile, boolean isDirectory) throws IOException{
         if(NvmFilDir.exists(file)){
-            return true;
+            return false;
         }
 
         NvmFilDir nfd = new NvmFilDir(file.getCanonicalPath(), isFile, isDirectory);
@@ -397,6 +403,7 @@ public class NvmFileUtils {
     * */
     public static NvmStoreFileChannel open( Path path, String mode ) throws IOException
     {
+        NvmFileUtils.nvmMkDirs(path.toFile(), true, false);//ensure there is NvmFilDir with path
         return new NvmStoreFileChannel(NvmFilDir.getNvmFilDir(path.toFile()));
     }
 

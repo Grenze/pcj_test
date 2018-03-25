@@ -146,12 +146,15 @@ static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
 
 18.getCanonicalFile().getParentFile() in order or you will get nullPoint
 
-19.truncate no effect to position  //// delete(denied) move(allowed) file while channel point to it
+19.truncate no effect to position
 
 20.new a channel open a file(if not exist)
 
 
 21.new File("/.......") illegal parameter for mkdirs
+
+
+22.delete(denied, not solved yet) move(allowed solved) file while channel point to it
 
 
 
