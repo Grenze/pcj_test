@@ -4,6 +4,7 @@ package org.neo4j.io.nvmfs;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 
@@ -426,15 +427,17 @@ public class NvmFileUtils {
 
 
 
-    /*********not supported yet, will be designed to work when connected to the main module
 
 
-     /*construct the InputStream for nvm, let its method to be used by other class
+
+    /*********not supported yet, will be designed to work when connected to the main module*/
+
+     //construct the InputStream for nvm, let its method to be used by other class
     public static InputStream openAsInputStream( Path path ) throws IOException
     {
         return Files.newInputStream( path, READ );
     }
-    /*construct the OutputStream for nvm, let its method to be used by other class
+    //construct the OutputStream for nvm, let its method to be used by other class
     public static OutputStream openAsOutputStream( Path path, boolean append ) throws IOException
     {
         OpenOption[] options;
@@ -447,7 +450,10 @@ public class NvmFileUtils {
             options = new OpenOption[] {CREATE, WRITE};
         }
         return Files.newOutputStream( path, options );
-    }*/
+    }
+
+
+
 
     public static void printDirectory(){
         NvmFilDir.PrintDirectory(NvmFilDir.class);

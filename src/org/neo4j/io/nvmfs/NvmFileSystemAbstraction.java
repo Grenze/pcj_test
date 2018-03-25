@@ -6,7 +6,7 @@ import java.util.function.Function;
 import java.util.zip.ZipOutputStream;
 
 public interface NvmFileSystemAbstraction {
-    NvmStoreFileChannel open(File fileName, String mode ) throws IOException;
+    NvmStoreChannel open(File fileName, String mode ) throws IOException;
 
     OutputStream openAsOutputStream(File fileName, boolean append ) throws IOException;
 
@@ -16,7 +16,7 @@ public interface NvmFileSystemAbstraction {
 
     Writer openAsWriter( File fileName, Charset charset, boolean append ) throws IOException;
 
-    NvmStoreFileChannel create(File fileName ) throws IOException;
+    NvmStoreChannel create(File fileName ) throws IOException;
 
     boolean fileExists( File fileName ) throws IOException ;
 
