@@ -20,7 +20,7 @@ public class NvmFileUtils {
         File parentDirectory = getCanonicalParentSafely(file);
         NvmFilDir.getNvmFilDir(parentDirectory).decreaseLocalIndex(file);
 
-        NvmFilDir.removeNvmFilDir(file);
+        //NvmFilDir.removeNvmFilDir(file); //is included in the loop underneath
 
         for(String key: NvmFilDir.getNvmFilDirDirectory()){
             if(key.startsWith(file.getCanonicalPath())){
@@ -75,8 +75,8 @@ public class NvmFileUtils {
         nvmMkDirs(getCanonicalParentSafely(dst), false, true);
         NvmFilDir.getNvmFilDir(getCanonicalParentSafely(dst)).increaseLocalIndex(src);
 
-        NvmFilDir srcFilDir = NvmFilDir.getNvmFilDir(src);
-        srcFilDir.renameSelf(src, dst);//index changed from src to dst, inner globalId changed too
+        //NvmFilDir srcFilDir = NvmFilDir.getNvmFilDir(src);//is included in the loop underneath
+        //srcFilDir.renameSelf(src, dst);//index changed from src to dst, inner globalId changed too
 
         if(NvmFilDir.isFile(dst) || NvmFilDir.isEmpty(dst)){
             return;
@@ -166,30 +166,29 @@ public class NvmFileUtils {
         return path;
     }
 
+    /*copy fromDirectory to the toDirectory, name changed*/
     private static void copyNvmFilDir(File fromDirectory, File toDirectory, FileFilter filter) throws IOException{
-        nvmMkDirs(toDirectory, false, true);
-        NvmFilDir.getNvmFilDir(toDirectory).increaseLocalIndex(fromDirectory);
+        nvmMkDirs(getCanonicalParentSafely(toDirectory), false, true);
+        NvmFilDir.getNvmFilDir(getCanonicalParentSafely(toDirectory)).increaseLocalIndex(toDirectory);
 
-        NvmFilDir.copyNvmFilDir(fromDirectory, new File(toDirectory, fromDirectory.getName()));
+        //NvmFilDir.copyNvmFilDir(fromDirectory, toDirectory); //is included in the loop underneath
 
         if(NvmFilDir.isFile(fromDirectory) || NvmFilDir.isEmpty(fromDirectory)){
             return;
         }
 
         for(String key: NvmFilDir.getNvmFilDirDirectory()){
-            if(key.startsWith(fromDirectory.getCanonicalPath()) && filter.accept(new File(key))){
-                NvmFilDir.copyNvmFilDir(new File(key), new File(toDirectory, key.substring(getCanonicalParentSafely(fromDirectory).getCanonicalPath().length())) );
+            if(key.startsWith(fromDirectory.getCanonicalPath()) && (filter==null || filter.accept(new File(key)))){
+                NvmFilDir.copyNvmFilDir(new File(key), new File(toDirectory, key.substring(fromDirectory.getCanonicalPath().length())) );
             }
         }
     }
 
     /*copy srcFile to the path of dstFile's ParentFile, name changed*/
     public static void copyFile( File srcFile, File dstFile ) throws IOException{
-        if(NvmFilDir.exists(dstFile)){
+        if(NvmFilDir.exists(dstFile) || !NvmFilDir.exists(srcFile)){
             return;
         }
-        nvmMkDirs(getCanonicalParentSafely(dstFile), false, true);
-        NvmFilDir.getNvmFilDir(getCanonicalParentSafely(dstFile)).increaseLocalIndex(dstFile);
 
         NvmFilDir.copyNvmFilDir(srcFile, dstFile);
     }
@@ -199,14 +198,14 @@ public class NvmFileUtils {
     {
         copyRecursively( fromDirectory, toDirectory, null );
     }
-
+    /*keep its origin name, so there should not be the same name file(Dir) under the toDirectory*/
     public static void copyRecursively( File fromDirectory, File toDirectory, FileFilter filter) throws IOException
     {
         //already exist
-        if(NvmFilDir.exists(toDirectory)){
+        if(NvmFilDir.exists(toDirectory)|| !NvmFilDir.exists(fromDirectory)){
             return;
         }
-        copyNvmFilDir(fromDirectory, toDirectory, filter);
+        copyNvmFilDir(fromDirectory, new File(toDirectory, fromDirectory.toString()), filter);
     }
 
     /*override or append, create if not exist, createNewFile need its ParentFile exist*/
