@@ -74,6 +74,7 @@ public class Main {
         NvmFileUtils.printDirectory();
         NvmFileUtils.deleteFile(new File("dir3/dir2/fileCopyFromDir1_To_Dir2"));
         NvmFileUtils.printDirectory();
+
         NvmFileUtils.deleteRecursively(new File("."));
 
 
@@ -124,7 +125,7 @@ public class Main {
         }
     }
 
-    public static void printBuffer(ByteBuffer buf) {
+    private static void printBuffer(ByteBuffer buf) {
         while (buf.hasRemaining()) {
             System.out.print((char)buf.get());
         }
