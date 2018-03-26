@@ -18,13 +18,13 @@ public class NvmDefaultFileSystemAbstraction implements NvmFileSystemAbstraction
 
     /*method below not supported yet, supported by NvmFileUtils*/
     @Override
-    public OutputStream openAsOutputStream(File fileName, boolean append) {
-        return null;
+    public OutputStream openAsOutputStream(File fileName, boolean append) throws FileNotFoundException {
+        return new FileOutputStream( fileName, append );
     }
 
     @Override
-    public InputStream openAsInputStream(File fileName) {
-        return null;
+    public InputStream openAsInputStream(File fileName) throws FileNotFoundException {
+        return new FileInputStream( fileName );
     }
 
 

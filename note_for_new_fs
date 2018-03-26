@@ -176,7 +176,7 @@ static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
 
 
         Fin***3.newBufferedFileReader (used in StartClient.java,
-                BufferedReader.readLine()) //NvmFileUtils.java keep this method, read all at once(drawback)
+                BufferedReader.readLine())
 
         Fin***4.newBufferedWriter(used in AnnotationProcessor.java,
                 PrintWriter.append("..."))
