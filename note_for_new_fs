@@ -163,16 +163,45 @@ static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
         openAsOutputStream
         openAsReader
         openAsWriter
-   b. :FileUtils
-        openAsInputStream
-        openAsOutputStream
-        newBufferedFileReader
-        newBufferedWriter
-   c. :DelegateFileSystemAbstraction
+
+   b. :DelegateFileSystemAbstraction
         FileUtils.openAsOutputStream
         FileUtils.openAsInputStream
-        openAsReader(same as a)
-        openAsWriter(same as a)
+        openAsReader
+        openAsWriter
+
+   c. :FileUtils
+        1.openAsInputStream(used in DelegateFileSystemAbstraction.java)
+        2.openAsOutputStream(used in DelegateFileSystemAbstraction.java)
+        3.newBufferedFileReader (used in StartClient.java,
+        BufferedReader.readLine())
+        4.newBufferedWriter(used in AnnotationProcessor.java,
+        PrintWriter.append("..."))
+
+
+   a,b->FileSystemAbstraction
+   1.openAsOutputStream return OutputStream
+     in PartitionedIndexStorage.java archiveFile to return ZipOutputStream(only putNextEntry in project)
+   2.Files.java to return OutputStream
+   3.KeyValueWriter.java to support OutputStream to StreamWriter and OpeningStreamWriter
+   4.ImportTool.java support OutputStream
+        ----almost support OutputStream to them, so reconstruct it
+
+   5.no thing special about openAsInputStream, just used in IO module
+
+   6.openAsReader in StoreMigrator.java MigrationStatus.java to support BufferedReader.readLine() return String
+
+   7.openAsWriter in StoreMigrator.java MigrationStatus.java to support Writer.write(String) Writer.write(int('\n')) Writer.flush()
+
+
+
+
+
+
+
+
+
+25. design without consider origin project's test
 
 
 
