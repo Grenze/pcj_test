@@ -27,7 +27,7 @@ public class NvmFileUtils {
             return;
         }
 
-        for(String key: NvmFilDir.getNvmFilDirDirectory()){
+        for(String key: NvmFilDir.getNvmFilDirDirectory(null)){
             if(key.startsWith(file.getCanonicalPath())){
                 NvmFilDir.removeNvmFilDir(new File(key));
             }
@@ -87,7 +87,7 @@ public class NvmFileUtils {
             srcFilDir.renameSelf(src, dst);//index changed from src to dst, inner globalId changed too
             return;
         }
-        for(String key: NvmFilDir.getNvmFilDirDirectory()){
+        for(String key: NvmFilDir.getNvmFilDirDirectory(null)){
             if(key.startsWith(src.getCanonicalPath())){
                 NvmFilDir subFilDir = NvmFilDir.getNvmFilDir(new File(key));
                 subFilDir.renameSelf(new File(key), new File(dst, key.substring(src.getCanonicalPath().length())));
@@ -191,12 +191,46 @@ public class NvmFileUtils {
             return;
         }
 
-        for(String key: NvmFilDir.getNvmFilDirDirectory()){
+        for(String key: NvmFilDir.getNvmFilDirDirectory(null)){
             if(key.startsWith(srcFile.getCanonicalPath()) && (filter==null || filter.accept(new File(key)))){
                 NvmFilDir.copyNvmFilDir(new File(key), new File(dstFile, key.substring(srcFile.getCanonicalPath().length())) );
             }
         }
     }
+
+    //ensure src and dst already exist
+    private static void copyDirectoryContent(File srcDirectory, File dstDirectory, FileFilter filter) throws IOException{
+        for(String key: NvmFilDir.getNvmFilDirDirectory(srcDirectory.getCanonicalPath())){
+            if(key.startsWith(srcDirectory.getCanonicalPath())
+                    && !NvmFilDir.exists(new File(dstDirectory, key.substring(srcDirectory.getCanonicalPath().length())))
+                    && (filter==null || filter.accept(new File(key)))){
+                NvmFilDir.copyNvmFilDir(new File(key), new File(dstDirectory, key.substring(srcDirectory.getCanonicalPath().length())) );
+            }
+        }
+    }
+
+    public static void copyDirectory(File srcDirectory, File dstDirectory) throws IOException{
+        if(srcDirectory == null || dstDirectory == null){
+            throw new NullPointerException("Parameter must not be null");
+        }
+        if(!NvmFilDir.exists(srcDirectory) || !NvmFilDir.isDirectory(srcDirectory)){
+            throw new IllegalArgumentException("srcDirectory must exist, also not a file");
+        }
+        if(NvmFilDir.isFile(dstDirectory)){
+            throw new IllegalArgumentException("dstDirectory is not a directory");
+        }else{
+            nvmMkDirs(dstDirectory, false, true);
+            copyDirectoryContent(srcDirectory, dstDirectory, null);
+        }
+    }
+    //FileUtils.copyDirectory used in AbstractInProcessServerBuilder
+    /*
+    * srcDirectory must exist, dstDirectory can be created if not exist
+    * copy srcDirectory's content to the dstDirectory's under path
+    * do not copy the same file into dstDirectory
+    *
+    * */
+
 
     /*copy srcFile to the path of dstFile's ParentFile, name changed*/
     public static void copyFile( File srcFile, File dstFile ) throws IOException{
@@ -428,6 +462,9 @@ public class NvmFileUtils {
     }
 
     /* replaced by writeToFile(file, text, true)*/
+
+
+
 
     public interface LineListener
     {

@@ -246,7 +246,7 @@ public class NvmFilDir  extends PersistentObject{
 
 
     //ObjectDirectory's HashMap's key format: mark + class.getName()
-    public static List<String> getNvmFilDirDirectory(){
+    public static List<String> getNvmFilDirDirectory(String reMove){
         List<String> keyList = new ArrayList<>();
         String nvmClass = NvmFilDir.class.getName();
         for(PersistentString key: ObjectDirectory.getDirectory()){
@@ -254,6 +254,7 @@ public class NvmFilDir  extends PersistentObject{
                 keyList.add(key.toString().replace(nvmClass,""));
             }
         }
+        keyList.remove(reMove);//remove safely
         return keyList;
     }
 
