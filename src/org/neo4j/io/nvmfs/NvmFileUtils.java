@@ -455,18 +455,20 @@ public class NvmFileUtils {
         return Files.newOutputStream( path, options );
     }
 
-    //backward: read all of the file's content
+    //drawback: read all of the file's content
     public static BufferedReader newBufferedFileReader(File file, Charset charset ) throws IOException
     {
         return new BufferedReader( new InputStreamReader( new ByteArrayInputStream(NvmFilDir.getNvmFilDir(file).readAll().getBytes(charset)), charset) );
     }
 
-    public static PrintWriter newFilePrintWriter( File file, Charset charset ) {
-        return null;
+    /*public static PrintWriter newFilePrintWriter( File file, Charset charset ) {
+        return new PrintWriter( new OutputStreamWriter( new FileOutputStream( file, true ), charset) );
+    }*/
+
+    public static void newFilePrintWriterAppend(File file, String text, Charset charset) throws IOException {
+        nvmMkDirs(file, true, false);//ensure file exist
+        NvmFilDir.getNvmFilDir(file).write(text, true);
     }
-
-    /* replaced by writeToFile(file, text, true)*/
-
 
 
 

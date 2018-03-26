@@ -1,16 +1,84 @@
 import org.apache.commons.io.FileUtils;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
+
+import static java.nio.file.StandardOpenOption.*;
 
 
 public class Main {
-    public static void main(String[] agrs) {
+    public static void main(String[] agrs) throws FileNotFoundException {
 
 
 
         //Utiltest.testAll();
         //NvmUtilsTest.testAll();
+        PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(new File("text"), true), StandardCharsets.UTF_8));
+        pw.append("hello fan!").flush();
+
+
+
+    }
+
+
+
+
+    public static Reader nvmOpenAsReader(File fileName, Charset charset) {
+        return new Reader() {
+            @Override
+            public int read(char[] chars, int i, int i1) {
+                return 0;
+            }
+
+            @Override
+            public void close() {
+
+            }
+        };
+    }
+
+    /*with nvm FileChannel support I/O put stream*/
+    public static InputStream nvmOpenAsInputStream(Path path) {
+        return new InputStream() {
+            @Override
+            public int read() {
+                //
+                return 0;
+            }
+        };
+    }
+
+    public static OutputStream nvmOpenAsOutputStream(Path path, boolean append) {
+        OpenOption[] options;
+        if ( append )
+        {
+            options = new OpenOption[] {CREATE, WRITE, APPEND};
+        }
+        else
+        {
+            options = new OpenOption[] {CREATE, WRITE};
+        }
+        return new OutputStream() {
+
+            @Override
+            public void write(int intToWrite) {
+                //this.write(intToWrite);
+                //file.write or nvmchannel.write
+            }
+            @Override
+            public void write(byte[] bytesToWrite, int offset, int length) {
+                if(bytesToWrite == null){
+                    throw new NullPointerException();
+                }else if(offset >= 0 && offset <= bytesToWrite.length && length >= 0 && offset+length <= bytesToWrite.length){
+                    //file.write or nvmchannel.write
+                }else{
+                    throw new IndexOutOfBoundsException();
+                }
+            }
+        };
     }
 
     public static void testNormalFileUtils(){
