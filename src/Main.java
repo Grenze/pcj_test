@@ -1,17 +1,16 @@
 import org.apache.commons.io.FileUtils;
-import test.nvm_fs.NvmUtilsTest;
 
 import java.io.File;
 import java.io.IOException;
 
 
 public class Main {
-    public static void main(String[] agrs) throws IOException {
+    public static void main(String[] agrs) {
 
 
 
         //Utiltest.testAll();
-        NvmUtilsTest.testAll();
+        //NvmUtilsTest.testAll();
     }
 
     public static void testNormalFileUtils(){

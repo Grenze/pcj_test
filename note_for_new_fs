@@ -157,6 +157,24 @@ static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
 
 23.FileUtils.copyDirectory used in AbstractInProcessServerBuilder
 
+24.now remained problem:
+   a. :DefaultFileSystemAbstraction
+        openAsInputStream
+        openAsOutputStream
+        openAsReader
+        openAsWriter
+   b. :FileUtils
+        openAsInputStream
+        openAsOutputStream
+        newBufferedFileReader
+        newBufferedWriter
+   c. :DelegateFileSystemAbstraction
+        FileUtils.openAsOutputStream
+        FileUtils.openAsInputStream
+        openAsReader(same as a)
+        openAsWriter(same as a)
+
+
 
 
 
