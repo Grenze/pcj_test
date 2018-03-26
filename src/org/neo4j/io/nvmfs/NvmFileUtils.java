@@ -209,27 +209,31 @@ public class NvmFileUtils {
         }
     }
 
+    //FileUtils.copyDirectory used in AbstractInProcessServerBuilder
+    /*
+     * srcDirectory must exist, dstDirectory can be created if not exist
+     * copy srcDirectory's content to the dstDirectory's under path
+     * do not copy the same file into dstDirectory
+     *
+     * */
+
     public static void copyDirectory(File srcDirectory, File dstDirectory) throws IOException{
         if(srcDirectory == null || dstDirectory == null){
             throw new NullPointerException("Parameter must not be null");
         }
+        if(srcDirectory.getCanonicalPath()==dstDirectory.getCanonicalPath()){
+            throw new IOException("Source '" + srcDirectory + "' and destination '" + dstDirectory + "' are the same");
+        }
         if(!NvmFilDir.exists(srcDirectory) || !NvmFilDir.isDirectory(srcDirectory)){
-            throw new IllegalArgumentException("srcDirectory must exist, also not a file");
+            throw new IOException("srcDirectory "+srcDirectory.getCanonicalPath()+" must exist, also not a file");
         }
         if(NvmFilDir.isFile(dstDirectory)){
-            throw new IllegalArgumentException("dstDirectory is not a directory");
-        }else{
-            nvmMkDirs(dstDirectory, false, true);
-            copyDirectoryContent(srcDirectory, dstDirectory, null);
+            throw new IOException("dstDirectory "+dstDirectory.getCanonicalPath()+" is not a directory");
         }
+        nvmMkDirs(dstDirectory, false, true);
+        copyDirectoryContent(srcDirectory, dstDirectory, null);
     }
-    //FileUtils.copyDirectory used in AbstractInProcessServerBuilder
-    /*
-    * srcDirectory must exist, dstDirectory can be created if not exist
-    * copy srcDirectory's content to the dstDirectory's under path
-    * do not copy the same file into dstDirectory
-    *
-    * */
+
 
 
     /*copy srcFile to the path of dstFile's ParentFile, name changed*/
