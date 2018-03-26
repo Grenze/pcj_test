@@ -10,14 +10,23 @@ import static java.nio.file.StandardOpenOption.*;
 
 
 public class Main {
-    public static void main(String[] agrs) throws FileNotFoundException {
+    public static void main(String[] agrs) throws IOException {
 
 
 
         //Utiltest.testAll();
         //NvmUtilsTest.testAll();
-        PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(new File("text"), true), StandardCharsets.UTF_8));
-        pw.append("hello fan!").flush();
+        //PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(new File("text"), true), StandardCharsets.UTF_8));
+        //pw.append("hello fan!").flush();
+
+        /*BufferedReader rd = new BufferedReader(new InputStreamReader(new FileInputStream("text"), StandardCharsets.UTF_8));
+        String s = null;
+        while ((s = rd.readLine()) != null){
+            System.out.println(s);
+        }*/
+        Writer wr = new OutputStreamWriter( new FileOutputStream( new File("text"), false ), StandardCharsets.UTF_8 );
+        wr.write("123123132131231");wr.flush();
+
 
 
 

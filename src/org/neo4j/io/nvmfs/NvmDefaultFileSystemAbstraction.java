@@ -27,17 +27,18 @@ public class NvmDefaultFileSystemAbstraction implements NvmFileSystemAbstraction
         return null;
     }
 
+
     @Override
-    public Reader openAsReader(File fileName, Charset charset) {
-        return null;
+    public Reader openAsReader( File fileName, Charset charset ) throws IOException
+    {
+        return new InputStreamReader( new FileInputStream( fileName ), charset );
     }
 
     @Override
-    public Writer openAsWriter(File fileName, Charset charset, boolean append) {
-        return null;
+    public Writer openAsWriter( File fileName, Charset charset, boolean append ) throws IOException
+    {
+        return new OutputStreamWriter( new FileOutputStream( fileName, append ), charset );
     }
-    /*method above not supported yet, supported by NvmFileUtils*/
-
 
     @Override
     public NvmStoreFileChannel create(File fileName) throws IOException {

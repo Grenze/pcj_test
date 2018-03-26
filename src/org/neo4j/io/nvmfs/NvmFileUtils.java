@@ -435,11 +435,15 @@ public class NvmFileUtils {
 
     /*********not supported yet, will be designed to work when connected to the main module*/
 
+
+
      //construct the InputStream for nvm, let its method to be used by other class
     public static InputStream openAsInputStream( Path path ) throws IOException
     {
         return Files.newInputStream( path, READ );
     }
+
+
     //construct the OutputStream for nvm, let its method to be used by other class
     public static OutputStream openAsOutputStream( Path path, boolean append ) throws IOException
     {
@@ -458,17 +462,20 @@ public class NvmFileUtils {
     //drawback: read all of the file's content
     public static BufferedReader newBufferedFileReader(File file, Charset charset ) throws IOException
     {
-        return new BufferedReader( new InputStreamReader( new ByteArrayInputStream(NvmFilDir.getNvmFilDir(file).readAll().getBytes(charset)), charset) );
+        return new BufferedReader( new InputStreamReader( new FileInputStream( file ), charset) );
+        //return new BufferedReader( new InputStreamReader( new ByteArrayInputStream(NvmFilDir.getNvmFilDir(file).readAll().getBytes(charset)), charset) );
     }
 
-    /*public static PrintWriter newFilePrintWriter( File file, Charset charset ) {
+    public static PrintWriter newFilePrintWriter( File file, Charset charset ) throws FileNotFoundException {
         return new PrintWriter( new OutputStreamWriter( new FileOutputStream( file, true ), charset) );
-    }*/
+    }
 
-    public static void newFilePrintWriterAppend(File file, String text, Charset charset) throws IOException {
+    /*public static void newFilePrintWriterAppend(File file, String text, Charset charset) throws IOException {
         nvmMkDirs(file, true, false);//ensure file exist
         NvmFilDir.getNvmFilDir(file).write(text, true);
-    }
+    }*/
+
+
 
 
 

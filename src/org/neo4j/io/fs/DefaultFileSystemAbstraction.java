@@ -54,19 +54,13 @@ public class DefaultFileSystemAbstraction implements FileSystemAbstraction
     {
         return new FileInputStream( fileName );
     }
-    /*keep its name as openAsReader but change return type from Reader to InputStream
-    * with methods(readLine()) needed by other class, change those class as well
-    * MigrationStatus.java, StoreMigrator.java
-    * */
+
     @Override
     public Reader openAsReader( File fileName, Charset charset ) throws IOException
     {
         return new InputStreamReader( new FileInputStream( fileName ), charset );
     }
-    /*keep its name as openAsWriter but change return type from Writer to OutputStream
-     * with methods(write(String)) needed by other class, change those class as well
-     * MigrationStatus.java, StoreMigrator.java
-     * */
+
     @Override
     public Writer openAsWriter( File fileName, Charset charset, boolean append ) throws IOException
     {
