@@ -158,6 +158,25 @@ class Engineer extends  Employee{
     }
 
 }
+class Thread1 extends Thread{
+
+    public void run() {
+        ObjectDirectory.get("1",Employee.class).setName("thread1");
+        System.out.println(ObjectDirectory.get("1", Employee.class).getName());
+
+    }
+
+    }
+class Thread2 extends Thread{
+
+    public void run() {
+        ObjectDirectory.get("1",Employee.class).setName("thread2");
+        System.out.println(ObjectDirectory.get("1", Employee.class).getName());
+
+    }
+
+}
+
 
 public class pcjTest {
     public static void testpcj(){
@@ -217,11 +236,19 @@ public class pcjTest {
          * */
 
         //Engineer eng0 = new Engineer(0,"ghost","umbrella","clear");
-        System.out.println(persistent("hello"));
-        //Employee stuff = new Employee(0, "lin", "umbrella");
-        System.out.println(ObjectDirectory.get("1", Employee.class)!=null);
-        ObjectDirectory.remove("1",Employee.class);
-        ObjectDirectory.remove("1",Employee.class);
+        //System.out.println(persistent("hello"));
+        Employee stuff = new Employee(0, "lin", "umbrella");
+        //System.out.println(ObjectDirectory.get("1", Employee.class)!=null);
+        ObjectDirectory.put("1",stuff);
+
+        Thread1 th1 = new Thread1();
+        Thread2 th2 = new Thread2();
+        th2.start();
+        th1.start();
+
+
+        System.out.println(ObjectDirectory.get("1", Employee.class).getName());
+
 
         //eng0.changeProject("hahaha");
         //System.out.println(eng0.getProject());
