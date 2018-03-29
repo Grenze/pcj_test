@@ -1,11 +1,17 @@
 package test.nvm_fs;
 
+import org.neo4j.io.nvmfs.NvmDefaultFileSystemAbstraction;
+import org.neo4j.io.nvmfs.NvmFileUtils;
+import org.neo4j.io.nvmfs.NvmStoreFileChannel;
+
 import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 
 public class NvmUtilsTest {
 
-    public static void testAll() {
+    public static void testAll() throws IOException {
 
         /*NvmFileUtils.nvmMkDirs(new File("1/1/1/1"), false, true);
         NvmFileUtils.nvmMkDirs(new File("1/2"), false, true);
@@ -20,7 +26,7 @@ public class NvmUtilsTest {
 
 
 
-        /*
+
         NvmFileUtils.writeToFile(new File("dir1/file1"), "Violate 123456789", false);
         NvmFileUtils.truncateFile(new File("dir1/file1"), 10);
 
@@ -113,7 +119,7 @@ public class NvmUtilsTest {
         //NvmFileUtils.renameFile(new File("MFile/M1/"), new File("MFile/F1"));
         //NvmDefaultFileSystemAbstraction ndfs = new NvmDefaultFileSystemAbstraction();
         //printFiles(ndfs.listFiles(new File("dir1")));
-        //NvmFileUtils.printDirectory();
+        NvmFileUtils.printDirectory();
         //NvmFileUtils.copyRecursively(new File("MFile"),new File("MFile/X1"));
 
         //NvmFileUtils.deleteRecursively(new File("MFile"));
