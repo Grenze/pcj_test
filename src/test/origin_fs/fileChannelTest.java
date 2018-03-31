@@ -14,7 +14,7 @@ public class fileChannelTest {
         RandomAccessFile raf = new RandomAccessFile("text","rw");
         FileChannel fChannel = raf.getChannel();
 
-        ByteBuffer buf0 = ByteBuffer.allocate(50);
+        ByteBuffer buf0 = ByteBuffer.allocate(100);
         ByteBuffer buf1 = ByteBuffer.allocate(100);
         ByteBuffer[] bufs = new ByteBuffer[2];
         bufs[0] = buf0;
@@ -22,34 +22,44 @@ public class fileChannelTest {
         String newData0 = "New String to write to file...";
         String newData1 = "Franxx String to write to file...";
 
-        /*buf0.putInt(123);
+        buf0.putInt(123);
         buf0.putChar('中');
         buf0.put("Hello !".getBytes());
-        buf0.flip();*/
-        byte[] bts = new byte[10];
+        //buf0.flip();
+        byte[] bts1 = new byte[10];
+        bts1[0] = 10;
 
-        buf0.put(bts);
-        buf0.put(" ".getBytes());
+        bts1[9] = 10;
+        byte[] bts2 = new byte[20];
+        bts2[0] = 20;
+        bts2[19] = 20;
+
+        buf0.put(combineBytes(bts1, bts2));
+        buf0.put((" "+ new String(new byte[10])).getBytes());
         buf0.flip();
-        fChannel.write(buf0);
 
 
         //buf1.put(stringToBytes(byteBufferToString(buf0)));
+        buf1.put(bufferToString(buf0).getBytes());
+        buf1.flip();
+        fChannel.write(buf1);
+        buf0.clear();
 
-        //fChannel.position(0);
-        //fChannel.read(buf1);
-        //buf1.flip();
+        fChannel.position(0);
+        fChannel.read(buf0);
+        buf0.flip();
 
-        //System.out.println(buf1.getInt());
-        //System.out.println(buf1.getChar());
-        //printBuffer(buf1);
+        System.out.println(buf0.getInt());
+        System.out.println(buf0.getChar());
+        System.out.println(buf0.get());
+        //printBuffer(buf0);
 
 
 
         //printBufferInformation(buf1);
 
         //System.out.println(String.format("%1$-"+10+"s", "123456"));
-        System.out.println("123456789".substring(0,2)+"++"+"123456789".substring(4));
+        //System.out.println("123456789".substring(0,2)+"++"+"123456789".substring(4));
 
 
 
@@ -131,10 +141,21 @@ public class fileChannelTest {
 
     }
 
+    private static  byte[] combineBytes(byte[] bts1, byte[] bts2){
+        byte[] btsCom = new byte[bts1.length+bts2.length];
+        System.arraycopy(bts1,0,btsCom,0,bts1.length);
+        System.arraycopy(bts2,0,btsCom,bts1.length,bts2.length);
+        return btsCom;
+    }
+    private static byte[] bufferToBytes(ByteBuffer buf){
+        byte[] bts = new byte[buf.remaining()];
+        buf.get(bts, buf.position(), buf.remaining());
+        return bts;
+    }
+
     public static String byteBufferToString(ByteBuffer buf){
-        byte[] bytes = new byte[buf.remaining()];
-        buf.get(bytes, 0, bytes.length);
-        String str = Base64.getEncoder().encodeToString(bytes);
+
+        String str = Base64.getEncoder().encodeToString(bufferToBytes(buf));
         System.out.println("Base64 encoded: "+str);
         return str;
     }
@@ -150,7 +171,7 @@ public class fileChannelTest {
         return bytes;
     }
 
-    public static String printBuffer(ByteBuffer buf){
+    public static String bufferToString(ByteBuffer buf){
 
         String s = "";
         //byte[] bytes = new byte[buf.remaining()];
@@ -161,7 +182,7 @@ public class fileChannelTest {
         }
 
         //s = bytes.toString();
-        System.out.println(s);
+        //System.out.println(s);
         return s;
         //String t = "aa";
         //t.substring(-1);

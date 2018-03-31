@@ -31,6 +31,20 @@ public class NvmStoreFileChannel implements NvmStoreChannel
         this.locate = nvmchannel.locate;
     }
 
+
+    private static byte[] combineBytes(byte[] bts1, byte[] bts2){
+        byte[] btsCom = new byte[bts1.length+bts2.length];
+        System.arraycopy(bts1,0,btsCom,0,bts1.length);
+        System.arraycopy(bts2,0,btsCom,bts1.length,bts2.length);
+        return btsCom;
+    }
+
+    private static byte[] bufferToBytes(ByteBuffer buf){
+        byte[] bts = new byte[buf.remaining()];
+        buf.get(bts, buf.position(), buf.remaining());
+        return bts;
+    }
+
     //convert ByteBuffer to String
     private String byteBufferToString( ByteBuffer buf ){
         String bufStr = "";

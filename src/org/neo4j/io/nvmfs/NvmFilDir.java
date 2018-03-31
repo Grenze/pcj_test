@@ -100,10 +100,11 @@ public class NvmFilDir  extends PersistentObject{
     public int write(String str, int position){
         if(str.length() == 0 || position < 0){return 0;}
         String originContent = getFileContent();
-        long offset = position - originContent.length();
+        int offset = position - originContent.length();
         if(offset > 0){
-            //offset should be filled with space
-            setFileContent(String.format("%1$-"+position+"s", originContent) + str);
+            //offset should be filled with 00 space is 20h
+            //setFileContent(String.format("%1$-"+position+"s", originContent) + str);
+            setFileContent(originContent + new String(new byte[offset])+ str);
         }
         else{
             if(position+str.length()<=originContent.length()){
@@ -180,7 +181,7 @@ public class NvmFilDir  extends PersistentObject{
 
 
     /*below are static methods*/
-
+    //less IOException
     private static String convertFile(File file){
         try {
             return file.getCanonicalPath();

@@ -212,6 +212,8 @@ static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
 
 26.string byte[] convert in NvmFilDir, check every corner about data
 
+27.base64 encoded String not allowed any operation
+
 
 
 
