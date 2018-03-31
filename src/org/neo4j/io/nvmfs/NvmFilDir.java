@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -174,59 +173,64 @@ public class NvmFilDir  extends PersistentObject{
         return getLocalIndex().substring(1).split("/");
     }
 
-    public void renameSelf(File src, File dst) throws IOException{
-        setGlobalId(dst.getCanonicalPath());
+    public void renameSelf(File src, File dst) {
+        setGlobalId(convertFile(dst));
         NvmFilDir.putNvmFilDir(dst,NvmFilDir.removeNvmFilDir(src));
     }
 
 
     /*below are static methods*/
 
-
-
-    public static boolean exists(File file) throws IOException {
-        return (ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class)!=null);
+    private static String convertFile(File file){
+        try {
+            return file.getCanonicalPath();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
-    public static NvmFilDir removeNvmFilDir(File file) throws IOException{
-        return ObjectDirectory.remove(file.getCanonicalPath(), NvmFilDir.class);
+
+    public static boolean exists(File file)  {
+        return (ObjectDirectory.get(convertFile(file), NvmFilDir.class)!=null);
     }
 
-    public static NvmFilDir getNvmFilDir(File file) throws IOException{
-        return ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class);
+
+    public static NvmFilDir removeNvmFilDir(File file) {
+        return ObjectDirectory.remove(convertFile(file), NvmFilDir.class);
     }
 
-    public static void putNvmFilDir(File file, NvmFilDir nvmFilDir) throws IOException{
-        ObjectDirectory.put(file.getCanonicalPath(), nvmFilDir);
+    public static NvmFilDir getNvmFilDir(File file) {
+        return ObjectDirectory.get(convertFile(file), NvmFilDir.class);
     }
 
-    public static void copyNvmFilDir(File src, File dst)throws IOException{
+    public static void putNvmFilDir(File file, NvmFilDir nvmFilDir) {
+        ObjectDirectory.put(convertFile(file), nvmFilDir);
+    }
+
+    public static void copyNvmFilDir(File src, File dst){
         NvmFilDir dstNvmFilDir = new NvmFilDir(NvmFilDir.getNvmFilDir(src));
-        dstNvmFilDir.setGlobalId(dst.getCanonicalPath());
+        dstNvmFilDir.setGlobalId(convertFile(dst));
         NvmFilDir.putNvmFilDir(dst, dstNvmFilDir);
     }
 
-    public static boolean isEmpty(File file) throws IOException {
-        return ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class).getLocalIndex().length() == 0;
+    public static boolean isEmpty(File file)  {
+        return ObjectDirectory.get(convertFile(file), NvmFilDir.class).getLocalIndex().length() == 0;
     }
 
-    public static boolean isFile(File file) throws IOException{
-        if(ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class)==null){
-            return false;
-        }
-        return ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class).getIsFile();
+    public static boolean isFile(File file) {
+        return ObjectDirectory.get(convertFile(file), NvmFilDir.class) != null
+                && ObjectDirectory.get(convertFile(file), NvmFilDir.class).getIsFile();
     }
 
-    public static boolean isDirectory(File file) throws IOException{
-        if(ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class)==null){
-            return true;
-        }
-        return  ObjectDirectory.get(file.getCanonicalPath(), NvmFilDir.class).getIsDirectory();
+    public static boolean isDirectory(File file) {
+        return ObjectDirectory.get(convertFile(file), NvmFilDir.class) == null
+                || ObjectDirectory.get(convertFile(file), NvmFilDir.class).getIsDirectory();
     }
 
 
-    public static File[] listLocalFiles(File directory, FilenameFilter filter ) throws IOException{
+    public static File[] listLocalFiles(File directory, FilenameFilter filter ) {
         String[] subs = NvmFilDir.getNvmFilDir(directory).getSubList();
         if(subs == null){
             return null;
@@ -257,15 +261,7 @@ public class NvmFilDir  extends PersistentObject{
     //Print ObjectDirectory's HashMap's key Set
     public static void PrintDirectory(Class cls){
         List<PersistentString> keyList = new ArrayList<>(ObjectDirectory.getDirectory());
-        Collections.sort(keyList, new Comparator<PersistentString>() {
-            @Override
-            public int compare(PersistentString s1, PersistentString s2) {
-                //if(s1.toString().split("/").length == s2.toString().split("/").length){
-                    return s1.toString().replace(cls.getName(),"").compareTo(s2.toString().replace(cls.getName(),""));
-                //}
-                //return s1.toString().split("/").length - s2.toString().split("/").length;
-            }
-        });
+        keyList.sort(Comparator.comparing(s -> s.toString().replace(cls.getName(), "")));
         System.out.println("\n------"+cls.getName()+"------\n");
         for(PersistentString key: keyList){
             System.out.println(key.toString().replace(cls.getName(),""));

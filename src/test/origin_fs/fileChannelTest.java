@@ -22,27 +22,31 @@ public class fileChannelTest {
         String newData0 = "New String to write to file...";
         String newData1 = "Franxx String to write to file...";
 
-        buf0.putInt(123);
+        /*buf0.putInt(123);
         buf0.putChar('中');
         buf0.put("Hello !".getBytes());
+        buf0.flip();*/
+        byte[] bts = new byte[10];
+
+        buf0.put(bts);
+        buf0.put(" ".getBytes());
         buf0.flip();
+        fChannel.write(buf0);
 
 
-        //fChannel.write(buf0);
-
-        buf1.put(stringToBytes(byteBufferToString(buf0)));
+        //buf1.put(stringToBytes(byteBufferToString(buf0)));
 
         //fChannel.position(0);
         //fChannel.read(buf1);
-        buf1.flip();
+        //buf1.flip();
 
-        System.out.println(buf1.getInt());
+        //System.out.println(buf1.getInt());
         //System.out.println(buf1.getChar());
         //printBuffer(buf1);
 
 
 
-        printBufferInformation(buf1);
+        //printBufferInformation(buf1);
 
         //System.out.println(String.format("%1$-"+10+"s", "123456"));
         System.out.println("123456789".substring(0,2)+"++"+"123456789".substring(4));
