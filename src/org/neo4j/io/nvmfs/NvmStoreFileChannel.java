@@ -39,12 +39,6 @@ public class NvmStoreFileChannel implements NvmStoreChannel
         return btsCom;
     }
 
-    private static byte[] bufferToBytes(ByteBuffer buf){
-        byte[] bts = new byte[buf.remaining()];
-        buf.get(bts, buf.position(), buf.remaining());
-        return bts;
-    }
-
     //convert ByteBuffer to String
     private String byteBufferToString( ByteBuffer buf ){
         byte[] bts = new byte[buf.remaining()];
@@ -133,7 +127,7 @@ public class NvmStoreFileChannel implements NvmStoreChannel
 
     @Override
     public int read( ByteBuffer dst ) {
-        String getString = nvmFile.read(dst.capacity(),locate.position);
+        String getString = nvmFile.read(dst.remaining(),locate.position);
         locate.position += getString.length();
         dst.put(getString.getBytes());
         return getString.length();
@@ -146,7 +140,7 @@ public class NvmStoreFileChannel implements NvmStoreChannel
 
     @Override
     public int read( ByteBuffer dst, long position ) {
-        String getString = nvmFile.read(dst.capacity(), Math.toIntExact(position));
+        String getString = nvmFile.read(dst.remaining(), Math.toIntExact(position));
         locate.position = Math.toIntExact(position) + getString.length();
         dst.put(getString.getBytes());
         return getString.length();
@@ -156,15 +150,15 @@ public class NvmStoreFileChannel implements NvmStoreChannel
     public long read( ByteBuffer[] dsts, int offset, int length ) {
         int sumCapacity = 0;
         for(int i=0; i<length; i++){
-            sumCapacity += dsts[offset+i].capacity();
+            sumCapacity += dsts[offset+i].remaining();
         }
         String getString = nvmFile.read(sumCapacity, locate.position);
         locate.position += getString.length();
         int bufOrder = offset;
-        while(getString.length()>dsts[bufOrder].capacity() && bufOrder<offset+length){
-            dsts[bufOrder].put(getString.substring(0, dsts[bufOrder].capacity()).getBytes());
+        while(getString.length()>dsts[bufOrder].remaining() && bufOrder<offset+length){
+            dsts[bufOrder].put(getString.substring(0, dsts[bufOrder].remaining()).getBytes());
             //sub the current bufString then change order
-            getString = getString.substring(dsts[bufOrder].capacity());
+            getString = getString.substring(dsts[bufOrder].remaining());
             bufOrder++;
         }
         dsts[bufOrder].put(getString.getBytes());
