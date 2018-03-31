@@ -10,7 +10,7 @@ import static java.nio.file.StandardOpenOption.*;
 
 
 public class Main {
-    public static void main(String[] agrs) {
+    public static void main(String[] agrs) throws IOException {
 
         /*FileChannel channel = new RandomAccessFile( new File("/home/lingo/Desktop/neo4j_temp/LOCK"), "r" ).getChannel();
         channel.tryLock();

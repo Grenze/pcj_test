@@ -4,11 +4,12 @@ package test.origin_fs;
 import org.neo4j.io.fs.DefaultFileSystemAbstraction;
 
 import java.io.File;
+import java.io.IOException;
 
 import static test.origin_fs.fileChannelTest.testStoreFileChannel;
 
 public class Utiltest {
-    public static void testAll() {
+    public static void testAll() throws IOException {
         testStoreFileChannel();
         //testpcj();
         //testFileUtils();

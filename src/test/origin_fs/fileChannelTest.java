@@ -1,30 +1,54 @@
 package test.origin_fs;
 
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 public class fileChannelTest {
-    public static void testStoreFileChannel (){
 
+    public static void testStoreFileChannel () throws IOException {
+
+
+        RandomAccessFile raf = new RandomAccessFile("text","rw");
+        FileChannel fChannel = raf.getChannel();
 
         ByteBuffer buf0 = ByteBuffer.allocate(50);
         ByteBuffer buf1 = ByteBuffer.allocate(100);
         ByteBuffer[] bufs = new ByteBuffer[2];
         bufs[0] = buf0;
         bufs[1] = buf1;
-        String newData0 = "New String to write to file..."+System.currentTimeMillis();
-        String newData1 = "Franxx String to write to file..."+System.currentTimeMillis();
-        int i = 123456;
-        buf0.putInt(i);
+        String newData0 = "New String to write to file...";
+        String newData1 = "Franxx String to write to file...";
+
+        buf0.putInt(123);
+        buf0.putChar('a');
+        buf0.put("Hello !".getBytes(StandardCharsets.UTF_8));
         buf0.flip();
-        //System.out.println(buf0.limit());
-        //System.out.println(buf0.capacity());
-        buf1.put(printBuffer(buf0).getBytes());
+
+
+        //fChannel.write(buf0);
+
+        buf1.put(stringToBytes(byteBufferToString(buf0)));
+
+        //fChannel.position(0);
+        //fChannel.read(buf1);
         buf1.flip();
+
         System.out.println(buf1.getInt());
-        //printBuffer(buf1);
-        //buf1.put(newData1.getBytes());
-        //bufs[1].flip();
-        //System.out.println(bufs.length);*/
+        System.out.println(buf1.getChar());
+        printBuffer(buf1);
+
+
+
+        printBufferInformation(buf1);
+
+        //System.out.println(String.format("%1$-"+10+"s", "123456"));
+        System.out.println("123456789".substring(0,2)+"++"+"123456789".substring(4));
+
+
 
         //try {
             //RandomAccessFile raf = new RandomAccessFile("text","rw");
@@ -104,13 +128,32 @@ public class fileChannelTest {
 
     }
 
+    public static String byteBufferToString(ByteBuffer buf){
+        byte[] bytes = new byte[buf.remaining()];
+        buf.get(bytes, 0, bytes.length);
+        String str = Base64.getEncoder().encodeToString(bytes);
+        System.out.println("Base64 encoded: "+str);
+        return str;
+    }
+
+    public static void printBufferInformation(ByteBuffer buf){
+
+        System.out.println(buf.toString());
+
+    }
+
+    public static byte[] stringToBytes(String str){
+        byte[] bytes = Base64.getDecoder().decode(str);
+        return bytes;
+    }
+
     public static String printBuffer(ByteBuffer buf){
 
         String s = "";
         //byte[] bytes = new byte[buf.remaining()];
         while (buf.hasRemaining()){
             //buf.get(bytes,0,bytes.length);
-            s += String.valueOf(buf.get());
+            s += (char)buf.get();
             //System.out.print((char)buf.get());
         }
 

@@ -98,35 +98,31 @@ public class NvmFilDir  extends PersistentObject{
     /*above set/get method*/
 
 
-    public int write(String src, int position){
-        if(src.length() == 0 || position < 0){return 0;}
+    public int write(String str, int position){
+        if(str.length() == 0 || position < 0){return 0;}
         String originContent = getFileContent();
         long offset = position - originContent.length();
         if(offset > 0){
-            setFileContent(String.format("%1$-"+offset+"s", originContent) + src);
+            //offset should be filled with space
+            setFileContent(String.format("%1$-"+position+"s", originContent) + str);
         }
         else{
-            if(position+src.length()<=originContent.length()){
-                setFileContent(originContent.substring(0, position) + src + originContent.substring(position + src.length()));
+            if(position+str.length()<=originContent.length()){
+                setFileContent(originContent.substring(0, position) + str + originContent.substring(position + str.length()));
             }
             else{
-                setFileContent(originContent.substring(0, position) + src);
+                setFileContent(originContent.substring(0, position) + str);
             }
         }
-        return src.length();
+        return str.length();
     }
 
     public void write(String text, boolean append){
         if(append){
-            setFileContent(getFileContent()+text);
+            write(text, getFileContent().length());
         }
         else{
-            if(text.length()>=getFileContent().length()){
-                setFileContent(text);
-            }
-            else{
-                setFileContent(text+getFileContent().substring(text.length()));
-            }
+            write(text, 0);
         }
     }
 
