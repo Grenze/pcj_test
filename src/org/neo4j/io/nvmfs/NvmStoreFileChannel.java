@@ -122,6 +122,9 @@ public class NvmStoreFileChannel implements NvmStoreChannel
     @Override
     public NvmStoreFileChannel truncate( long size ) {
         nvmFile.truncate( Math.toIntExact(size) );
+        if(locate.position>Math.toIntExact(size)){
+            locate.position = Math.toIntExact(size);
+        }
         return this;
     }
 
@@ -154,6 +157,7 @@ public class NvmStoreFileChannel implements NvmStoreChannel
         }
         String getString = nvmFile.read(sumCapacity, locate.position);
         locate.position += getString.length();
+        int len = getString.length();
         int bufOrder = offset;
         while(getString.length()>dsts[bufOrder].remaining() && bufOrder<offset+length){
             dsts[bufOrder].put(getString.substring(0, dsts[bufOrder].remaining()).getBytes());
@@ -162,7 +166,7 @@ public class NvmStoreFileChannel implements NvmStoreChannel
             bufOrder++;
         }
         dsts[bufOrder].put(getString.getBytes());
-        return getString.length();
+        return len;
     }
 
     /*position init at 0 when open the channel

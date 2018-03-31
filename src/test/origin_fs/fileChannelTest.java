@@ -46,7 +46,16 @@ public class fileChannelTest {
 
         //buf1.put(bufferToString(buf0).getBytes());
         buf1.flip();
-        fChannel.write(buf1);
+        System.out.println(fChannel.write(buf1));
+
+
+        buf0.clear();
+        fChannel.position(9);
+
+        fChannel.truncate(10);
+        System.out.println(fChannel.position());
+        fChannel.position(9);
+        System.out.println(fChannel.read(buf0));
         //buf0.clear();
 
         //fChannel.position(0);
@@ -158,7 +167,7 @@ public class fileChannelTest {
     private static String conditional(ByteBuffer buf){
         String s = new String(bufferToBytes(buf));
         toHex(s);
-        return s;
+        return s+" ";
     }
     private static byte[] bufferToBytes(ByteBuffer buf){
         byte[] bts = new byte[buf.remaining()];
