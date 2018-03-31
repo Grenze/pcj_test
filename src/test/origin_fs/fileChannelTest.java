@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 public class fileChannelTest {
@@ -24,8 +23,8 @@ public class fileChannelTest {
         String newData1 = "Franxx String to write to file...";
 
         buf0.putInt(123);
-        buf0.putChar('a');
-        buf0.put("Hello !".getBytes(StandardCharsets.UTF_8));
+        buf0.putChar('中');
+        buf0.put("Hello !".getBytes());
         buf0.flip();
 
 
@@ -38,8 +37,8 @@ public class fileChannelTest {
         buf1.flip();
 
         System.out.println(buf1.getInt());
-        System.out.println(buf1.getChar());
-        printBuffer(buf1);
+        //System.out.println(buf1.getChar());
+        //printBuffer(buf1);
 
 
 

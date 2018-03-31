@@ -180,6 +180,7 @@ class Thread2 extends Thread{
 
 public class pcjTest {
     public static void testpcj(){
+
         /*System.out.println(System.getProperty("Java.library.path"));
         System.out.println("HelloWorld!");
         PersistentIntArray a = new PersistentIntArray(1024);
