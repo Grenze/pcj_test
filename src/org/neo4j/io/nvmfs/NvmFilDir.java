@@ -149,7 +149,7 @@ public class NvmFilDir  extends PersistentObject{
     }
 
     public long getSize(){
-        return getFileContent().toString().length();
+        return getFileContent().length();
     }
     //remained to complete
     public void force(boolean metadata){
@@ -167,7 +167,7 @@ public class NvmFilDir  extends PersistentObject{
         setLocalIndex(getLocalIndex().replace(("/"+oldLocalSub.getName()),""));
     }
     //remove the first "/"
-    public String[] getSubList(){
+    private String[] getSubList(){
         if(getLocalIndex().length()==0){
             return null;
         }
@@ -203,7 +203,7 @@ public class NvmFilDir  extends PersistentObject{
 
     public static void copyNvmFilDir(File src, File dst)throws IOException{
         NvmFilDir dstNvmFilDir = new NvmFilDir(NvmFilDir.getNvmFilDir(src));
-        dstNvmFilDir.setGlobalId(dst.getCanonicalPath().toString());
+        dstNvmFilDir.setGlobalId(dst.getCanonicalPath());
         NvmFilDir.putNvmFilDir(dst, dstNvmFilDir);
     }
 
