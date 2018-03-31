@@ -22,36 +22,40 @@ public class fileChannelTest {
         String newData0 = "New String to write to file...";
         String newData1 = "Franxx String to write to file...";
 
-        buf0.putInt(123);
+        byte[] a = new byte[9];
+        a[8] = 1;
+        buf0.put(a);
+        //buf0.putInt(123);
         buf0.putChar('中');
-        buf0.put("Hello !".getBytes());
+        buf0.put(newData0.getBytes());
         //buf0.flip();
-        byte[] bts1 = new byte[10];
-        bts1[0] = 10;
+        //byte[] bts1 = new byte[10];
+        //bts1[0] = 10;
 
-        bts1[9] = 10;
-        byte[] bts2 = new byte[20];
-        bts2[0] = 20;
-        bts2[19] = 20;
+        //bts1[9] = 10;
+        //byte[] bts2 = new byte[20];
+        //bts2[0] = 20;
+        //bts2[19] = 20;
 
-        buf0.put(combineBytes(bts1, bts2));
-        buf0.put((" "+ new String(new byte[10])).getBytes());
+        //buf0.put(new String(combineBytes(bts1, bts2)).getBytes());
+        //buf0.put((" "+ new String(new byte[10])).getBytes());
         buf0.flip();
 
 
-        //buf1.put(stringToBytes(byteBufferToString(buf0)));
-        buf1.put(bufferToString(buf0).getBytes());
+        buf1.put(conditional(buf0).getBytes());
+
+        //buf1.put(bufferToString(buf0).getBytes());
         buf1.flip();
         fChannel.write(buf1);
-        buf0.clear();
+        //buf0.clear();
 
-        fChannel.position(0);
-        fChannel.read(buf0);
-        buf0.flip();
+        //fChannel.position(0);
+        //fChannel.read(buf0);
+        //buf0.flip();
 
-        System.out.println(buf0.getInt());
-        System.out.println(buf0.getChar());
-        System.out.println(buf0.get());
+        //System.out.println(buf0.getInt());
+        //System.out.println(buf0.getChar());
+        //System.out.println(buf0.get());
         //printBuffer(buf0);
 
 
@@ -141,17 +145,34 @@ public class fileChannelTest {
 
     }
 
-    private static  byte[] combineBytes(byte[] bts1, byte[] bts2){
-        byte[] btsCom = new byte[bts1.length+bts2.length];
-        System.arraycopy(bts1,0,btsCom,0,bts1.length);
-        System.arraycopy(bts2,0,btsCom,bts1.length,bts2.length);
-        return btsCom;
+    private static void toHex(String str){
+        String toHex = "";
+        for(int i =0;i< str.length();i++){
+            toHex += Integer.toHexString((int) str.charAt(i));
+        }
+        System.out.println(toHex);
+    }
+
+
+
+    private static String conditional(ByteBuffer buf){
+        String s = new String(bufferToBytes(buf));
+        toHex(s);
+        return s;
     }
     private static byte[] bufferToBytes(ByteBuffer buf){
         byte[] bts = new byte[buf.remaining()];
         buf.get(bts, buf.position(), buf.remaining());
         return bts;
     }
+
+    private static  byte[] combineBytes(byte[] bts1, byte[] bts2){
+        byte[] btsCom = new byte[bts1.length+bts2.length];
+        System.arraycopy(bts1,0,btsCom,0,bts1.length);
+        System.arraycopy(bts2,0,btsCom,bts1.length,bts2.length);
+        return btsCom;
+    }
+
 
     public static String byteBufferToString(ByteBuffer buf){
 

@@ -47,11 +47,9 @@ public class NvmStoreFileChannel implements NvmStoreChannel
 
     //convert ByteBuffer to String
     private String byteBufferToString( ByteBuffer buf ){
-        String bufStr = "";
-        while (buf.hasRemaining()){
-            bufStr += (char)buf.get();
-        }
-        return bufStr;
+        byte[] bts = new byte[buf.remaining()];
+        buf.get(bts, buf.position(), buf.remaining());
+        return new String(bts);
     }
 
     //convert ByteBuffers to String
