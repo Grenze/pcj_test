@@ -54,7 +54,7 @@ public class fileChannelTest {
 
         fChannel.truncate(10);
         System.out.println(fChannel.position());
-        fChannel.position(9);
+        fChannel.position(10);
         System.out.println(fChannel.read(buf0));
         //buf0.clear();
 

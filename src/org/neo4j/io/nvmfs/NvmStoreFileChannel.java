@@ -131,6 +131,9 @@ public class NvmStoreFileChannel implements NvmStoreChannel
     @Override
     public int read( ByteBuffer dst ) {
         String getString = nvmFile.read(dst.remaining(),locate.position);
+        if(getString.length()==0){
+            return -1;
+        }
         locate.position += getString.length();
         dst.put(getString.getBytes());
         return getString.length();
@@ -144,6 +147,9 @@ public class NvmStoreFileChannel implements NvmStoreChannel
     @Override
     public int read( ByteBuffer dst, long position ) {
         String getString = nvmFile.read(dst.remaining(), Math.toIntExact(position));
+        if(getString.length()==0){
+            return -1;
+        }
         locate.position = Math.toIntExact(position) + getString.length();
         dst.put(getString.getBytes());
         return getString.length();
@@ -156,6 +162,9 @@ public class NvmStoreFileChannel implements NvmStoreChannel
             sumCapacity += dsts[offset+i].remaining();
         }
         String getString = nvmFile.read(sumCapacity, locate.position);
+        if(getString.length()==0){
+            return -1;
+        }
         locate.position += getString.length();
         int len = getString.length();
         int bufOrder = offset;
