@@ -139,7 +139,7 @@ public class NvmFilDir  extends PersistentObject{
 
     public String read(int length, int position){
         String originContent = getFileContent();
-        if(position >= originContent.length() || position < 0 || length <= 0){return "";}
+        if(position >= originContent.length() || position < 0){return "";}
         if(position+length<=originContent.length()){
             return originContent.substring(position, position+length);
         }

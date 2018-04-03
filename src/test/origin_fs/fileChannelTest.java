@@ -10,9 +10,13 @@ public class fileChannelTest {
 
     public static void testStoreFileChannel () throws IOException {
 
-
+        FileChannel f1Channel = new RandomAccessFile("text","r").getChannel();
+        f1Channel.tryLock();
         RandomAccessFile raf = new RandomAccessFile("text","rw");
         FileChannel fChannel = raf.getChannel();
+        //fChannel.tryLock();
+
+
 
         ByteBuffer buf0 = ByteBuffer.allocate(100);
         ByteBuffer buf1 = ByteBuffer.allocate(100);
@@ -50,11 +54,19 @@ public class fileChannelTest {
 
 
         buf0.clear();
-        fChannel.position(9);
+        //buf0.putInt(1);
+        //buf0.position(11);
+        //buf0.limit(9);
+        //System.out.println(buf0.remaining());
+        //buf1.clear();
+        //buf1.limit(10);
+        //buf1.position(9);
+        //buf0.limit(10);
+        //fChannel.position(100);
 
-        fChannel.truncate(10);
-        System.out.println(fChannel.position());
-        fChannel.position(10);
+        //fChannel.truncate(20);
+        //System.out.println(fChannel.position());
+        //fChannel.position(10);
         System.out.println(fChannel.read(buf0));
         //buf0.clear();
 
@@ -165,13 +177,18 @@ public class fileChannelTest {
 
 
     private static String conditional(ByteBuffer buf){
+        System.out.println("!!!!!"+bufferToBytes((buf)).length);
+
         String s = new String(bufferToBytes(buf));
+        System.out.println("!!!!!"+s.getBytes().length);
+
         toHex(s);
-        return s+" ";
+        return s;
     }
     private static byte[] bufferToBytes(ByteBuffer buf){
         byte[] bts = new byte[buf.remaining()];
         buf.get(bts, buf.position(), buf.remaining());
+        buf.flip();
         return bts;
     }
 
