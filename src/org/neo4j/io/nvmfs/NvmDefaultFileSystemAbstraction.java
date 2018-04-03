@@ -13,7 +13,7 @@ public class NvmDefaultFileSystemAbstraction implements NvmFileSystemAbstraction
     @Override
     public NvmStoreFileChannel open(File fileName, String mode) throws IOException {
         NvmFileUtils.nvmMkDirs(fileName, true, false);//ensure there is NvmFilDir with fileName
-        return new NvmStoreFileChannel(NvmFilDir.getNvmFilDir(fileName));
+        return new NvmStoreFileChannel(NvmFilDir.getNvmFilDir(fileName), mode);
     }
 
     /*method below not supported yet, supported by NvmFileUtils*/
@@ -60,12 +60,12 @@ public class NvmDefaultFileSystemAbstraction implements NvmFileSystemAbstraction
     }
 
     @Override
-    public boolean fileExists(File fileName) throws IOException {
+    public boolean fileExists(File fileName) {
         return NvmFilDir.exists(fileName);
     }
 
     @Override
-    public long getFileSize(File fileName) throws IOException {
+    public long getFileSize(File fileName) {
         return NvmFilDir.getNvmFilDir(fileName).getSize();
     }
 
@@ -85,17 +85,17 @@ public class NvmDefaultFileSystemAbstraction implements NvmFileSystemAbstraction
     }
 
     @Override
-    public File[] listFiles(File directory) throws IOException {
+    public File[] listFiles(File directory) {
         return NvmFilDir.listLocalFiles(directory, null);
     }
 
     @Override
-    public File[] listFiles(File directory, FilenameFilter filter) throws IOException {
+    public File[] listFiles(File directory, FilenameFilter filter) {
         return NvmFilDir.listLocalFiles(directory, filter);
     }
 
     @Override
-    public boolean isDirectory(File file) throws IOException {
+    public boolean isDirectory(File file) {
         return NvmFilDir.isDirectory(file);
     }
 

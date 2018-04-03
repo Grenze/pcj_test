@@ -8,6 +8,23 @@ public class NvmStoreFileChannel implements NvmStoreChannel
 {
     private NvmFilDir nvmFile;
     private sharePosition locate;
+    private channelInfo Info;
+
+    private class channelInfo{
+        public String rwInfo;
+        public boolean writeLock;
+        public boolean readLock;
+        channelInfo(String mode){
+            rwInfo = mode;
+            writeLock = false;
+            readLock = false;
+        }
+        public void nvmChannelTrylock(){
+            if(rwInfo=="r") {
+                readLock = true;
+            }
+        }
+    }
 
     private class sharePosition{
         public int position;
@@ -17,11 +34,11 @@ public class NvmStoreFileChannel implements NvmStoreChannel
     }
 
     //new channel connect to nvmFilDir with position 0
-    public NvmStoreFileChannel(NvmFilDir file)
+    public NvmStoreFileChannel(NvmFilDir file, String mode)
     {
         this.nvmFile = file;
         this.locate = new sharePosition();
-
+        this.Info = new channelInfo(mode);
     }
 
     //copy and new channel connect to nvmFilDir with copied's position
@@ -29,6 +46,7 @@ public class NvmStoreFileChannel implements NvmStoreChannel
     {
         this.nvmFile = nvmchannel.nvmFile;
         this.locate = nvmchannel.locate;
+        this.Info = nvmchannel.Info;
     }
 
 
@@ -215,6 +233,7 @@ public class NvmStoreFileChannel implements NvmStoreChannel
     * */
     @Override
     public FileLock tryLock() {
+        Info.nvmChannelTrylock();
         return null;
     }
 
