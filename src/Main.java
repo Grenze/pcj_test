@@ -10,29 +10,11 @@ import static java.nio.file.StandardOpenOption.*;
 
 
 public class Main {
-    public static void main(String[] agrs) throws IOException {
+    public static void main(String[] args) throws IOException {
 
-        /*FileChannel channel = new RandomAccessFile( new File("/home/lingo/Desktop/neo4j_temp/LOCK"), "r" ).getChannel();
-        channel.tryLock();
-        FileChannel channel2 = new RandomAccessFile( new File("/home/lingo/Desktop/neo4j_temp/LOCK"), "r" ).getChannel();
-        channel2.tryLock();*/
 
-        //String s ="123";
-        //System.out.println(Charset.defaultCharset());
-       // System.out.print(new String(s.getBytes("UTF-8"),"GBK"));
-        //System.out.print("");
         Utiltest.testAll();
         //NvmUtilsTest.testAll();
-        //PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(new File("text"), true), StandardCharsets.UTF_8));
-        //pw.append("hello fan!").flush();
-
-        /*BufferedReader rd = new BufferedReader(new InputStreamReader(new FileInputStream("text"), StandardCharsets.UTF_8));
-        String s = null;
-        while ((s = rd.readLine()) != null){
-            System.out.println(s);
-        }*/
-        //Writer wr = new OutputStreamWriter( new FileOutputStream( new File("text"), false ), StandardCharsets.UTF_8 );
-        //wr.write("123123132131231");wr.flush();
 
 
 

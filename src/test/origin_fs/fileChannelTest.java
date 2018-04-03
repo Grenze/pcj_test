@@ -10,7 +10,7 @@ public class fileChannelTest {
 
     public static void testStoreFileChannel () throws IOException {
 
-        FileChannel f1Channel = new RandomAccessFile("text","r").getChannel();
+        FileChannel f1Channel = new RandomAccessFile("text","rw").getChannel();
         f1Channel.tryLock();
         RandomAccessFile raf = new RandomAccessFile("text","rw");
         FileChannel fChannel = raf.getChannel();

@@ -19,7 +19,7 @@ public class NvmStoreFileChannel implements NvmStoreChannel
             writeLock = false;
             readLock = false;
         }
-        public void nvmChannelTrylock(){
+        public void nvmChannelTryLock(){
             if(rwInfo=="r") {
                 readLock = true;
             }
@@ -233,7 +233,7 @@ public class NvmStoreFileChannel implements NvmStoreChannel
     * */
     @Override
     public FileLock tryLock() {
-        Info.nvmChannelTrylock();
+        Info.nvmChannelTryLock();
         return null;
     }
 

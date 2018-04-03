@@ -2,13 +2,10 @@ package test.origin_fs;
 
 import lib.util.persistent.ObjectDirectory;
 import lib.util.persistent.ObjectPointer;
-import lib.util.persistent.PersistentHashMap;
 import lib.util.persistent.PersistentObject;
 import lib.util.persistent.types.LongField;
 import lib.util.persistent.types.ObjectType;
 import lib.util.persistent.types.StringField;
-
-import java.io.File;
 
 import static lib.util.persistent.Util.persistent;
 
@@ -51,11 +48,6 @@ interface shakaijin{
     void setCompany(String company);
 }
 
-class myfile extends File {
-    myfile(String var1){
-        super(var1);
-    }
-}
 
 
 class Employee extends PersistentObject implements people, shakaijin{
@@ -102,62 +94,8 @@ class Employee extends PersistentObject implements people, shakaijin{
 
 }
 
-class Engineer extends  Employee{
-    private static final StringField PROJECT = new StringField();   //new field
-    public static final StringField GROUPNAME = new StringField();
-    //don't forget extendWith or will out of index
-    public static final ObjectType<Engineer> TYPE = Employee.TYPE.extendWith(Engineer.class, PROJECT, GROUPNAME);  //extend type
-
-    public Engineer(int id, String name, String company, String project){
-        this (TYPE, id, name, company, project);
-    }
-
-    protected  Engineer(ObjectType<? extends Engineer> type, int id, String name, String company, String project){
-        super(type, id, name, company);
-        setProject(project);
-        setGroupname("root");
-        ObjectDirectory.put(name,this);
-
-    }
-
-    protected  Engineer(ObjectPointer<? extends Engineer> p){
-        super(p);
-    }
 
 
-    public void setProject(String project){
-        setObjectField(PROJECT, persistent(project));
-    }
-
-    public String getProject(){
-        return getObjectField(PROJECT).toString();
-    }
-
-    public void changeProject(String project){
-        setObjectField(PROJECT, persistent(project));
-    }
-
-
-    public void setGroupname(String groupname){setObjectField(GROUPNAME, persistent(groupname));}
-
-    public String getGroupname(){return getObjectField(GROUPNAME).toString();}
-
-    public void changGroupname(String groupname){setObjectField(GROUPNAME, persistent(groupname));}
-
-    public Engineer createGroup(String groupname){
-        setGroupname(groupname);
-        PersistentHashMap group = new PersistentHashMap();
-        //PersistentHashMap group1 = new PersistentHashMap();
-        //group.put(persistent("1"),group1);
-        Engineer var1 = new Engineer(1,"lin",getCompany(),getProject());
-        group.put(persistent("lin"),var1);
-        ObjectDirectory.put(getGroupname(),group);
-        var1 = (Engineer) ObjectDirectory.get(getGroupname(),PersistentHashMap.class).get(persistent("lin"));
-        System.out.println(var1.getGroupname());
-        return var1;
-    }
-
-}
 class Thread1 extends Thread{
 
     public void run() {
@@ -165,8 +103,8 @@ class Thread1 extends Thread{
         System.out.println(ObjectDirectory.get("1", Employee.class).getName());
 
     }
+}
 
-    }
 class Thread2 extends Thread{
 
     public void run() {
@@ -181,65 +119,12 @@ class Thread2 extends Thread{
 public class pcjTest {
     public static void testpcj(){
 
-        /*System.out.println(System.getProperty("Java.library.path"));
-        System.out.println("HelloWorld!");
-        PersistentIntArray a = new PersistentIntArray(1024);
-        a.set(0, 123);
-        a = null;
-        PersistentArray<PersistentString> strings = new PersistentArray<>(100);
-        ObjectDirectory.put("data",strings);
-        strings.set(0, new PersistentString("hello"));
-        strings.set(1, persistent("world"));*/
-        //ObjectDirectory.initialize();
-        //ObjectCache.clear();
-        //ObjectDirectory.remove("data",PersistentArray.class);
-        //PersistentArray<PersistentString> strings1 = ObjectDirectory.get("data", PersistentArray.class);
-
-        //assert(strings1.get(1).equals(persistent("wByteBufferorld")));
-
-        //System.out.println(strings1.get(1));
-
-
-
-        //Employee stuff = new Employee(0, "lin");
-
-        //ObjectDirectory.put("lin",stuff);
-        //ObjectDirectory.put("kan",stuff);
-        //ObjectDirectory.initialize();
-        //ObjectDirectory.remove("lin",Employee.class);
-
-        //Employee stuff = ObjectDirectory.get("lin",Employee.class);
-        //stuff.setName("kan");
-        //Employee stuff1 = ObjectDirectory.get("hello",Employee.class);
-        //System.out.println(stuff1.getName());
-        //Employee stuff2 = new Employee(1,"hello");
-        //ObjectDirectory.put("hello",stuff2);
-        //System.out.println(stuff2.getName());
-
         /*Transaction.run(() -> {
 
         });*/
 
 
-        //System.out.println(stuff.getId()+stuff.getName());
-
-        /*attention!
-         * the current directory should know direct name of files and directories in current directory
-         * (these information should be included in it)
-         * also it can find indirect name with path prefix of files and directories of all the
-         * directories and files including the current layer
-         *(these information should be got in ObjectDirectory)
-         *
-         *
-         *
-         *
-         *
-         * */
-
-        //Engineer eng0 = new Engineer(0,"ghost","umbrella","clear");
-        //System.out.println(persistent("hello"));
         Employee stuff = new Employee(0, "lin", "umbrella");
-        //System.out.println(ObjectDirectory.get("1", Employee.class)!=null);
         ObjectDirectory.put("1",stuff);
 
         Thread1 th1 = new Thread1();
@@ -247,47 +132,12 @@ public class pcjTest {
         th2.start();
         th1.start();
 
-
         System.out.println(ObjectDirectory.get("1", Employee.class).getName());
 
 
-        //eng0.changeProject("hahaha");
-        //System.out.println(eng0.getProject());
-        //Engineer eng1 = new Engineer(1,"heaven","sun","fill");
-        //ObjectDirectory.put("1",eng0);
-        //ObjectDirectory.put("2",eng0);
-        //System.out.println(ObjectDirectory.get("1", Engineer.class));
-
-        //ObjectDirectory.remove("1",Engineer.class);
-        //Engineer eng2 = ObjectDirectory.get("2",Engineer.class);
-        //System.out.println(eng2.getName());
-        //PersistentHashMap hm = new PersistentHashMap<PersistentString, PersistentHashMap>();
-        //PersistentHashMap hm1 = new PersistentHashMap<PersistentString,PersistentBoolean>();
-        //hm1.put(persistent("Sub"),persistent(true));
-        //hm.put(persistent("Super"),hm1);
-        //ObjectDirectory.put("Hyper",hm);
-        //PersistentHashMap hm2 = (PersistentHashMap) ObjectDirectory.get("Hyper",PersistentHashMap.class).get(persistent("Super"));
-        //System.out.print(hm2.get(persistent("Sub")));
-        //System.out.println(ObjectDirectory.get("123",Engineer.class)==null);//true
-
-
-        //eng0.createGroup("littlebuster").createGroup("tinybuster");
-        //Engineer eng1 = (Engineer) ObjectDirectory.get("tinybuster",PersistentHashMap.class).get(persistent("lin"));
-        //System.out.println(eng1.getGroupname());
-
-        //ObjectDirectory.put("eng0",eng0);
-        //System.out.println(ObjectDirectory.get("root",PersistentHashMap.class).get(persistent(0)));
-
-        //Engineer eng = ObjectDirectory.get("eng0",Engineer.class);
-        //System.out.println(eng.getId()+" "+eng.getName()+" "+eng.getCompany()+" "+eng.getProject());
-
-        //PersistentUUID a = PersistentUUID.randomUUID();
-        //PersistentHashMap a =new PersistentHashMap();
-        //a.put(persistent(0),persistent("bingo"));
-        //ObjectDirectory.put("S",a);
-        //PersistentHashMap<PersistentObject,PersistentString> a = ObjectDirectory.get("S",PersistentHashMap.class);
-        //System.out.print(a.get(persistent(0)));
     }
+
+
 
 
 }

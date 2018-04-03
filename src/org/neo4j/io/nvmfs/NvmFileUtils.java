@@ -145,10 +145,9 @@ public class NvmFileUtils {
         fileChannel.truncate(position);
     }
     /*realised by NvmStoreFileChannel*/
-    public static void truncateFile( File file, long position ) throws IOException
-    {
+    public static void truncateFile( File file, long position ) {
         if(NvmFilDir.isFile(file)){
-            NvmStoreFileChannel access = new NvmStoreFileChannel(NvmFilDir.getNvmFilDir(file));
+            NvmStoreFileChannel access = new NvmStoreFileChannel(NvmFilDir.getNvmFilDir(file), "rw");
             truncateFile( access, position );
         }
         else{
@@ -405,7 +404,7 @@ public class NvmFileUtils {
     public static NvmStoreFileChannel open( Path path, String mode ) throws IOException
     {
         NvmFileUtils.nvmMkDirs(path.toFile(), true, false);//ensure there is NvmFilDir with path
-        return new NvmStoreFileChannel(NvmFilDir.getNvmFilDir(path.toFile()));
+        return new NvmStoreFileChannel(NvmFilDir.getNvmFilDir(path.toFile()), "rw");
     }
 
     /**
@@ -415,8 +414,7 @@ public class NvmFileUtils {
      * @throws IllegalArgumentException if specified directory represent a file
      * @throws IOException if some problem encountered during reading directory content
      */
-    public static boolean isEmptyDirectory( File directory ) throws IOException
-    {
+    public static boolean isEmptyDirectory( File directory ) {
         return NvmFilDir.isEmpty(directory);
     }
 
