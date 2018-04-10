@@ -76,7 +76,7 @@ class Employee extends PersistentObject implements people, shakaijin{
         return getLongField(ID);
     }
 
-    public void setName(String name){
+    public synchronized void  setName(String name){
         setObjectField(NAME, persistent(name));
     }
 
@@ -84,7 +84,7 @@ class Employee extends PersistentObject implements people, shakaijin{
         return getObjectField(NAME).toString();
     }
 
-    public void setCompany(String company){
+    public void  setCompany(String company){
         setObjectField(COMPANY, persistent(company));
     }
 
@@ -126,11 +126,14 @@ public class pcjTest {
 
         Employee stuff = new Employee(0, "lin", "umbrella");
         ObjectDirectory.put("1",stuff);
+        ObjectDirectory.get("1",Employee.class).setName("main");
+        System.out.println(ObjectDirectory.get("1", Employee.class).getName());
+
 
         Thread1 th1 = new Thread1();
         Thread2 th2 = new Thread2();
-        th2.start();
         th1.start();
+        th2.start();
 
         System.out.println(ObjectDirectory.get("1", Employee.class).getName());
 

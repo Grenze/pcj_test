@@ -1,5 +1,6 @@
 package test.origin_fs;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -29,7 +30,8 @@ public class fileChannelTest {
         byte[] a = new byte[9];
         a[8] = 1;
         buf0.put(a);
-        //buf0.putInt(123);
+        buf0.putInt(128);
+        buf0.putLong(100000);
         buf0.putChar('中');
         buf0.put(newData0.getBytes());
         //buf0.flip();
@@ -46,7 +48,7 @@ public class fileChannelTest {
         buf0.flip();
 
 
-        buf1.put(conditional(buf0).getBytes());
+        buf1.put(advance(buf0));
 
         //buf1.put(bufferToString(buf0).getBytes());
         buf1.flip();
@@ -176,14 +178,15 @@ public class fileChannelTest {
 
 
 
-    private static String conditional(ByteBuffer buf){
-        System.out.println("!!!!!"+bufferToBytes((buf)).length);
+    private static byte[] advance(ByteBuffer buf){
+        System.out.println("BytesLength: "+bufferToBytes((buf)).length);
 
-        String s = new String(bufferToBytes(buf));
-        System.out.println("!!!!!"+s.getBytes().length);
+        //String s = new String(bufferToBytes(buf));
+        String s = DatatypeConverter.printHexBinary(bufferToBytes(buf));
+        System.out.println("StringLength: "+s.getBytes().length);
 
-        toHex(s);
-        return s;
+        System.out.printf("0x%s\n",s);
+        return DatatypeConverter.parseHexBinary(s);
     }
     private static byte[] bufferToBytes(ByteBuffer buf){
         byte[] bts = new byte[buf.remaining()];
