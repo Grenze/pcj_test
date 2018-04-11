@@ -2,6 +2,7 @@ package test.origin_fs;
 
 import lib.util.persistent.ObjectDirectory;
 import lib.util.persistent.ObjectPointer;
+import lib.util.persistent.PersistentByteBuffer;
 import lib.util.persistent.PersistentObject;
 import lib.util.persistent.types.LongField;
 import lib.util.persistent.types.ObjectType;
@@ -122,6 +123,7 @@ public class pcjTest {
         /*Transaction.run(() -> {
 
         });*/
+        PersistentByteBuffer buf = PersistentByteBuffer.allocate(100);
 
 
         Employee stuff = new Employee(0, "lin", "umbrella");

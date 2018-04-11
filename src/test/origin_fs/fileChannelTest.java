@@ -28,12 +28,12 @@ public class fileChannelTest {
         String newData1 = "Franxx String to write to file...";
 
         byte[] a = new byte[9];
-        a[8] = 1;
+        a[8] = 0x70;
         buf0.put(a);
         buf0.putInt(128);
-        buf0.putLong(100000);
-        buf0.putChar('中');
-        buf0.put(newData0.getBytes());
+        //buf0.putLong(100000);
+        //buf0.putChar('中');
+        //buf0.put(newData0.getBytes());
         //buf0.flip();
         //byte[] bts1 = new byte[10];
         //bts1[0] = 10;
@@ -185,7 +185,11 @@ public class fileChannelTest {
         String s = DatatypeConverter.printHexBinary(bufferToBytes(buf));
         System.out.println("StringLength: "+s.getBytes().length);
 
-        System.out.printf("0x%s\n",s);
+        //System.out.printf("0x%s\n",s);
+        System.out.println(s);
+        //System.out.println(DatatypeConverter.printHexBinary(s.getBytes()));
+        //return s.getBytes();
+
         return DatatypeConverter.parseHexBinary(s);
     }
     private static byte[] bufferToBytes(ByteBuffer buf){
