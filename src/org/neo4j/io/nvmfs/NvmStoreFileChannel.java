@@ -102,7 +102,7 @@ public class NvmStoreFileChannel implements NvmStoreChannel
     /*guarantee all bytes will be written*/
     @Override
     public void writeAll( ByteBuffer src, long position ) {
-        write( src, Math.toIntExact(position) );
+        write( src, position );
         /*long filePosition = position;
         //be sure ByteBuffer.flip() executed
         long expectedEndPosition = filePosition + src.limit() - src.position();
