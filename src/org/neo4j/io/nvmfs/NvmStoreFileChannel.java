@@ -103,31 +103,11 @@ public class NvmStoreFileChannel implements NvmStoreChannel
     @Override
     public void writeAll( ByteBuffer src, long position ) {
         write( src, position );
-        /*long filePosition = position;
-        //be sure ByteBuffer.flip() executed
-        long expectedEndPosition = filePosition + src.limit() - src.position();
-        int bytesWritten;
-        while((filePosition += (bytesWritten = write( src, filePosition ))) < expectedEndPosition)
-        {
-            if( bytesWritten < 0 )
-            {
-                throw new IOException( "Unable to write to disk, reported bytes written was " + bytesWritten );
-            }
-        }*/
     }
 
     @Override
     public void writeAll( ByteBuffer src ) {
         write(src);
-        /*long bytesToWrite = src.limit() - src.position();
-        int bytesWritten;
-        while((bytesToWrite -= (bytesWritten = write( src ))) > 0)
-        {
-            if( bytesWritten < 0 )
-            {
-                throw new IOException( "Unable to write to disk, reported bytes written was " + bytesWritten );
-            }
-        }*/
     }
 
     /*truncate from the position*/
@@ -155,7 +135,6 @@ public class NvmStoreFileChannel implements NvmStoreChannel
         if(dst.remaining()==0){
             return 0;
         }
-        //String getString = nvmFile.read(dst.remaining(), Math.toIntExact(position));
         byte[] getBts = nvmFile.read(dst.remaining(), Math.toIntExact(position), true);
         if(getBts.length==0){
             return -1;
