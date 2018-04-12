@@ -1,16 +1,24 @@
 package test.origin_fs;
 
 import javax.xml.bind.DatatypeConverter;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.Base64;
 
 public class fileChannelTest {
 
-    public static void testStoreFileChannel () throws IOException {
+    public static void testStoreFileChannel () {
 
+        ByteBuffer buf = ByteBuffer.wrap(new byte[10]);
+
+        buf.position(1);
+        System.out.println(buf);
+        System.out.println(buf.remaining());
+        buf.get(new byte[9], 0, 2);
+        //buf.get(new byte[1]);
+
+
+
+        /*
         FileChannel f1Channel = new RandomAccessFile("text","rw").getChannel();
         f1Channel.tryLock();
         RandomAccessFile raf = new RandomAccessFile("text","rw");

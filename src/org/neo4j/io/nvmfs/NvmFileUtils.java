@@ -264,7 +264,7 @@ public class NvmFileUtils {
             NvmFilDir.getNvmFilDir(getCanonicalParentSafely(target)).increaseLocalIndex(target);
         }
         if(NvmFilDir.isFile(target)){
-            NvmFilDir.getNvmFilDir(target).write(text, append);
+            NvmFilDir.getNvmFilDir(target).write(text.getBytes(), append);
         }
     }
 
@@ -330,7 +330,7 @@ public class NvmFileUtils {
             throw new IllegalArgumentException(
                     "Source must be a file, not " + convertFile(file));
         }
-        return (NvmFilDir.getNvmFilDir(file).readAll()+"\n");
+        return (new String(NvmFilDir.getNvmFilDir(file).readAll(true))+"\n");
     }
 
     /**

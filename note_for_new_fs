@@ -214,12 +214,13 @@ static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
 
 27.base64 encoded String not allowed any operation XXXXXX
 
+27.5 byteBuffer.get(byte[], byte's begin, lengthToByte[])(byteBuffer.position->position+lengthToByte[])(lengthToByte[]<remaining)!!!!!! then byteBuffer.clear
+
 28.the left work:
     1.use byteBuffer to replace String(NvmFileUtils readTextFile writeToFile)
     2.file lock
     3.the left index and etc
     ***
-
 
 
 

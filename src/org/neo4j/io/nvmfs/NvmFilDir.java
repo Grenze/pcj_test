@@ -1,9 +1,6 @@
 package org.neo4j.io.nvmfs;
 
-import lib.util.persistent.ObjectDirectory;
-import lib.util.persistent.ObjectPointer;
-import lib.util.persistent.PersistentObject;
-import lib.util.persistent.PersistentString;
+import lib.util.persistent.*;
 import lib.util.persistent.types.BooleanField;
 import lib.util.persistent.types.ObjectType;
 import lib.util.persistent.types.StringField;
@@ -33,6 +30,7 @@ public class NvmFilDir  extends PersistentObject{
         setFileContent("");
         setIsFile(isFile);
         setIsDirectory(isDirectory);
+        setContentBuffer(new byte[0]);
     }
 
     private NvmFilDir(ObjectPointer<NvmFilDir> p){
@@ -46,6 +44,7 @@ public class NvmFilDir  extends PersistentObject{
         setFileContent(nvmFilDir.getFileContent());
         setIsFile(nvmFilDir.getIsFile());
         setIsDirectory(nvmFilDir.getIsDirectory());
+        setContentBuffer(nvmFilDir.getContentBuffer());
     }
 
     private void setGlobalId(String globalId){
@@ -92,11 +91,87 @@ public class NvmFilDir  extends PersistentObject{
         return getBooleanField(ISDIRECTORY);
     }
 
+    /*use ByteBuffer to replace String*/
+    private void setContentBuffer(PersistentByteBuffer persistBuf){
+        putNvmObject(getGlobalId(), persistBuf);
+    }
+
+    private void setContentBuffer(byte[] bts){
+        setContentBuffer(PersistentByteBuffer.copyWrap(bts));
+    }
+
+    private void setContentBuffer(byte[]... bts){
+        setContentBuffer(PersistentByteBuffer.copyWrap(combineBytes(bts)));
+    }
+
+    private PersistentByteBuffer getContentBuffer(){
+        return getNvmObject(getGlobalId(), PersistentByteBuffer.class);
+    }
+
+
 
 
     /*above set/get method*/
 
+    private byte[] combineBytes(byte[] bts1, byte[] bts2){
+        byte[] btsCom = new byte[bts1.length+bts2.length];
+        System.arraycopy(bts1,0,btsCom,0,bts1.length);
+        System.arraycopy(bts2,0,btsCom,bts1.length,bts2.length);
+        return btsCom;
+    }
 
+    private byte[] combineBytes(byte[]... btsMore){
+        byte[] btsCom = new byte[0];
+        for(byte[] bts: btsMore){
+            btsCom = combineBytes(btsCom, bts);
+        }
+        return btsCom;
+    }
+
+    private byte[] sliceContentBuffer(PersistentByteBuffer buf, int begin, int end){
+        //System.out.println(buf);
+        //System.out.println(begin+" - "+end);
+        byte[] bts = new byte[end - begin];
+        buf.position(begin);
+        buf.get(bts, 0, bts.length);
+        buf.clear();
+        return bts;
+    }
+
+    private byte[] sliceContentBuffer(PersistentByteBuffer buf, int begin){
+        return sliceContentBuffer(buf, begin, buf.capacity());
+    }
+
+    public int write(byte[] bytes, int position){
+        if(bytes.length == 0 || position < 0){return 0;}
+        PersistentByteBuffer contentBuffer = getContentBuffer();
+        int offset = position - contentBuffer.capacity();
+        if(offset > 0){
+            setContentBuffer(sliceContentBuffer(getContentBuffer(), 0), new byte[offset], bytes);
+        }
+        else{
+            if(position+bytes.length<contentBuffer.capacity()){
+                setContentBuffer(sliceContentBuffer(getContentBuffer(), 0, position), bytes, sliceContentBuffer(getContentBuffer(), position+bytes.length));
+            }
+            else{
+                setContentBuffer(sliceContentBuffer(getContentBuffer(), 0, position), bytes);
+            }
+        }
+        return bytes.length;
+    }
+
+    public void write(byte[] text, boolean append){
+        if(append){
+            write(text, getContentBuffer().capacity());
+        }
+        else{
+            write(text, 0);
+        }
+    }
+
+
+    /*Old method using String*/
+    @Deprecated
     public int write(String str, int position){
         if(str.length() == 0 || position < 0){return 0;}
         String originContent = getFileContent();
@@ -116,6 +191,8 @@ public class NvmFilDir  extends PersistentObject{
         return str.length();
     }
 
+    /*Old method using String*/
+    @Deprecated
     public void write(String text, boolean append){
         if(append){
             write(text, getFileContent().length());
@@ -125,17 +202,21 @@ public class NvmFilDir  extends PersistentObject{
         }
     }
 
-    public String readAll(){
-        return getFileContent();
+
+    public byte[] read(int length, int position, boolean bool){
+        PersistentByteBuffer contentBuffer = getContentBuffer();
+        if(position >= contentBuffer.capacity() || position < 0 || length <= 0){return new byte[0];}
+        if(position+length <= contentBuffer.capacity()){
+            return sliceContentBuffer(contentBuffer, position, position+length);
+        }
+        else{
+            return sliceContentBuffer(contentBuffer, position);
+        }
     }
 
 
-
-    public void truncate(int size){
-        String originContent = getFileContent();
-        setFileContent(originContent.substring(0, size));
-    }
-
+    /*Old method using String*/
+    @Deprecated
     public String read(int length, int position){
         String originContent = getFileContent();
         if(position >= originContent.length() || position < 0 || length<=0 ){return "";}
@@ -147,13 +228,48 @@ public class NvmFilDir  extends PersistentObject{
         }
     }
 
+
+    public byte[] readAll(boolean bool){
+        return sliceContentBuffer(getContentBuffer(), 0);
+    }
+
+    /*Old method using String*/
+    @Deprecated
+    public String readAll(){
+        return getFileContent();
+    }
+
+
+
+    public void truncate(int size, boolean bool){
+        setContentBuffer(sliceContentBuffer(getContentBuffer(), 0, size));
+    }
+
+    /*Old method using String*/
+    @Deprecated
+    public void truncate(int size){
+        String originContent = getFileContent();
+        setFileContent(originContent.substring(0, size));
+    }
+
+
+
+    public long getSize(boolean bool){
+        return getContentBuffer().capacity();
+    }
+
+    /*Old method using String*/
+    @Deprecated
     public long getSize(){
         return getFileContent().length();
     }
+
+
+
     //remained to complete
     public void force(boolean metadata){
-        if(ObjectDirectory.get(getGlobalId(), NvmFilDir.class)==null){
-            ObjectDirectory.put(getGlobalId(), this);
+        if(getNvmObject(getGlobalId(), NvmFilDir.class)==null){
+            putNvmObject(getGlobalId(), this);
         }
     }
 
@@ -193,7 +309,7 @@ public class NvmFilDir  extends PersistentObject{
 
 
     public static boolean exists(File file)  {
-        return (ObjectDirectory.get(convertFile(file), NvmFilDir.class)!=null);
+        return (getNvmObject(convertFile(file), NvmFilDir.class)!=null);
     }
 
 
@@ -202,11 +318,11 @@ public class NvmFilDir  extends PersistentObject{
     }
 
     public static NvmFilDir getNvmFilDir(File file) {
-        return ObjectDirectory.get(convertFile(file), NvmFilDir.class);
+        return getNvmObject(convertFile(file), NvmFilDir.class);
     }
 
     public static void putNvmFilDir(File file, NvmFilDir nvmFilDir) {
-        ObjectDirectory.put(convertFile(file), nvmFilDir);
+        putNvmObject(convertFile(file), nvmFilDir);
     }
 
     public static void copyNvmFilDir(File src, File dst){
@@ -216,17 +332,17 @@ public class NvmFilDir  extends PersistentObject{
     }
 
     public static boolean isEmpty(File file)  {
-        return ObjectDirectory.get(convertFile(file), NvmFilDir.class).getLocalIndex().length() == 0;
+        return getNvmObject(convertFile(file), NvmFilDir.class).getLocalIndex().length() == 0;
     }
 
     public static boolean isFile(File file) {
-        return ObjectDirectory.get(convertFile(file), NvmFilDir.class) != null
-                && ObjectDirectory.get(convertFile(file), NvmFilDir.class).getIsFile();
+        return getNvmObject(convertFile(file), NvmFilDir.class) != null
+                && getNvmObject(convertFile(file), NvmFilDir.class).getIsFile();
     }
 
     public static boolean isDirectory(File file) {
-        return ObjectDirectory.get(convertFile(file), NvmFilDir.class) == null
-                || ObjectDirectory.get(convertFile(file), NvmFilDir.class).getIsDirectory();
+        return getNvmObject(convertFile(file), NvmFilDir.class) == null
+                || getNvmObject(convertFile(file), NvmFilDir.class).getIsDirectory();
     }
 
 
@@ -242,6 +358,16 @@ public class NvmFilDir  extends PersistentObject{
             }
         }
         return (File[])temp.toArray(new File[temp.size()]);
+    }
+
+
+
+    public static <T extends AnyPersistent>T getNvmObject(String index, Class<T> clazz){
+        return ObjectDirectory.get(index, clazz);
+    }
+
+    public static <T extends AnyPersistent>void putNvmObject(String index, T obj){
+         ObjectDirectory.put(index, obj);
     }
 
 

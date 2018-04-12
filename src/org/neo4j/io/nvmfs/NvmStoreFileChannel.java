@@ -39,10 +39,26 @@ public class NvmStoreFileChannel implements NvmStoreChannel
         return btsCom;
     }
 
+    //convert ByteBuffer to Bytes
+    private byte[] byteBufferToBytes(ByteBuffer buf){
+        byte[] bts = new byte[buf.remaining()];
+        buf.get(bts, 0, bts.length);
+        return bts;
+    }
+
+    //convert ByteBuffers to Bytes
+    private byte[] byteBufferToBytes(ByteBuffer[] bufs, int offset, int length){
+        byte[] btsCom = new byte[0];
+        for(int i=0; i<length; i++){
+            btsCom = combineBytes(btsCom, byteBufferToBytes(bufs[offset+i]));
+        }
+        return btsCom;
+    }
+
     //convert ByteBuffer to String
     private String byteBufferToString( ByteBuffer buf ){
         byte[] bts = new byte[buf.remaining()];
-        buf.get(bts, buf.position(), buf.remaining());
+        buf.get(bts, 0, bts.length);
         return new String(bts);
     }
 
@@ -58,23 +74,19 @@ public class NvmStoreFileChannel implements NvmStoreChannel
     /*write the content of ByteBuffer to the position of channel, position init 0*/
     @Override
     public int write( ByteBuffer src ) {
-        int temp = nvmFile.write( byteBufferToString(src) , locate.position);
-        locate.position += temp;
-        return temp;
+        return write(src, locate.position);
     }
 
     /*write the content of every ByteBuffer to the position of channel in order*/
     @Override
     public long write( ByteBuffer[] srcs ) {
-        int temp = nvmFile.write( byteBuffersToString(srcs, 0, srcs.length),  locate.position);
-        locate.position += temp;
-        return temp;
+        return write(srcs, 0, srcs.length);
     }
 
     /*write the content of ByteBuffer to the position of channel, position required*/
     @Override
     public int write( ByteBuffer src, long position ) {
-        int temp = nvmFile.write( byteBufferToString(src), Math.toIntExact(position));
+        int temp = nvmFile.write( byteBufferToBytes(src), Math.toIntExact(position));
         locate.position = Math.toIntExact(position) + temp;
         return temp;
     }
@@ -82,7 +94,7 @@ public class NvmStoreFileChannel implements NvmStoreChannel
     /*write the content of ByteBuffer[offset:offset+length(<=ByteBuffer.length)] to the position of channel, params>=0, nothing will be written if length == 0*/
     @Override
     public long write( ByteBuffer[] srcs, int offset, int length ) {
-        int temp = nvmFile.write( byteBuffersToString(srcs, offset, length ), locate.position);
+        int temp = nvmFile.write( byteBufferToBytes(srcs, offset, length ), locate.position);
         locate.position += temp;
         return temp;
     }
@@ -121,7 +133,7 @@ public class NvmStoreFileChannel implements NvmStoreChannel
     /*truncate from the position*/
     @Override
     public NvmStoreFileChannel truncate( long size ) {
-        nvmFile.truncate( Math.toIntExact(size) );
+        nvmFile.truncate( Math.toIntExact(size), true );
         if(locate.position>Math.toIntExact(size)){
             locate.position = Math.toIntExact(size);
         }
@@ -130,16 +142,7 @@ public class NvmStoreFileChannel implements NvmStoreChannel
 
     @Override
     public int read( ByteBuffer dst ) {
-        if(dst.remaining()==0){
-            return 0;
-        }
-        String getString = nvmFile.read(dst.remaining(),locate.position);
-        if(getString.length()==0){
-            return -1;
-        }
-        locate.position += getString.length();
-        dst.put(getString.getBytes());
-        return getString.length();
+        return read(dst, locate.position);
     }
 
     @Override
@@ -152,18 +155,38 @@ public class NvmStoreFileChannel implements NvmStoreChannel
         if(dst.remaining()==0){
             return 0;
         }
-        String getString = nvmFile.read(dst.remaining(), Math.toIntExact(position));
-        if(getString.length()==0){
+        //String getString = nvmFile.read(dst.remaining(), Math.toIntExact(position));
+        byte[] getBts = nvmFile.read(dst.remaining(), Math.toIntExact(position), true);
+        if(getBts.length==0){
             return -1;
         }
-        locate.position = Math.toIntExact(position) + getString.length();
-        dst.put(getString.getBytes());
-        return getString.length();
+        locate.position = Math.toIntExact(position) + getBts.length;
+        dst.put(getBts);
+        return getBts.length;
     }
 
     @Override
     public long read( ByteBuffer[] dsts, int offset, int length ) {
         int sumCapacity = 0;
+        for(int i=0; i<length; i++){
+            sumCapacity += dsts[offset+i].remaining();
+        }
+        if(sumCapacity==0){
+            return 0;
+        }
+        int positionMark = locate.position;
+        for(int j=0; j<length;j++){
+            if(read(dsts[offset+j])==-1){break;}
+        }
+        if(positionMark==locate.position){
+            return -1;
+        }
+        else{
+            return locate.position-positionMark;
+        }
+
+
+        /*int sumCapacity = 0;
         for(int i=0; i<length; i++){
             sumCapacity += dsts[offset+i].remaining();
         }
@@ -184,7 +207,7 @@ public class NvmStoreFileChannel implements NvmStoreChannel
             bufOrder++;
         }
         dsts[bufOrder].put(getString.getBytes());
-        return len;
+        return len;*/
     }
 
     /*position init at 0 when open the channel
@@ -236,7 +259,7 @@ public class NvmStoreFileChannel implements NvmStoreChannel
     /*size of file*/
     @Override
     public long size() {
-        return nvmFile.getSize();
+        return nvmFile.getSize(true);
     }
 
     /*sync memory to disk*/

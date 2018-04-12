@@ -66,7 +66,7 @@ public class NvmDefaultFileSystemAbstraction implements NvmFileSystemAbstraction
 
     @Override
     public long getFileSize(File fileName) {
-        return NvmFilDir.getNvmFilDir(fileName).getSize();
+        return NvmFilDir.getNvmFilDir(fileName).getSize(true);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class NvmDefaultFileSystemAbstraction implements NvmFileSystemAbstraction
     }
 
     @Override
-    public void deleteRecursively(File directory) throws IOException {
+    public void deleteRecursively(File directory) {
         NvmFileUtils.deleteRecursively(directory);
     }
 
@@ -105,7 +105,7 @@ public class NvmDefaultFileSystemAbstraction implements NvmFileSystemAbstraction
     }
 
     @Override
-    public void copyFile(File from, File to) throws IOException {
+    public void copyFile(File from, File to) {
         NvmFileUtils.copyFile(from, to);
     }
 
