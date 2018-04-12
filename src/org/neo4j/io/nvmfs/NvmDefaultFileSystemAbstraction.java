@@ -11,7 +11,7 @@ public class NvmDefaultFileSystemAbstraction implements NvmFileSystemAbstraction
 
     //mode not used yet
     @Override
-    public NvmStoreFileChannel open(File fileName, String mode) throws IOException {
+    public NvmStoreFileChannel open(File fileName, String mode)  {
         NvmFileUtils.nvmMkDirs(fileName, true, false);//ensure there is NvmFilDir with fileName
         return new NvmStoreFileChannel(NvmFilDir.getNvmFilDir(fileName), mode);
     }
@@ -41,12 +41,12 @@ public class NvmDefaultFileSystemAbstraction implements NvmFileSystemAbstraction
     }
 
     @Override
-    public NvmStoreFileChannel create(File fileName) throws IOException {
+    public NvmStoreFileChannel create(File fileName)  {
         return open(fileName, "rw");
     }
 
     @Override
-    public boolean mkdir(File fileName) throws IOException {
+    public boolean mkdir(File fileName)  {
         if(fileName.toString().split("/").length>1){
             return false;
         }
@@ -55,7 +55,7 @@ public class NvmDefaultFileSystemAbstraction implements NvmFileSystemAbstraction
     }
 
     @Override
-    public void mkdirs(File fileName) throws IOException {
+    public void mkdirs(File fileName)  {
         NvmFileUtils.nvmMkDirs(fileName, false, true);
     }
 
@@ -70,7 +70,7 @@ public class NvmDefaultFileSystemAbstraction implements NvmFileSystemAbstraction
     }
 
     @Override
-    public boolean deleteFile(File fileName) throws IOException {
+    public boolean deleteFile(File fileName)  {
         return NvmFileUtils.deleteFile(fileName);
     }
 
@@ -130,7 +130,7 @@ public class NvmDefaultFileSystemAbstraction implements NvmFileSystemAbstraction
 
 
     @Override
-    public void truncate(File path, long size) throws IOException {
+    public void truncate(File path, long size) {
         NvmFileUtils.truncateFile(path, size);
     }
 

@@ -103,7 +103,6 @@ public class NvmFilDir  extends PersistentObject{
         int offset = position - originContent.length();
         if(offset > 0){
             //offset should be filled with 00 space is 20h
-            //setFileContent(String.format("%1$-"+position+"s", originContent) + str);
             setFileContent(originContent + new String(new byte[offset])+ str);
         }
         else{
@@ -139,7 +138,7 @@ public class NvmFilDir  extends PersistentObject{
 
     public String read(int length, int position){
         String originContent = getFileContent();
-        if(position >= originContent.length() || position < 0){return "";}
+        if(position >= originContent.length() || position < 0 || length<=0 ){return "";}
         if(position+length<=originContent.length()){
             return originContent.substring(position, position+length);
         }

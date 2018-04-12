@@ -18,25 +18,25 @@ public interface NvmFileSystemAbstraction {
 
     NvmStoreChannel create(File fileName ) throws IOException;
 
-    boolean fileExists( File fileName ) throws IOException ;
+    boolean fileExists( File fileName );
 
-    boolean mkdir( File fileName ) throws IOException;
+    boolean mkdir( File fileName );
 
     void mkdirs( File fileName ) throws IOException;
 
-    long getFileSize( File fileName ) throws IOException;
+    long getFileSize( File fileName );
 
-    boolean deleteFile( File fileName ) throws IOException;
+    boolean deleteFile( File fileName );
 
     void deleteRecursively( File directory ) throws IOException;
 
     boolean renameFile( File from, File to ) throws IOException;
 
-    File[] listFiles( File directory ) throws IOException;
+    File[] listFiles( File directory );
 
-    File[] listFiles( File directory, FilenameFilter filter ) throws IOException;
+    File[] listFiles( File directory, FilenameFilter filter );
 
-    boolean isDirectory( File file ) throws IOException;
+    boolean isDirectory( File file );
 
     void moveToDirectory( File file, File toDirectory ) throws IOException;
 

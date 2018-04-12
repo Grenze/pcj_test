@@ -1,5 +1,5 @@
 import org.apache.commons.io.FileUtils;
-import test.origin_fs.Utiltest;
+import test.nvm_fs.NvmUtilsTest;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -13,8 +13,8 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
 
-        Utiltest.testAll();
-        //NvmUtilsTest.testAll();
+        //Utiltest.testAll();
+        NvmUtilsTest.testAll();
 
 
 
