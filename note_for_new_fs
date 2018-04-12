@@ -212,7 +212,13 @@ static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
 
 26.string byte[] convert in NvmFilDir, check every corner about data
 
-27.base64 encoded String not allowed any operation
+27.base64 encoded String not allowed any operation XXXXXX
+
+28.the left work:
+    1.use byteBuffer to replace String
+    2.file lock
+    3.the left index and etc
+    4.a new branch for nvm_neo4j
 
 
 
