@@ -1,17 +1,49 @@
 package test.nvm_fs;
 
-import org.neo4j.io.nvmfs.NvmFileUtils;
-import org.neo4j.io.nvmfs.NvmStoreFileChannel;
+import lib.util.persistent.ObjectDirectory;
+import org.neo4j.io.nvmfs.NvmFilDir;
 
 import java.io.File;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 
 public class NvmUtilsTest {
 
     public static void testAll() {
+        long loopTimes = 10;
+
+        //PersistentHashMap pHm = new PersistentHashMap();
+        //ObjectDirectory.put("pHm", pHm);
 
 
+
+        //ObjectDirectory.put(String.valueOf(20), PersistentByteBuffer.copyWrap(new byte[20]));
+        //ObjectDirectory.put(String.valueOf(20), persistent("20"));
+
+        NvmFilDir testFilDir = new NvmFilDir("testFilDir",true,false);
+        ObjectDirectory.put("testFilDir", testFilDir);
+
+
+        long Start = System.currentTimeMillis();
+        //for(int i=0;i<loopTimes;i++){
+            //ObjectDirectory.put(String.valueOf(i), PersistentByteBuffer.copyWrap(new byte[i]));//put the origin class costs 5s, init heap costs 5s
+            //ObjectDirectory.put(String.valueOf(i), persistent(String.valueOf(i)));
+            //ObjectDirectory.put(String.valueOf(i),new NvmFilDir(String.valueOf(i), true, false));//18s
+        //}
+        long End = System.currentTimeMillis();
+        //System.out.println(loopTimes + " Puts cost "+(End - Start)+" ms");
+
+
+        Start = System.currentTimeMillis();
+        for(int j=0;j<loopTimes;j++){
+            testFilDir.setFileContent(String.valueOf(j));
+            //pHm.put(persistent(j), new NvmFilDir(String.valueOf(j), true, false));//17s
+        }
+        End = System.currentTimeMillis();
+        System.out.println(loopTimes + " Sets cost "+(End - Start)+" ms");
+
+
+
+        /*
 
 
         NvmFileUtils.writeToFile(new File("dir1/file1"), "Violate 123456789", false);

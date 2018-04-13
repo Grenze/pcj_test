@@ -225,7 +225,9 @@ static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
 
 29.less force() with sync
 
-30.now 20 minutes to start neo4j
+30.now 20 minutes to start neo4j, test the performance of pcj
+
+31.put the origin class costs 5s, init heap costs 5s, put the class designed by user will costs 16s, set the origin class costs 3s
 
 
 

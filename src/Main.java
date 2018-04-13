@@ -1,5 +1,5 @@
 import org.apache.commons.io.FileUtils;
-import test.origin_fs.Utiltest;
+import test.nvm_fs.NvmUtilsTest;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -10,18 +10,19 @@ import static java.nio.file.StandardOpenOption.*;
 
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         long startTime = System.currentTimeMillis();
 
-        Utiltest.testAll();
 
-        long endTime = System.currentTimeMillis();
-        System.out.println(endTime - startTime);
-
-        //NvmUtilsTest.testAll();
+        //System.out.println(String.valueOf(1));
+        //Utiltest.testAll();
+        NvmUtilsTest.testAll();
         //byte[] a = new byte[10];
         //System.out.println(DatatypeConverter.printHexBinary(a));
+
+        long endTime = System.currentTimeMillis();
+        System.out.println("Total time "+(endTime - startTime)+" ms");
 
 
 

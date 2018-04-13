@@ -67,7 +67,7 @@ public class NvmFilDir  extends PersistentObject{
     }
 
 
-    private void setFileContent(String fileContent){
+    public void setFileContent(String fileContent){
         setObjectField(FILECONTENT, persistent(fileContent));
     }
 
