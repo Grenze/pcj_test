@@ -14,7 +14,6 @@ public class NvmUtilsTest {
 
 
 
-
         NvmFileUtils.writeToFile(new File("dir1/file1"), "Violate 123456789", false);
 
         NvmFileUtils.truncateFile(new File("dir1/file1"), 10);

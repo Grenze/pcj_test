@@ -218,11 +218,12 @@ static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
 
 28.the left work:
     1.use byteBuffer to replace String(NvmFileUtils readTextFile writeToFile)
-    2.file lock
+    2.file lock(concurrenthashmap, trylock("wr"))
+        used in PhysicalLogVersionedStoreChannel, StoreLocker, SingleFilePageSwapper(deleted sync about positionLock of FileChannelImpl)
     3.the left index and etc
     ***
 
-
+29.less force() with sync
 
 
 

@@ -1,4 +1,5 @@
 import org.apache.commons.io.FileUtils;
+import test.origin_fs.Utiltest;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -9,10 +10,10 @@ import static java.nio.file.StandardOpenOption.*;
 
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
 
-        //Utiltest.testAll();
+        Utiltest.testAll();
         //NvmUtilsTest.testAll();
         //byte[] a = new byte[10];
         //System.out.println(DatatypeConverter.printHexBinary(a));

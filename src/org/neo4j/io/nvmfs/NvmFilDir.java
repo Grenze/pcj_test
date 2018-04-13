@@ -129,8 +129,6 @@ public class NvmFilDir  extends PersistentObject{
     }
 
     private byte[] sliceContentBuffer(PersistentByteBuffer buf, int begin, int end){
-        //System.out.println(buf);
-        //System.out.println(begin+" - "+end);
         byte[] bts = new byte[end - begin];
         buf.position(begin);
         buf.get(bts, 0, bts.length);

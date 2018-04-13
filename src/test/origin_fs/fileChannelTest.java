@@ -1,29 +1,85 @@
 package test.origin_fs;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.Base64;
+
+
+
+class channelLockThread extends Thread{
+    channelLockThread(String threadName){
+        super(threadName);
+        start();
+    }
+    public void run(){
+        FileChannel f1Channel;
+        try {
+            f1Channel = new RandomAccessFile("text","rw").getChannel();
+            System.out.println(getName()+" Lock it");
+            f1Channel.tryLock();
+            Thread.sleep(3000);
+            f1Channel.close();
+            System.out.println(getName()+" UnLock it");
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class channelWRThread extends Thread{
+    channelWRThread(String threadName){
+        super(threadName);
+        start();
+    }
+    public void run(){
+        FileChannel f1Channel;
+        try {
+            f1Channel = new RandomAccessFile("text","rw").getChannel();
+            Thread.sleep(4000);
+
+            f1Channel.tryLock();
+            System.out.println(getName()+" Lock and Write it");
+            f1Channel.write(ByteBuffer.wrap(new byte[10]));
+            System.out.println(getName()+" Write it done and UnLock");
+            f1Channel.close();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
 
 public class fileChannelTest {
 
     public static void testStoreFileChannel () {
 
-        ByteBuffer buf = ByteBuffer.wrap(new byte[10]);
 
-        buf.position(1);
-        System.out.println(buf);
-        System.out.println(buf.remaining());
-        buf.get(new byte[9], 0, 2);
+        channelLockThread cThread1 = new channelLockThread("lockThread");
+
+        channelWRThread cThread2 = new channelWRThread("wrThread");
+
+
+        //ByteBuffer buf = ByteBuffer.wrap(new byte[10]);
+
+        //buf.position(1);
+        //System.out.println(buf);
+        //buf.get(new byte[9], 0, 2);
         //buf.get(new byte[1]);
 
 
 
-        /*
+
+
+/*
+
         FileChannel f1Channel = new RandomAccessFile("text","rw").getChannel();
         f1Channel.tryLock();
-        RandomAccessFile raf = new RandomAccessFile("text","rw");
-        FileChannel fChannel = raf.getChannel();
-        //fChannel.tryLock();
+        FileChannel fChannel = new RandomAccessFile("text","rw").getChannel();
+        //fChannel.tryLock();//same thread
+
+
 
 
 
@@ -36,7 +92,7 @@ public class fileChannelTest {
         String newData1 = "Franxx String to write to file...";
 
         byte[] a = new byte[9];
-        a[8] = 0x70;
+        a[8] = (byte)255;
         buf0.put(a);
         buf0.putInt(128);
         //buf0.putLong(100000);
@@ -60,6 +116,7 @@ public class fileChannelTest {
 
         //buf1.put(bufferToString(buf0).getBytes());
         buf1.flip();
+
         System.out.println(fChannel.write(buf1));
 
 
