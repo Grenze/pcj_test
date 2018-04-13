@@ -12,8 +12,13 @@ import static java.nio.file.StandardOpenOption.*;
 public class Main {
     public static void main(String[] args) throws IOException {
 
+        long startTime = System.currentTimeMillis();
 
         Utiltest.testAll();
+
+        long endTime = System.currentTimeMillis();
+        System.out.println(endTime - startTime);
+
         //NvmUtilsTest.testAll();
         //byte[] a = new byte[10];
         //System.out.println(DatatypeConverter.printHexBinary(a));

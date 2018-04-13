@@ -20,6 +20,7 @@ public class NvmFilDir  extends PersistentObject{
     private static final StringField FILECONTENT = new StringField();
     private static final BooleanField ISFILE = new BooleanField();
     private static final BooleanField ISDIRECTORY = new BooleanField();
+    //private static final ObjectField
 
     private static final ObjectType<NvmFilDir> TYPE = ObjectType.withFields(NvmFilDir.class, GLOBALID, LOCALINDEX, FILECONTENT, ISFILE, ISDIRECTORY);
     //only this param about File is String, convert to canonicalPath before pass in
@@ -31,6 +32,7 @@ public class NvmFilDir  extends PersistentObject{
         setIsFile(isFile);
         setIsDirectory(isDirectory);
         setContentBuffer(new byte[0]);
+        putNvmObject(getGlobalId(), this);//no need of force method
     }
 
     private NvmFilDir(ObjectPointer<NvmFilDir> p){
@@ -266,9 +268,9 @@ public class NvmFilDir  extends PersistentObject{
 
     //remained to complete
     public void force(boolean metadata){
-        if(getNvmObject(getGlobalId(), NvmFilDir.class)==null){
-            putNvmObject(getGlobalId(), this);
-        }
+        //if(getNvmObject(getGlobalId(), NvmFilDir.class)==null){
+            //putNvmObject(getGlobalId(), this);
+        //}
     }
 
     //"/"not used in file's name
