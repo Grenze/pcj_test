@@ -220,7 +220,7 @@ static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
     1.use byteBuffer to replace String(NvmFileUtils readTextFile writeToFile)
     2.file lock(concurrenthashmap, trylock("wr"))
         used in PhysicalLogVersionedStoreChannel, StoreLocker, SingleFilePageSwapper(deleted sync about positionLock of FileChannelImpl and NvmFilDir)
-    3.the left index and etc
+    3.the left index and debug.log
     ***
 
 29.less force() with sync
@@ -229,6 +229,6 @@ static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
 
 31.put the origin class costs 5s, init heap costs 5s, put the class designed by user will costs 16s, set the origin class costs 3s
 
-
+32.changed LogEntryVersion.java line 142 to recover, Bolt enabled on localhost:7687. deleted two connectors.
 
 

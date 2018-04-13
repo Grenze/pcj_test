@@ -1,26 +1,28 @@
 package test.nvm_fs;
 
 import lib.util.persistent.ObjectDirectory;
-import org.neo4j.io.nvmfs.NvmFilDir;
+import lib.util.persistent.PersistentHashMap;
 
 import java.io.File;
 import java.nio.ByteBuffer;
+
+import static lib.util.persistent.Util.persistent;
 
 public class NvmUtilsTest {
 
     public static void testAll() {
         long loopTimes = 10;
 
-        //PersistentHashMap pHm = new PersistentHashMap();
-        //ObjectDirectory.put("pHm", pHm);
+        PersistentHashMap pHm = new PersistentHashMap();
+        ObjectDirectory.put("pHm", pHm);
 
 
 
         //ObjectDirectory.put(String.valueOf(20), PersistentByteBuffer.copyWrap(new byte[20]));
         //ObjectDirectory.put(String.valueOf(20), persistent("20"));
 
-        NvmFilDir testFilDir = new NvmFilDir("testFilDir",true,false);
-        ObjectDirectory.put("testFilDir", testFilDir);
+        //NvmFilDir testFilDir = new NvmFilDir("testFilDir",true,false);
+        //ObjectDirectory.put("testFilDir", testFilDir);
 
 
         long Start = System.currentTimeMillis();
@@ -35,8 +37,9 @@ public class NvmUtilsTest {
 
         Start = System.currentTimeMillis();
         for(int j=0;j<loopTimes;j++){
-            testFilDir.setFileContent(String.valueOf(j));
+            //testFilDir.setFileContent(String.valueOf(j));
             //pHm.put(persistent(j), new NvmFilDir(String.valueOf(j), true, false));//17s
+            pHm.put(persistent(j), persistent(String.valueOf(j)));
         }
         End = System.currentTimeMillis();
         System.out.println(loopTimes + " Sets cost "+(End - Start)+" ms");
