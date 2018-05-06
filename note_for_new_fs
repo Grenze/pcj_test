@@ -220,7 +220,16 @@ static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
     1.use byteBuffer to replace String(NvmFileUtils readTextFile writeToFile)
     2.file lock(concurrenthashmap, trylock("wr"))
         used in PhysicalLogVersionedStoreChannel, StoreLocker, SingleFilePageSwapper(deleted sync about positionLock of FileChannelImpl and NvmFilDir)
-    3.the left index and debug.log
+    -----3.the left index and debug.log
+
+
+
+    ----        public Directory open( File dir ) throws IOException
+                {
+                    dir.mkdirs();
+                    return new NRTCachingDirectory( FSDirectory.open( dir.toPath() ), MAX_MERGE_SIZE_MB, MAX_CACHED_MB );
+                }
+    index using lucene and no need to change debug.log
     ***
 
 29.less force() with sync
