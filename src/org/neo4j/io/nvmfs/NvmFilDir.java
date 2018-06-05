@@ -71,7 +71,7 @@ public class NvmFilDir  extends PersistentObject{
         setObjectField(FILECONTENT, persistent(fileContent));
     }
 
-    private String getFileContent(){
+    public String getFileContent(){
         return getObjectField(FILECONTENT).toString();
     }
 
