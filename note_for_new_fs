@@ -238,7 +238,11 @@ static Set<String> listWithFilter(FileFilter filter, String fromDirectory){
 
 31.init heap costs 5s, put the origin class costs 5.8s, get origin class costs 1.7s
 
-put the class designed by user will costs 16s, get the class designed by user will costs 1.6s
+put the class(five field) designed by user costs 16s, get the class costs 1.6s
+
+put the class(one field) designed by user costs 6.9s, get the class costs 1.86s
+
+put the class(no field) designed by user costs 5.0s, get the class costs 1.97s
 
 set the persist field costs 2.0s, get persist field costs 0s
 

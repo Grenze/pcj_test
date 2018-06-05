@@ -1,15 +1,43 @@
 package test.nvm_fs;
 
 import lib.util.persistent.ObjectDirectory;
-import org.neo4j.io.nvmfs.NvmFilDir;
+import lib.util.persistent.ObjectPointer;
+import lib.util.persistent.PersistentObject;
+import lib.util.persistent.types.ObjectType;
+import lib.util.persistent.types.StringField;
 
 import java.io.File;
 import java.nio.ByteBuffer;
 
+import static lib.util.persistent.Util.persistent;
+
+
+class testsimple  extends PersistentObject {
+
+    private static final StringField GLOBALID = new StringField();
+    private static final ObjectType<testsimple> TYPE = ObjectType.withFields(testsimple.class, GLOBALID);
+
+    public testsimple(String param){
+        super(TYPE);
+        setGlobalId(param);
+    }
+
+    private testsimple(ObjectPointer<testsimple> p){super(p);}
+
+    public void setGlobalId(String globalId){
+        setObjectField(GLOBALID, persistent(globalId));
+    }
+
+    private String getGlobalId(){
+        return getObjectField(GLOBALID).toString();
+    }
+}
+
+
 public class NvmUtilsTest {
 
     public static void testAll() {
-        long loopTimes = 100;
+        long loopTimes = 10;
 
         //PersistentHashMap pHm = new PersistentHashMap();
         //ObjectDirectory.put("pHm", pHm);
@@ -19,8 +47,9 @@ public class NvmUtilsTest {
         //ObjectDirectory.put(String.valueOf(20), PersistentByteBuffer.copyWrap(new byte[20]));
         //ObjectDirectory.put(String.valueOf(20), persistent("20"));
 
-        NvmFilDir testFilDir = new NvmFilDir("testFilDir",true,false);
-        ObjectDirectory.put("testFilDir", testFilDir);
+        //NvmFilDir testFilDir = new NvmFilDir("testFilDir",true,false);
+        //ObjectDirectory.put("testFilDir", testFilDir);
+
 
 
         long Start = System.currentTimeMillis();
@@ -28,7 +57,8 @@ public class NvmUtilsTest {
             //ObjectDirectory.put(String.valueOf(i), PersistentByteBuffer.copyWrap(new byte[i]));//put the origin class costs 5s, init heap costs 5s
             //ObjectDirectory.put(String.valueOf(i), persistent(String.valueOf(i)));
             //ObjectDirectory.put(String.valueOf(i),new NvmFilDir(String.valueOf(i), true, false));//18s
-            testFilDir.setFileContent(String.valueOf(i));
+            //testFilDir.setFileContent(String.valueOf(i));
+            ObjectDirectory.put(String.valueOf(i), new testsimple(String.valueOf(i)));
         }
         long End = System.currentTimeMillis();
         System.out.println(loopTimes + " Sets cost "+(End - Start)+" ms");
@@ -37,7 +67,8 @@ public class NvmUtilsTest {
         for(int i=0;i<loopTimes;i++){
             //ObjectDirectory.get(String.valueOf(i), PersistentByteBuffer.class);
             //ObjectDirectory.get(String.valueOf(i),NvmFilDir.class);
-            testFilDir.getFileContent();
+            //testFilDir.getFileContent();
+            ObjectDirectory.get(String.valueOf(i), testsimple.class);
         }
         End = System.currentTimeMillis();
         System.out.println(loopTimes + " Gets cost "+(End - Start)+" ms");
